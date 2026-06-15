@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KODAI – Belajar Coding Seru!</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #2EC486;
+  --yellow: #FFD93D;
+  --orange: #FF6B35;
+  --pink: #FF4D8B;
+  --blue: #4DABF7;
+  --purple: #9B5DE5;
+  --red: #FF4444;
+  --teal: #00D4AA;
+  --bg: #FFF9F0;
+  --dark: #1A1A2E;
+  --card-shadow: 0 8px 0 rgba(0,0,0,0.15);
+  --card-shadow-hover: 0 4px 0 rgba(0,0,0,0.15);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  overflow-x: hidden;
+}
+
+/* ---- LOADING SCREEN ---- */
+#loader {
+  position: fixed; inset: 0;
+  background: linear-gradient(135deg, #9B5DE5, #FF4D8B, #FF6B35);
+  z-index: 9999;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 20px;
+  transition: opacity 0.5s ease;
+}
+#loader .logo-big {
+  font-family: 'Fredoka One', cursive;
+  font-size: 3rem;
+  color: white;
+  text-shadow: 0 4px 0 rgba(0,0,0,0.2);
+  animation: bounce 0.6s infinite alternate;
+}
+.loader-dots { display:flex; gap:12px; }
+.loader-dots span {
+  width:16px; height:16px;
+  background: white; border-radius:50%;
+  animation: dotBounce 0.6s infinite alternate;
+}
+.loader-dots span:nth-child(2) { animation-delay: 0.15s; }
+.loader-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes dotBounce { to { transform: translateY(-20px); opacity:0.5; } }
+@keyframes bounce { to { transform: translateY(-10px); } }
+
+/* ---- NAVBAR ---- */
+nav {
+  position: sticky; top:0; z-index:100;
+  background: var(--dark);
+  padding: 0 24px;
+  display: flex; align-items:center; justify-content: space-between;
+  height: 68px;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+}
+.nav-logo {
+  font-family:'Fredoka One', cursive;
+  font-size: 1.5rem;
+  color: var(--yellow);
+  display:flex; align-items:center; gap:8px;
+  cursor:pointer;
+}
+.nav-logo .leaf { font-size:1.6rem; animation: wiggle 2s infinite; }
+@keyframes wiggle { 0%,100%{transform:rotate(-8deg)} 50%{transform:rotate(8deg)} }
+.nav-links { display:flex; gap:4px; }
+.nav-link {
+  font-family:'Nunito',sans-serif; font-weight:700; font-size:0.9rem;
+  color: rgba(255,255,255,0.7);
+  padding: 8px 16px; border-radius: 50px;
+  cursor:pointer; transition: all 0.2s;
+  border: none; background:transparent;
+}
+.nav-link:hover, .nav-link.active {
+  background: var(--yellow);
+  color: var(--dark);
+}
+.nav-cta {
+  background: var(--green);
+  color: white;
+  border: none; border-radius:50px;
+  padding: 10px 22px;
+  font-family:'Nunito',sans-serif; font-weight:800; font-size:0.9rem;
+  cursor:pointer;
+  box-shadow: 0 4px 0 #1a8f5f;
+  transition: all 0.2s;
+}
+.nav-cta:hover { transform:translateY(-2px); box-shadow:0 6px 0 #1a8f5f; }
+.nav-cta:active { transform:translateY(2px); box-shadow:0 2px 0 #1a8f5f; }
+.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; }
+.hamburger span { width:24px; height:3px; background:white; border-radius:2px; transition:0.3s; }
+.mobile-menu {
+  display:none; position:fixed; top:68px; left:0; right:0;
+  background:var(--dark); padding:16px; z-index:99;
+  flex-direction:column; gap:8px;
+  border-bottom: 4px solid var(--yellow);
+}
+.mobile-menu.open { display:flex; }
+
+/* ---- PAGES ---- */
+.page { display:none; animation: fadeIn 0.3s ease; }
+.page.active { display:block; }
+@keyframes fadeIn { from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)} }
+
+/* ---- HERO ---- */
+.hero {
+  min-height: 92vh;
+  background: linear-gradient(160deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+  display:flex; align-items:center;
+  padding: 60px 40px;
+  position:relative; overflow:hidden;
+}
+.hero-bg-circles { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.hero-circle {
+  position:absolute; border-radius:50%;
+  opacity:0.1; animation: float 6s infinite ease-in-out alternate;
+}
+.hero-circle:nth-child(1) { width:400px;height:400px; background:var(--purple); top:-100px; right:-100px; animation-delay:0s; }
+.hero-circle:nth-child(2) { width:300px;height:300px; background:var(--pink); bottom:-80px; left:10%; animation-delay:1s; }
+.hero-circle:nth-child(3) { width:200px;height:200px; background:var(--yellow); top:30%; right:25%; animation-delay:2s; }
+.hero-circle:nth-child(4) { width:150px;height:150px; background:var(--green); top:10%; left:20%; animation-delay:0.5s; }
+@keyframes float { to { transform: translateY(-30px) scale(1.05); } }
+.hero-content { max-width:600px; position:relative; z-index:2; }
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background: rgba(255,217,61,0.15);
+  border: 2px solid var(--yellow);
+  border-radius:50px; padding:8px 18px;
+  color:var(--yellow); font-weight:800; font-size:0.85rem;
+  margin-bottom:24px; letter-spacing:0.5px;
+}
+.hero-badge .star { font-size:1.1rem; animation: spin 3s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.hero h1 {
+  font-family:'Fredoka One', cursive;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  color: white;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.hero h1 span { color: var(--yellow); position:relative; }
+.hero h1 span::after {
+  content:''; position:absolute; bottom:-4px; left:0; right:0; height:4px;
+  background: var(--yellow); border-radius:2px;
+}
+.hero p {
+  font-size:1.1rem; color:rgba(255,255,255,0.8);
+  line-height:1.7; margin-bottom:36px; font-weight:600;
+}
+.hero-btns { display:flex; gap:16px; flex-wrap:wrap; }
+.btn-primary {
+  background: var(--yellow);
+  color: var(--dark);
+  border:none; border-radius:16px;
+  padding:14px 32px;
+  font-family:'Nunito',sans-serif; font-weight:900; font-size:1rem;
+  cursor:pointer;
+  box-shadow: 0 6px 0 #c4a000;
+  transition:all 0.15s;
+  display:flex; align-items:center; gap:8px;
+}
+.btn-primary:hover { transform:translateY(-3px); box-shadow:0 9px 0 #c4a000; }
+.btn-primary:active { transform:translateY(3px); box-shadow:0 3px 0 #c4a000; }
+.btn-secondary {
+  background:transparent;
+  color:white; border:3px solid rgba(255,255,255,0.4);
+  border-radius:16px; padding:14px 32px;
+  font-family:'Nunito',sans-serif; font-weight:800; font-size:1rem;
+  cursor:pointer; transition:all 0.2s;
+}
+.btn-secondary:hover { border-color:white; background:rgba(255,255,255,0.1); }
+
+.hero-visual {
+  position:absolute; right:0; top:0; bottom:0;
+  width:50%; display:flex; align-items:center; justify-content:center;
+  z-index:2;
+}
+.hero-cards-float {
+  position:relative; width:420px; height:420px;
+}
+.float-card {
+  position:absolute;
+  background:white; border-radius:20px;
+  padding:20px 24px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  animation: floatCard 4s ease-in-out infinite alternate;
+}
+.float-card:nth-child(1) { top:10px; left:0; animation-delay:0s; width:200px; }
+.float-card:nth-child(2) { top:80px; right:0; animation-delay:1s; width:180px; }
+.float-card:nth-child(3) { bottom:60px; left:30px; animation-delay:2s; width:220px; }
+@keyframes floatCard { to { transform:translateY(-16px) rotate(2deg); } }
+.float-card .card-emoji { font-size:2rem; margin-bottom:8px; }
+.float-card .card-title { font-weight:800; font-size:0.9rem; color:var(--dark); }
+.float-card .card-sub { font-size:0.75rem; color:#666; margin-top:4px; }
+.float-card .xp-bar { height:6px; background:#eee; border-radius:3px; margin-top:10px; overflow:hidden; }
+.float-card .xp-fill { height:100%; border-radius:3px; animation: xpGrow 2s ease forwards; }
+@keyframes xpGrow { from{width:0} }
+
+/* ---- STATS BAR ---- */
+.stats-bar {
+  background: var(--dark);
+  padding: 20px 40px;
+  display:flex; justify-content:center; gap:48px; flex-wrap:wrap;
+}
+.stat-item { text-align:center; }
+.stat-num {
+  font-family:'Fredoka One',cursive; font-size:2rem;
+  color:var(--yellow);
+}
+.stat-label { font-size:0.85rem; color:rgba(255,255,255,0.6); font-weight:600; }
+
+/* ---- SECTIONS ---- */
+.section { padding: 72px 40px; }
+.section-title {
+  font-family:'Fredoka One', cursive;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  text-align:center; margin-bottom:12px;
+  color: var(--dark);
+}
+.section-sub {
+  text-align:center; color:#666; font-weight:600;
+  font-size:1rem; margin-bottom:48px; max-width:500px; margin-left:auto; margin-right:auto;
+}
+.section-title span { position:relative; }
+
+/* ---- FEATURE CARDS ---- */
+.features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:24px; max-width:1100px; margin:0 auto; }
+.feature-card {
+  border-radius:24px;
+  padding:32px 28px;
+  position:relative; overflow:hidden;
+  cursor:pointer;
+  transition: all 0.2s;
+  box-shadow: var(--card-shadow);
+  border: 3px solid rgba(0,0,0,0.08);
+}
+.feature-card:hover { transform:translateY(-6px); box-shadow: 0 14px 0 rgba(0,0,0,0.15); }
+.feature-card:nth-child(1) { background: linear-gradient(135deg, #FFD93D, #FF6B35); }
+.feature-card:nth-child(2) { background: linear-gradient(135deg, #9B5DE5, #4DABF7); }
+.feature-card:nth-child(3) { background: linear-gradient(135deg, #2EC486, #4DABF7); }
+.feature-card:nth-child(4) { background: linear-gradient(135deg, #FF4D8B, #FF6B35); }
+.feature-card:nth-child(5) { background: linear-gradient(135deg, #00D4AA, #9B5DE5); }
+.feature-card:nth-child(6) { background: linear-gradient(135deg, #FFD93D, #9B5DE5); }
+.feature-icon {
+  font-size:3rem; margin-bottom:16px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+.feature-card h3 { font-family:'Fredoka One',cursive; font-size:1.4rem; color:white; margin-bottom:10px; text-shadow:0 2px 4px rgba(0,0,0,0.2); }
+.feature-card p { color:rgba(255,255,255,0.9); font-size:0.9rem; line-height:1.6; font-weight:600; }
+.feature-card .corner-deco {
+  position:absolute; bottom:-20px; right:-20px;
+  width:80px; height:80px; border-radius:50%;
+  background:rgba(255,255,255,0.15);
+}
+
+/* ---- HOW IT WORKS ---- */
+.hiw-section { background: linear-gradient(135deg, #9B5DE5 0%, #FF4D8B 100%); }
+.hiw-section .section-title { color:white; }
+.hiw-section .section-sub { color:rgba(255,255,255,0.8); }
+.steps-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:24px; max-width:900px; margin:0 auto; }
+.step-card {
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(10px);
+  border:2px solid rgba(255,255,255,0.3);
+  border-radius:24px; padding:32px 24px; text-align:center;
+  transition:all 0.2s;
+}
+.step-card:hover { transform:translateY(-6px); background:rgba(255,255,255,0.25); }
+.step-num {
+  font-family:'Fredoka One',cursive; font-size:3rem;
+  color:var(--yellow); margin-bottom:12px;
+}
+.step-emoji { font-size:2.5rem; margin-bottom:12px; }
+.step-card h3 { color:white; font-family:'Fredoka One',cursive; font-size:1.3rem; margin-bottom:8px; }
+.step-card p { color:rgba(255,255,255,0.85); font-size:0.9rem; font-weight:600; line-height:1.6; }
+
+/* ---- TESTIMONIALS ---- */
+.testi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; max-width:1000px; margin:0 auto; }
+.testi-card {
+  background:white; border-radius:24px;
+  padding:28px; border:3px solid #eee;
+  box-shadow: var(--card-shadow);
+  transition:all 0.2s;
+}
+.testi-card:hover { transform:translateY(-6px); border-color:var(--yellow); }
+.testi-stars { color:var(--yellow); font-size:1.2rem; margin-bottom:14px; }
+.testi-quote { font-size:0.95rem; line-height:1.7; color:#444; margin-bottom:20px; font-style:italic; font-weight:600; }
+.testi-author { display:flex; align-items:center; gap:12px; }
+.avatar {
+  width:44px; height:44px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Fredoka One',cursive; font-size:1.1rem; color:white;
+  font-weight:bold; flex-shrink:0;
+}
+.testi-name { font-weight:800; font-size:0.9rem; }
+.testi-school { font-size:0.8rem; color:#888; font-weight:600; }
+
+/* ---- FOOTER ---- */
+footer {
+  background: var(--dark);
+  padding: 48px 40px 24px;
+  color: rgba(255,255,255,0.7);
+}
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr; gap:48px; margin-bottom:40px; }
+.footer-logo { font-family:'Fredoka One',cursive; font-size:1.8rem; color:var(--yellow); margin-bottom:12px; }
+.footer-tagline { font-size:0.9rem; line-height:1.6; font-weight:600; }
+.footer-col h4 { color:white; font-family:'Fredoka One',cursive; font-size:1.1rem; margin-bottom:16px; }
+.footer-col ul { list-style:none; display:flex; flex-direction:column; gap:8px; }
+.footer-col ul li { font-size:0.9rem; cursor:pointer; transition:color 0.2s; font-weight:600; }
+.footer-col ul li:hover { color:var(--yellow); }
+.footer-bottom { border-top:1px solid rgba(255,255,255,0.1); padding-top:20px; text-align:center; font-size:0.85rem; font-weight:600; }
+
+/* ---- MATERI PAGE ---- */
+.page-header {
+  background: linear-gradient(135deg, var(--dark), #0F3460);
+  padding: 60px 40px 40px;
+  text-align:center;
+}
+.page-header h1 { font-family:'Fredoka One',cursive; font-size:2.5rem; color:white; margin-bottom:8px; }
+.page-header p { color:rgba(255,255,255,0.7); font-weight:600; font-size:1rem; }
+.filter-tabs {
+  display:flex; gap:10px; flex-wrap:wrap;
+  justify-content:center; padding:32px 40px 0;
+}
+.filter-tab {
+  padding:10px 22px; border-radius:50px;
+  border:3px solid #ddd; background:white;
+  font-family:'Nunito',sans-serif; font-weight:800; font-size:0.9rem;
+  cursor:pointer; transition:all 0.2s;
+}
+.filter-tab:hover { border-color:var(--purple); color:var(--purple); }
+.filter-tab.active { background:var(--purple); color:white; border-color:var(--purple); }
+.courses-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:24px; padding:32px 40px; max-width:1200px; margin:0 auto;
+}
+.course-card {
+  background:white; border-radius:24px;
+  overflow:hidden; border:3px solid #eee;
+  box-shadow: var(--card-shadow);
+  cursor:pointer; transition:all 0.2s;
+}
+.course-card:hover { transform:translateY(-6px); box-shadow:0 14px 0 rgba(0,0,0,0.15); border-color:var(--yellow); }
+.course-thumb {
+  height:140px; position:relative;
+  display:flex; align-items:center; justify-content:center;
+  font-size:3.5rem;
+}
+.course-thumb img {
+  width:100%; height:100%; object-fit:cover;
+  position:absolute; top:0; left:0;
+}
+.course-thumb .thumb-overlay {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(0,0,0,0.2);
+  font-size:3.5rem;
+}
+.level-badge {
+  position:absolute; top:12px; right:12px;
+  padding:4px 12px; border-radius:50px;
+  font-size:0.75rem; font-weight:800;
+  border:2px solid rgba(255,255,255,0.5);
+  color:white; backdrop-filter:blur(4px);
+}
+.level-pemula { background:var(--green); }
+.level-menengah { background:var(--orange); }
+.level-lanjut { background:var(--pink); }
+.course-body { padding:20px; }
+.course-body h3 { font-family:'Fredoka One',cursive; font-size:1.2rem; margin-bottom:6px; }
+.course-body p { font-size:0.85rem; color:#666; line-height:1.5; margin-bottom:14px; font-weight:600; }
+.course-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.course-duration { font-size:0.8rem; color:#888; font-weight:700; }
+.course-xp { font-size:0.8rem; color:var(--purple); font-weight:800; }
+.progress-bar { height:8px; background:#eee; border-radius:4px; overflow:hidden; margin-bottom:16px; }
+.progress-fill { height:100%; border-radius:4px; transition:width 1s ease; }
+.btn-course {
+  width:100%; padding:12px;
+  background:var(--purple); color:white;
+  border:none; border-radius:12px;
+  font-family:'Nunito',sans-serif; font-weight:800; font-size:0.9rem;
+  cursor:pointer; transition:all 0.2s;
+  box-shadow: 0 4px 0 #6a3fa0;
+}
+.btn-course:hover { transform:translateY(-2px); box-shadow:0 6px 0 #6a3fa0; }
+.btn-course:active { transform:translateY(2px); box-shadow:0 2px 0 #6a3fa0; }
+
+/* ---- MODAL ---- */
+.modal-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.7); z-index:500;
+  align-items:center; justify-content:center;
+  padding:20px;
+}
+.modal-overlay.open { display:flex; }
+.modal-box {
+  background:white; border-radius:28px;
+  max-width:600px; width:100%;
+  max-height:90vh; overflow-y:auto;
+  animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes modalIn { from{transform:scale(0.7) translateY(30px); opacity:0} to{transform:scale(1) translateY(0); opacity:1} }
+.modal-header {
+  padding:28px 28px 20px;
+  border-bottom:3px solid #eee;
+  display:flex; justify-content:space-between; align-items:flex-start;
+  gap:16px;
+}
+.modal-header h2 { font-family:'Fredoka One',cursive; font-size:1.8rem; }
+.modal-close {
+  width:36px; height:36px; border-radius:50%;
+  background:#eee; border:none; cursor:pointer;
+  font-size:1.2rem; font-weight:bold; flex-shrink:0;
+  transition:all 0.2s; display:flex; align-items:center; justify-content:center;
+}
+.modal-close:hover { background:#ff4444; color:white; }
+.modal-body { padding:24px 28px; }
+.syllabus-list { list-style:none; display:flex; flex-direction:column; gap:10px; margin:16px 0; }
+.syllabus-list li {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px; background:#f8f8f8; border-radius:12px;
+  font-weight:700; font-size:0.95rem;
+}
+.syllabus-list li .check { color:var(--green); font-size:1.2rem; }
+.syllabus-num {
+  width:28px; height:28px; border-radius:50%;
+  background:var(--purple); color:white;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.8rem; font-weight:800; flex-shrink:0;
+}
+
+/* ---- PLAYGROUND PAGE ---- */
+.playground-layout {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:0; height:calc(100vh - 68px);
+}
+.playground-left {
+  background: #1A1A2E;
+  padding:24px;
+  display:flex; flex-direction:column; gap:16px;
+  overflow-y:auto;
+}
+.playground-right {
+  background: #0F3460;
+  display:flex; flex-direction:column;
+}
+.panel-title {
+  font-family:'Fredoka One',cursive; font-size:1.2rem;
+  color:var(--yellow); margin-bottom:4px;
+}
+.blocks-palette {
+  display:flex; flex-wrap:wrap; gap:10px;
+}
+.block-btn {
+  padding:10px 16px;
+  border-radius:12px;
+  border:none; cursor:pointer;
+  font-family:'Nunito',sans-serif; font-weight:900; font-size:0.9rem;
+  color:white; transition:all 0.15s;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+  display:flex; align-items:center; gap:6px;
+}
+.block-btn:hover { transform:translateY(-2px); }
+.block-btn:active { transform:translateY(2px); }
+.block-mulai { background: var(--green); }
+.block-kanan { background: var(--blue); }
+.block-kiri { background: var(--orange); }
+.block-ulangi { background: var(--purple); }
+.block-jika { background: var(--pink); }
+.block-lompat { background: var(--yellow); color:var(--dark); }
+.drop-zone {
+  min-height:180px;
+  border:3px dashed rgba(255,255,255,0.3);
+  border-radius:16px;
+  padding:12px;
+  display:flex; flex-wrap:wrap; gap:8px; align-content:flex-start;
+  background:rgba(255,255,255,0.05);
+  transition:border-color 0.2s;
+}
+.drop-zone.drag-over { border-color:var(--yellow); background:rgba(255,217,61,0.1); }
+.placed-block {
+  padding:8px 14px;
+  border-radius:10px;
+  font-family:'Nunito',sans-serif; font-weight:900; font-size:0.85rem;
+  color:white; cursor:grab; position:relative;
+  display:flex; align-items:center; gap:6px;
+}
+.placed-block .remove-block {
+  width:18px; height:18px; border-radius:50%;
+  background:rgba(0,0,0,0.3); border:none;
+  color:white; font-size:0.75rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.pg-btns { display:flex; gap:10px; }
+.btn-run {
+  flex:1; padding:14px;
+  background:var(--green); border:none; border-radius:14px;
+  font-family:'Nunito',sans-serif; font-weight:900; font-size:1rem;
+  color:white; cursor:pointer;
+  box-shadow:0 4px 0 #1a8f5f; transition:all 0.15s;
+}
+.btn-run:hover { transform:translateY(-2px); }
+.btn-reset-pg {
+  padding:14px 20px;
+  background:rgba(255,255,255,0.1); border:2px solid rgba(255,255,255,0.3);
+  border-radius:14px;
+  font-family:'Nunito',sans-serif; font-weight:800; font-size:0.9rem;
+  color:white; cursor:pointer; transition:all 0.2s;
+}
+.btn-reset-pg:hover { background:rgba(255,68,68,0.3); border-color:var(--red); }
+.canvas-area {
+  flex:1; position:relative; overflow:hidden;
+  background: linear-gradient(180deg, #0F3460 0%, #1a5276 50%, #2E7D32 100%);
+}
+.canvas-ground {
+  position:absolute; bottom:0; left:0; right:0;
+  height:80px;
+  background: linear-gradient(180deg, #2E7D32, #1B5E20);
+}
+.canvas-sky { position:absolute; top:0; left:0; right:0; height:60%; }
+.cloud {
+  position:absolute; background:rgba(255,255,255,0.9);
+  border-radius:50px; opacity:0.8;
+}
+.cloud::before,.cloud::after {
+  content:''; position:absolute;
+  background:rgba(255,255,255,0.9); border-radius:50%;
+}
+.cloud-1 { width:80px;height:25px; top:20px; left:50px; }
+.cloud-1::before { width:40px;height:40px; top:-20px; left:10px; }
+.cloud-1::after { width:30px;height:30px; top:-15px; left:35px; }
+.cloud-2 { width:60px;height:20px; top:50px; right:80px; }
+.cloud-2::before { width:30px;height:30px; top:-15px; left:8px; }
+.cloud-2::after { width:25px;height:25px; top:-12px; left:28px; }
+.character-wrap { position:absolute; bottom:80px; transition:left 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+.character-body {
+  width:60px; height:80px;
+  position:relative;
+}
+.char-head {
+  width:44px; height:44px; border-radius:50%;
+  background:#FDBCB4; margin:0 auto;
+  border:3px solid #e8967a;
+  position:relative;
+}
+.char-eyes {
+  display:flex; justify-content:space-around; padding-top:12px;
+}
+.char-eye { width:8px;height:8px; background:#333; border-radius:50%; }
+.char-smile {
+  width:16px; height:8px;
+  border:3px solid #c0392b;
+  border-top:none; border-radius:0 0 8px 8px;
+  margin:4px auto 0;
+}
+.char-body-main {
+  width:40px; height:30px;
+  background:linear-gradient(180deg, #FF6B35, #FF4500);
+  margin:0 auto; border-radius:8px 8px 4px 4px;
+  border:3px solid rgba(0,0,0,0.15);
+}
+.char-legs { display:flex; justify-content:center; gap:8px; }
+.char-leg {
+  width:14px; height:22px;
+  background:#3A86FF; border-radius:4px;
+  border:2px solid rgba(0,0,0,0.15);
+  animation: none;
+}
+.char-leg.walking { animation: walk 0.3s ease infinite alternate; }
+.char-leg:nth-child(2).walking { animation-delay:0.15s; }
+@keyframes walk { to{transform:translateY(4px)} }
+.char-jump { animation: jumpAnim 0.5s ease; }
+@keyframes jumpAnim { 0%{transform:translateY(0)} 50%{transform:translateY(-60px)} 100%{transform:translateY(0)} }
+.console-area {
+  height:120px;
+  background:rgba(0,0,0,0.5);
+  border-top:3px solid rgba(255,255,255,0.1);
+  padding:12px 16px;
+  overflow-y:auto;
+}
+.console-area p { font-family:'Courier New',monospace; font-size:0.8rem; color:#4DABF7; line-height:1.8; }
+.console-area p.success { color:var(--green); }
+.console-area p.warning { color:var(--yellow); }
+
+/* ---- KOLABORASI PAGE ---- */
+.kol-layout {
+  display:grid; grid-template-columns:1fr 320px;
+  gap:0; min-height:calc(100vh - 68px);
+}
+.kol-main { padding:32px; overflow-y:auto; }
+.kol-sidebar { background:var(--dark); display:flex; flex-direction:column; }
+.session-card {
+  background: linear-gradient(135deg, #9B5DE5, #4DABF7);
+  border-radius:20px; padding:24px; margin-bottom:24px;
+  display:flex; align-items:center; gap:16px;
+}
+.live-dot {
+  width:12px; height:12px; border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 0 0 rgba(46,196,134,0.4);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse {
+  0%{box-shadow:0 0 0 0 rgba(46,196,134,0.4)}
+  70%{box-shadow:0 0 0 12px rgba(46,196,134,0)}
+  100%{box-shadow:0 0 0 0 rgba(46,196,134,0)}
+}
+.session-info h3 { font-family:'Fredoka One',cursive; font-size:1.3rem; color:white; }
+.session-info p { color:rgba(255,255,255,0.8); font-size:0.85rem; font-weight:600; }
+.avatars-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+.av-item { text-align:center; }
+.av-circle {
+  width:48px; height:48px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Fredoka One',cursive; font-size:1rem;
+  color:white; margin:0 auto 6px;
+  border:3px solid white; box-shadow:var(--card-shadow);
+  position:relative;
+}
+.av-circle .online-badge {
+  position:absolute; bottom:-2px; right:-2px;
+  width:12px; height:12px; border-radius:50%;
+  background:var(--green); border:2px solid white;
+}
+.av-name { font-size:0.72rem; font-weight:700; color:var(--dark); }
+.shared-canvas {
+  background:white; border-radius:20px;
+  border:3px solid #eee; min-height:300px;
+  padding:16px; position:relative; overflow:hidden;
+}
+.shared-canvas-title { font-family:'Fredoka One',cursive; font-size:1.1rem; color:#444; margin-bottom:12px; }
+#collab-canvas {
+  width:100%; min-height:250px; position:relative;
+  border-radius:12px; background:#f8f8ff;
+  border:2px dashed #ddd; cursor:crosshair;
+  overflow:hidden;
+}
+.collab-block {
+  position:absolute; border-radius:10px;
+  width:60px; height:60px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.5rem; box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  animation:popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events:none;
+}
+@keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
+.chat-sidebar { display:flex; flex-direction:column; height:100%; }
+.chat-header { padding:20px; border-bottom:2px solid rgba(255,255,255,0.1); }
+.chat-header h3 { font-family:'Fredoka One',cursive; color:var(--yellow); font-size:1.1rem; }
+.chat-messages { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; }
+.chat-msg { display:flex; gap:10px; align-items:flex-start; }
+.chat-av { width:32px;height:32px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Fredoka One',cursive; font-size:0.85rem; color:white; }
+.chat-bubble { background:rgba(255,255,255,0.1); border-radius:0 12px 12px 12px; padding:10px 12px; max-width:200px; }
+.chat-name { font-size:0.7rem; color:rgba(255,255,255,0.5); font-weight:700; margin-bottom:4px; }
+.chat-text { font-size:0.85rem; color:rgba(255,255,255,0.9); font-weight:600; line-height:1.4; }
+.chat-input-area { padding:12px; border-top:2px solid rgba(255,255,255,0.1); display:flex; gap:8px; }
+.chat-input {
+  flex:1; padding:10px 14px;
+  background:rgba(255,255,255,0.1); border:2px solid rgba(255,255,255,0.2);
+  border-radius:12px; color:white; font-family:'Nunito',sans-serif;
+  font-size:0.85rem; font-weight:600;
+}
+.chat-input::placeholder { color:rgba(255,255,255,0.4); }
+.chat-send {
+  width:40px; height:40px; border-radius:12px;
+  background:var(--green); border:none; cursor:pointer;
+  color:white; font-size:1.1rem; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 3px 0 #1a8f5f; transition:all 0.15s;
+}
+.chat-send:hover { transform:translateY(-1px); }
+
+/* ---- PROGRESS PAGE ---- */
+.progress-layout { padding:40px; max-width:1000px; margin:0 auto; }
+.profile-card {
+  background: linear-gradient(135deg, #9B5DE5, #FF4D8B);
+  border-radius:24px; padding:32px;
+  display:flex; gap:24px; align-items:center;
+  margin-bottom:32px; box-shadow:var(--card-shadow);
+}
+.profile-av-big {
+  width:80px; height:80px; border-radius:50%;
+  background:rgba(255,255,255,0.3); border:4px solid white;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Fredoka One',cursive; font-size:2rem; color:white; flex-shrink:0;
+}
+.profile-info h2 { font-family:'Fredoka One',cursive; font-size:1.8rem; color:white; }
+.profile-info p { color:rgba(255,255,255,0.8); font-weight:600; font-size:0.9rem; margin-top:4px; }
+.profile-level {
+  margin-top:10px; display:inline-block;
+  background:var(--yellow); color:var(--dark);
+  padding:4px 16px; border-radius:50px;
+  font-weight:900; font-size:0.85rem;
+}
+.stats-grid-progress {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px;
+}
+.stat-card {
+  background:white; border-radius:20px; padding:20px;
+  text-align:center; border:3px solid #eee;
+  box-shadow:var(--card-shadow); transition:all 0.2s;
+}
+.stat-card:hover { transform:translateY(-4px); }
+.stat-card .stat-icon { font-size:2rem; margin-bottom:8px; }
+.stat-card .stat-value {
+  font-family:'Fredoka One',cursive; font-size:2rem;
+}
+.stat-card .stat-key { font-size:0.8rem; color:#888; font-weight:700; margin-top:4px; }
+.progress-section { background:white; border-radius:20px; padding:24px; margin-bottom:24px; border:3px solid #eee; box-shadow:var(--card-shadow); }
+.progress-section h3 { font-family:'Fredoka One',cursive; font-size:1.3rem; margin-bottom:20px; }
+.subject-progress { margin-bottom:18px; }
+.subject-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.subject-name { font-weight:800; font-size:0.95rem; }
+.subject-pct { font-family:'Fredoka One',cursive; font-size:1rem; }
+.prog-bar { height:12px; background:#eee; border-radius:6px; overflow:hidden; }
+.prog-fill { height:100%; border-radius:6px; transition:width 1.2s cubic-bezier(0.34,1.56,0.64,1); }
+.activity-list { list-style:none; display:flex; flex-direction:column; gap:12px; }
+.activity-item {
+  display:flex; align-items:center; gap:14px;
+  padding:14px 16px; background:#f8f8f8; border-radius:14px;
+  transition:all 0.2s;
+}
+.activity-item:hover { background:#eee; }
+.activity-icon {
+  width:40px; height:40px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; flex-shrink:0;
+}
+.activity-info { flex:1; }
+.activity-name { font-weight:800; font-size:0.9rem; }
+.activity-date { font-size:0.78rem; color:#888; font-weight:600; margin-top:2px; }
+.activity-xp {
+  font-family:'Fredoka One',cursive; color:var(--purple);
+  font-size:0.95rem;
+}
+.badges-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.badge-item {
+  text-align:center; padding:20px 12px;
+  background:#f8f8f8; border-radius:18px;
+  border:3px solid #eee; transition:all 0.2s;
+}
+.badge-item:hover { transform:translateY(-4px); border-color:var(--yellow); }
+.badge-item.locked { opacity:0.5; filter:grayscale(1); }
+.badge-emoji { font-size:2.5rem; margin-bottom:8px; }
+.badge-name { font-weight:800; font-size:0.85rem; }
+
+/* ---- LOGIN PAGE ---- */
+.login-page {
+  min-height: calc(100vh - 68px);
+  background: linear-gradient(135deg, #1A1A2E, #9B5DE5, #FF4D8B);
+  display:flex; align-items:center; justify-content:center;
+  padding:40px 20px;
+}
+.login-card {
+  background:white; border-radius:28px;
+  max-width:440px; width:100%;
+  padding:36px;
+  box-shadow:0 30px 60px rgba(0,0,0,0.3);
+  animation: modalIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.login-logo { font-family:'Fredoka One',cursive; font-size:1.8rem; color:var(--purple); text-align:center; margin-bottom:24px; }
+.tab-switcher { display:grid; grid-template-columns:1fr 1fr; background:#f0f0f0; border-radius:12px; padding:4px; margin-bottom:28px; }
+.tab-btn {
+  padding:12px; border:none; border-radius:10px;
+  background:transparent; cursor:pointer;
+  font-family:'Nunito',sans-serif; font-weight:800; font-size:0.95rem;
+  color:#888; transition:all 0.2s;
+}
+.tab-btn.active { background:white; color:var(--purple); box-shadow:0 2px 8px rgba(0,0,0,0.12); }
+.form-group { margin-bottom:18px; }
+.form-label { font-size:0.85rem; font-weight:800; color:var(--dark); display:block; margin-bottom:6px; }
+.form-input {
+  width:100%; padding:12px 16px;
+  border:3px solid #eee; border-radius:12px;
+  font-family:'Nunito',sans-serif; font-size:0.95rem; font-weight:600;
+  transition:border-color 0.2s; outline:none;
+}
+.form-input:focus { border-color:var(--purple); }
+.form-input.error { border-color:var(--red); }
+.form-error { font-size:0.8rem; color:var(--red); font-weight:700; margin-top:4px; display:none; }
+.role-selector { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.role-btn {
+  padding:12px; border:3px solid #eee; border-radius:12px;
+  background:white; cursor:pointer;
+  font-family:'Nunito',sans-serif; font-weight:800; font-size:0.9rem;
+  transition:all 0.2s; text-align:center;
+}
+.role-btn.selected { border-color:var(--purple); background:#f0e8ff; color:var(--purple); }
+.btn-submit {
+  width:100%; padding:14px;
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  border:none; border-radius:14px; color:white;
+  font-family:'Nunito',sans-serif; font-weight:900; font-size:1rem;
+  cursor:pointer; box-shadow:0 6px 0 #6a3fa0;
+  transition:all 0.15s; margin-top:4px;
+}
+.btn-submit:hover { transform:translateY(-2px); box-shadow:0 8px 0 #6a3fa0; }
+.btn-google {
+  width:100%; padding:13px;
+  background:white; border:3px solid #ddd; border-radius:14px;
+  font-family:'Nunito',sans-serif; font-weight:800; font-size:0.9rem;
+  cursor:pointer; margin-top:12px; transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  color:var(--dark);
+}
+.btn-google:hover { border-color:#aaa; background:#f8f8f8; }
+.divider { text-align:center; color:#aaa; font-weight:700; font-size:0.85rem; margin:16px 0; position:relative; }
+.divider::before,.divider::after { content:''; position:absolute; top:50%; width:38%; height:1px; background:#eee; }
+.divider::before { left:0; } .divider::after { right:0; }
+
+/* ---- TOAST ---- */
+#toast-container {
+  position:fixed; bottom:24px; right:24px; z-index:9998;
+  display:flex; flex-direction:column; gap:10px;
+}
+.toast {
+  padding:14px 20px; border-radius:14px;
+  background:var(--dark); color:white;
+  font-weight:700; font-size:0.9rem;
+  box-shadow:0 8px 24px rgba(0,0,0,0.3);
+  animation: toastIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  display:flex; align-items:center; gap:10px; max-width:300px;
+}
+.toast.success { background:var(--green); }
+.toast.warning { background:var(--orange); }
+.toast.error { background:var(--red); }
+@keyframes toastIn { from{transform:translateX(100px); opacity:0} to{transform:translateX(0); opacity:1} }
+
+/* ---- RESPONSIVE ---- */
+@media(max-width:900px) {
+  .hero { flex-direction:column; text-align:center; padding:40px 24px; }
+  .hero-btns { justify-content:center; }
+  .hero-visual { display:none; }
+  .playground-layout { grid-template-columns:1fr; height:auto; }
+  .kol-layout { grid-template-columns:1fr; }
+  .kol-sidebar { min-height:400px; }
+  .stats-grid-progress { grid-template-columns:repeat(2,1fr); }
+  .footer-grid { grid-template-columns:1fr; gap:24px; }
+  .nav-links, .nav-cta { display:none; }
+  .hamburger { display:flex; }
+  .courses-grid { padding:20px; grid-template-columns:1fr 1fr; }
+}
+@media(max-width:600px) {
+  .hero h1 { font-size:2rem; }
+  .stats-bar { padding:16px 20px; gap:20px; }
+  .section { padding:48px 20px; }
+  .courses-grid { grid-template-columns:1fr; padding:16px; }
+  .stats-grid-progress { grid-template-columns:1fr 1fr; }
+  .badges-grid { grid-template-columns:repeat(2,1fr); }
+  .filter-tabs { padding:20px 16px 0; }
+}
+
+/* ---- DECORATIVE ---- */
+.zigzag-divider { width:100%; height:40px; overflow:hidden; }
+.zigzag-divider svg { width:100%; height:100%; }
+.stars-bg { position:absolute; inset:0; pointer-events:none; }
+.star-particle {
+  position:absolute; border-radius:50%;
+  animation: twinkle 2s infinite alternate;
+}
+@keyframes twinkle { to{opacity:0.2; transform:scale(0.5)} }
+
+/* ---- WORLD MAP / PATH ---- */
+.learning-path-section { background: linear-gradient(180deg, #0F3460, #1A1A2E); padding:72px 40px; }
+.learning-path-section .section-title { color:white; }
+.learning-path-section .section-sub { color:rgba(255,255,255,0.7); }
+.path-track {
+  max-width:700px; margin:0 auto;
+  position:relative; padding-bottom:20px;
+}
+.path-line {
+  position:absolute; left:50%; top:0; bottom:0;
+  width:6px; background: rgba(255,255,255,0.2);
+  transform:translateX(-50%);
+  border-radius:3px;
+}
+.path-line-fill {
+  position:absolute; top:0; left:0; right:0;
+  background: linear-gradient(180deg, var(--yellow), var(--green));
+  border-radius:3px;
+  animation: pathGrow 2s ease forwards;
+  height:65%;
+}
+@keyframes pathGrow { from{height:0} }
+.path-node {
+  display:flex; align-items:center; gap:20px;
+  margin-bottom:36px; position:relative;
+}
+.path-node:nth-child(even) { flex-direction:row-reverse; }
+.node-circle {
+  width:60px; height:60px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.8rem; flex-shrink:0; position:relative; z-index:2;
+  border:4px solid white; box-shadow:0 4px 16px rgba(0,0,0,0.3);
+}
+.node-circle.done { background:var(--green); }
+.node-circle.current { background:var(--yellow); animation:pulseBig 1.5s infinite; }
+.node-circle.locked { background:#444; opacity:0.6; }
+@keyframes pulseBig { 0%,100%{box-shadow:0 0 0 0 rgba(255,217,61,0.5)} 50%{box-shadow:0 0 0 16px rgba(255,217,61,0)} }
+.node-card {
+  background:rgba(255,255,255,0.1); backdrop-filter:blur(8px);
+  border:2px solid rgba(255,255,255,0.2);
+  border-radius:16px; padding:16px 20px; flex:1; max-width:280px;
+  transition:all 0.2s;
+}
+.node-card:hover { background:rgba(255,255,255,0.2); }
+.node-card h4 { font-family:'Fredoka One',cursive; font-size:1.1rem; color:white; }
+.node-card p { font-size:0.8rem; color:rgba(255,255,255,0.7); font-weight:600; margin-top:4px; }
+.node-card .node-status {
+  display:inline-block; margin-top:8px;
+  padding:3px 10px; border-radius:50px;
+  font-size:0.7rem; font-weight:800;
+}
+.status-done { background:var(--green); color:white; }
+.status-current { background:var(--yellow); color:var(--dark); }
+.status-locked { background:#555; color:#aaa; }
+
+/* ---- MASCOT ---- */
+.mascot-section { background:#FFF3E0; padding:60px 40px; text-align:center; }
+.mascot-wrap { position:relative; display:inline-block; }
+.mascot-svg { width:140px; height:140px; animation:bounce 2s infinite alternate; }
+.mascot-speech {
+  position:absolute; top:-20px; right:-120px;
+  background:white; border-radius:16px; padding:10px 14px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  font-weight:800; font-size:0.85rem; white-space:nowrap;
+  border:3px solid var(--yellow);
+}
+.mascot-speech::before {
+  content:''; position:absolute; left:-12px; top:50%;
+  transform:translateY(-50%);
+  border:6px solid transparent; border-right-color:var(--yellow);
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="logo-big">🌿 KODAI</div>
+  <div class="loader-dots"><span></span><span></span><span></span></div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-logo" onclick="showPage('home')">
+    <img class="leaf" src="logo_KODAI-warna.png" width="68" height="68" style="object-fit:contain;">
+     KODAI
+  </div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('home')">🏠 Beranda</button>
+    <button class="nav-link" onclick="showPage('materi')">📚 Materi</button>
+    <button class="nav-link" onclick="showPage('playground')">🎮 Playground</button>
+    <button class="nav-link" onclick="showPage('kolaborasi')">🤝 Kolaborasi</button>
+    <button class="nav-link" onclick="showPage('progress')">⭐ Progress</button>
+  </div>
+  <button class="nav-cta" onclick="showPage('login')">✨ Mulai Belajar</button>
+  <div class="hamburger" onclick="toggleMobile()" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="nav-link" onclick="showPage('home');toggleMobile()">🏠 Beranda</button>
+  <button class="nav-link" onclick="showPage('materi');toggleMobile()">📚 Materi</button>
+  <button class="nav-link" onclick="showPage('playground');toggleMobile()">🎮 Playground</button>
+  <button class="nav-link" onclick="showPage('kolaborasi');toggleMobile()">🤝 Kolaborasi</button>
+  <button class="nav-link" onclick="showPage('progress');toggleMobile()">⭐ Progress</button>
+  <button class="nav-link" onclick="showPage('login');toggleMobile()">✨ Mulai Belajar</button>
+</div>
+
+<!-- ============ HOME PAGE ============ -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg-circles">
+      <div class="hero-circle"></div>
+      <div class="hero-circle"></div>
+      <div class="hero-circle"></div>
+      <div class="hero-circle"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="star">✨</span>
+        Main, Belajar, dan Jadi Generasi Cerdas Digital! 🚀
+      </div>
+      <h1>Belajar <span>Coding & AI</span> Seru Banget!</h1>
+      <p>Bergabung dengan 10.000+ siswa yang sudah belajar pemrograman lewat permainan interaktif, visualisasi keren, dan tantangan seru yang tidak bikin bosan!</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('materi')">🚀 Mulai Sekarang</button>
+        <button class="btn-secondary" onclick="showPage('playground')">🎮 Coba Playground</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-cards-float">
+        <div class="float-card">
+          <div class="card-emoji">🤖</div>
+          <div class="card-title">Pengenalan AI</div>
+          <div class="card-sub">Level: Pemula ⭐</div>
+          <div class="xp-bar"><div class="xp-fill" style="width:75%;background:linear-gradient(90deg,#9B5DE5,#FF4D8B)"></div></div>
+        </div>
+        <div class="float-card">
+          <div class="card-emoji">🧩</div>
+          <div class="card-title">Algoritma Dasar</div>
+          <div class="card-sub">+150 XP 🏆</div>
+          <div class="xp-bar"><div class="xp-fill" style="width:90%;background:linear-gradient(90deg,#2EC486,#4DABF7)"></div></div>
+        </div>
+        <div class="float-card">
+          <div class="card-emoji">🎯</div>
+          <div class="card-title">Streak 7 Hari!</div>
+          <div class="card-sub">Kamu luar biasa! 🔥</div>
+          <div class="xp-bar"><div class="xp-fill" style="width:60%;background:linear-gradient(90deg,#FFD93D,#FF6B35)"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num" data-count="500">0</div><div class="stat-label">Sekolah Bergabung</div></div>
+    <div class="stat-item"><div class="stat-num" data-count="10000">0</div><div class="stat-label">Siswa Aktif</div></div>
+    <div class="stat-item"><div class="stat-num" data-count="50">0</div><div class="stat-label">Materi Gratis</div></div>
+    <div class="stat-item"><div class="stat-num" data-count="98">0</div><div class="stat-label">% Kepuasan</div></div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="section" style="background:#FFF9F0;">
+    <div class="section-title">Kenapa KODAI? 🎉</div>
+    <div class="section-sub">Platform belajar yang dirancang khusus supaya kamu happy dan makin semangat belajar tiap hari!</div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎮</div>
+        <h3>Belajar Kayak Main Game</h3>
+        <p>Kumpulkan XP, naik level, dan buka achievement baru setiap hari. Belajar jadi petualangan seru!</p>
+        <div class="corner-deco"></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👁️</div>
+        <h3>Visualisasi Interaktif</h3>
+        <p>Lihat kode bergerak langsung! Animasi dan visual membantu kamu paham konsep dengan mudah.</p>
+        <div class="corner-deco"></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤝</div>
+        <h3>Belajar Bareng Teman</h3>
+        <p>Kolaborasi real-time dengan teman sekelas. Proyek bareng lebih seru dan cepat selesai!</p>
+        <div class="corner-deco"></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>Materi AI Modern</h3>
+        <p>Belajar kecerdasan buatan dari dasar dengan cara yang menyenangkan dan mudah dipahami.</p>
+        <div class="corner-deco"></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>Bisa di HP & Laptop</h3>
+        <p>Belajar kapan saja dan di mana saja! Platform kami berjalan mulus di semua perangkat.</p>
+        <div class="corner-deco"></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <h3>Sertifikat Keren</h3>
+        <p>Dapatkan sertifikat digital yang bisa kamu bagikan ke orang tua dan guru setelah lulus!</p>
+        <div class="corner-deco"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEARNING PATH -->
+  <section class="learning-path-section">
+    <div class="section-title">Jalur Belajarmu 🗺️</div>
+    <div class="section-sub">Ikuti jalur petualangan belajar yang sudah kami siapkan untuk kamu!</div>
+    <div class="path-track">
+      <div class="path-line"><div class="path-line-fill"></div></div>
+      <div class="path-node">
+        <div class="node-circle done">✅</div>
+        <div class="node-card">
+          <h4>🧩 Algoritma Dasar</h4>
+          <p>Belajar cara berpikir seperti komputer</p>
+          <span class="node-status status-done">Selesai!</span>
+        </div>
+      </div>
+      <div class="path-node">
+        <div class="node-circle done">✅</div>
+        <div class="node-card">
+          <h4>🔀 Logika IF/ELSE</h4>
+          <p>Buat program yang bisa memilih sendiri</p>
+          <span class="node-status status-done">Selesai!</span>
+        </div>
+      </div>
+      <div class="path-node">
+        <div class="node-circle current">🌟</div>
+        <div class="node-card">
+          <h4>🔄 Perulangan (Loop)</h4>
+          <p>Jalankan perintah berkali-kali dengan mudah</p>
+          <span class="node-status status-current">Sedang Belajar</span>
+        </div>
+      </div>
+      <div class="path-node">
+        <div class="node-circle locked">🔒</div>
+        <div class="node-card">
+          <h4>📦 Fungsi & Variabel</h4>
+          <p>Organisasi kode seperti seorang pro</p>
+          <span class="node-status status-locked">Terkunci</span>
+        </div>
+      </div>
+      <div class="path-node">
+        <div class="node-circle locked">🔒</div>
+        <div class="node-card">
+          <h4>🤖 Pengenalan AI</h4>
+          <p>Buat kecerdasan buatan pertamamu!</p>
+          <span class="node-status status-locked">Terkunci</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section hiw-section">
+    <div class="section-title">Cara Mulai Belajar 🚀</div>
+    <div class="section-sub">Hanya 3 langkah untuk memulai petualangan coding kamu!</div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-emoji">📝</div>
+        <h3>Daftar Gratis</h3>
+        <p>Buat akun dalam 30 detik. Gratis selamanya untuk materi dasar!</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-emoji">🎯</div>
+        <h3>Pilih Materi</h3>
+        <p>Mulai dari yang mudah, terus naik level sedikit demi sedikit.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-emoji">🏆</div>
+        <h3>Kumpulkan XP!</h3>
+        <p>Setiap pelajaran selesai kamu dapat XP dan naik peringkat kelas!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MASCOT -->
+  <section class="mascot-section">
+    <div class="section-title" style="margin-bottom:40px;">Kenalan Sama Kodi! 👋</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;">
+      <div class="mascot-wrap">
+        <svg class="mascot-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+          <!-- Body -->
+          <ellipse cx="70" cy="100" rx="35" ry="30" fill="#9B5DE5"/>
+          <!-- Head -->
+          <circle cx="70" cy="58" r="32" fill="#FDBCB4" stroke="#e8967a" stroke-width="3"/>
+          <!-- Eyes -->
+          <circle cx="60" cy="52" r="6" fill="white"/>
+          <circle cx="80" cy="52" r="6" fill="white"/>
+          <circle cx="62" cy="52" r="3" fill="#333"/>
+          <circle cx="82" cy="52" r="3" fill="#333"/>
+          <!-- Gleam -->
+          <circle cx="63" cy="50" r="1.5" fill="white"/>
+          <circle cx="83" cy="50" r="1.5" fill="white"/>
+          <!-- Smile -->
+          <path d="M60 65 Q70 75 80 65" stroke="#c0392b" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <!-- Blush -->
+          <ellipse cx="54" cy="64" rx="7" ry="4" fill="#FFBABA" opacity="0.7"/>
+          <ellipse cx="86" cy="64" rx="7" ry="4" fill="#FFBABA" opacity="0.7"/>
+          <!-- Ears -->
+          <ellipse cx="38" cy="55" rx="8" ry="10" fill="#FDBCB4" stroke="#e8967a" stroke-width="2"/>
+          <ellipse cx="102" cy="55" rx="8" ry="10" fill="#FDBCB4" stroke="#e8967a" stroke-width="2"/>
+          <!-- Hat -->
+          <rect x="48" y="28" width="44" height="8" rx="4" fill="#FFD93D"/>
+          <rect x="56" y="10" width="28" height="22" rx="6" fill="#9B5DE5"/>
+          <circle cx="70" cy="10" r="4" fill="#FFD93D"/>
+          <!-- Arms -->
+          <ellipse cx="38" cy="100" rx="9" ry="18" fill="#9B5DE5" transform="rotate(-20 38 100)"/>
+          <ellipse cx="102" cy="100" rx="9" ry="18" fill="#9B5DE5" transform="rotate(20 102 100)"/>
+          <!-- Legs -->
+          <rect x="52" y="126" width="14" height="10" rx="5" fill="#4DABF7"/>
+          <rect x="74" y="126" width="14" height="10" rx="5" fill="#4DABF7"/>
+          <!-- Stars -->
+          <text x="14" y="30" font-size="14">⭐</text>
+          <text x="110" y="30" font-size="14">✨</text>
+        </svg>
+        <div class="mascot-speech">Halo! Aku Kodi! 🤖<br>Mari belajar bareng!</div>
+      </div>
+      <div style="max-width:360px; text-align:left;">
+        <h3 style="font-family:'Fredoka One',cursive;font-size:1.6rem;color:var(--dark);margin-bottom:12px;">Kodi siap menemanimu belajar setiap hari!</h3>
+        <p style="color:#666;line-height:1.8;font-weight:600;margin-bottom:20px;">Kodi adalah teman belajarmu yang selalu ceria. Dia akan memberi semangat, petunjuk, dan tantangan seru supaya kamu makin jago coding!</p>
+        <button class="btn-primary" onclick="showPage('login')">🚀 Bergabung Sekarang!</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" style="background:#FFF9F0;">
+    <div class="section-title">Kata Mereka yang Sudah Belajar 💬</div>
+    <div class="section-sub">Sudah ribuan siswa yang merasakan manfaatnya. Giliran kamu!</div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <div class="testi-quote">"Dulu aku kira coding itu susah banget. Tapi di KODAI belajarnya kayak main game! Sekarang aku udah bisa bikin program sendiri!"</div>
+        <div class="testi-author">
+          <div class="avatar" style="background:linear-gradient(135deg,#9B5DE5,#FF4D8B)">AR</div>
+          <div><div class="testi-name">Aditya Ramadhan</div><div class="testi-school">SMP N 5 Surabaya, Kelas 8</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <div class="testi-quote">"Playgroundnya keren banget! Aku bisa langsung lihat karakter bergerak waktu aku taruh blok kode. Belajarnya jadi gampang dipahami!"</div>
+        <div class="testi-author">
+          <div class="avatar" style="background:linear-gradient(135deg,#2EC486,#4DABF7)">SA</div>
+          <div><div class="testi-name">Sari Anindita</div><div class="testi-school">SD Muhammadiyah 1 Yogya, Kelas 6</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        <div class="testi-quote">"Sebagai guru, platform ini luar biasa untuk mengajar coding. Anak-anak semangat sekali karena ada sistem poin dan badge pencapaian!"</div>
+        <div class="testi-author">
+          <div class="avatar" style="background:linear-gradient(135deg,#FFD93D,#FF6B35)">BW</div>
+          <div><div class="testi-name">Budi Wicaksono, S.Pd</div><div class="testi-school">Guru TIK, SMK N 2 Bandung</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">🌿 KODAI</div>
+        <div class="footer-tagline">Platform belajar coding & AI terbaik untuk anak Indonesia. Seru, interaktif, dan mudah dipahami untuk semua usia!</div>
+        <div style="margin-top:20px;display:flex;gap:12px;">
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;">📘</div>
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;">🐦</div>
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;">📸</div>
+          <div style="width:36px;height:36px;background:rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;">▶️</div>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Materi</h4>
+        <ul>
+          <li onclick="showPage('materi')">Algoritma Dasar</li>
+          <li onclick="showPage('materi')">Logika IF/ELSE</li>
+          <li onclick="showPage('materi')">Pengenalan AI</li>
+          <li onclick="showPage('materi')">Kolaborasi</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li onclick="showPage('playground')">Playground</li>
+          <li onclick="showPage('kolaborasi')">Kolaborasi</li>
+          <li onclick="showPage('progress')">Progress Saya</li>
+          <li onclick="showPage('login')">Masuk / Daftar</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025 KODAI · Dibuat dengan 💛 untuk Generasi Emas Indonesia</div>
+  </footer>
+
+</div>
+
+<!-- ============ MATERI PAGE ============ -->
+<div class="page" id="page-materi">
+  <div class="page-header">
+    <h1>📚 Materi Belajar</h1>
+    <p>Pilih materi yang ingin kamu pelajari dan mulai petualanganmu!</p>
+  </div>
+  <div class="filter-tabs">
+    <button class="filter-tab active" onclick="filterCourse(this,'all')">🌟 Semua</button>
+    <button class="filter-tab" onclick="filterCourse(this,'algoritma')">🧩 Algoritma</button>
+    <button class="filter-tab" onclick="filterCourse(this,'logika')">🔀 Logika</button>
+    <button class="filter-tab" onclick="filterCourse(this,'ai')">🤖 AI & Machine Learning</button>
+    <button class="filter-tab" onclick="filterCourse(this,'kolaborasi')">🤝 Kolaborasi</button>
+  </div>
+  <div class="courses-grid" id="coursesGrid"></div>
+</div>
+
+<!-- COURSE MODAL -->
+<div class="modal-overlay" id="courseModal" onclick="closeCourseModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div id="modal-emoji" style="font-size:2.5rem;margin-bottom:8px"></div>
+        <h2 id="modal-title"></h2>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('courseModal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="modal-desc" style="color:#555;line-height:1.7;font-weight:600;margin-bottom:20px;"></p>
+      <h3 style="font-family:'Fredoka One',cursive;font-size:1.1rem;margin-bottom:12px;">📋 Yang Akan Kamu Pelajari:</h3>
+      <ul class="syllabus-list" id="modal-syllabus"></ul>
+      <div style="margin-top:24px;display:flex;gap:12px;">
+        <button class="btn-course" style="border-radius:14px;padding:14px;" onclick="document.getElementById('courseModal').classList.remove('open');showToast('🚀 Yuk mulai belajar!','success')">🚀 Mulai Sekarang!</button>
+        <button onclick="document.getElementById('courseModal').classList.remove('open')" style="padding:14px 20px;border:3px solid #eee;border-radius:14px;background:white;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;">Nanti Dulu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PLAYGROUND PAGE ============ -->
+<div class="page" id="page-playground">
+  <div class="playground-layout">
+    <div class="playground-left">
+      <div>
+        <div class="panel-title">🧩 Blok Kode</div>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.8rem;font-weight:600;margin-bottom:12px;">Klik blok untuk menambahkan ke area kode!</p>
+        <div class="blocks-palette">
+          <button class="block-btn block-mulai" onclick="addBlock('MULAI','var(--green)')">▶ MULAI</button>
+          <button class="block-btn block-kanan" onclick="addBlock('KANAN →','var(--blue)')">➡ KANAN</button>
+          <button class="block-btn block-kiri" onclick="addBlock('← KIRI','var(--orange)')">⬅ KIRI</button>
+          <button class="block-btn block-ulangi" onclick="addBlock('🔄 ULANGI','var(--purple)')">🔄 ULANGI</button>
+          <button class="block-btn block-jika" onclick="addBlock('❓ JIKA','var(--pink)')">❓ JIKA</button>
+          <button class="block-btn block-lompat" onclick="addBlock('⬆ LOMPAT','var(--yellow)')">⬆ LOMPAT</button>
+        </div>
+      </div>
+      <div>
+        <div class="panel-title">📝 Area Kode Kamu</div>
+        <div class="drop-zone" id="dropZone">
+          <p style="color:rgba(255,255,255,0.3);font-size:0.85rem;font-weight:600;width:100%;text-align:center;padding:20px 0;">Klik blok di atas untuk menambahkan kode disini! 👆</p>
+        </div>
+      </div>
+      <div class="pg-btns">
+        <button class="btn-run" onclick="runCode()">▶ Jalankan!</button>
+        <button class="btn-reset-pg" onclick="resetPlayground()">🔄 Reset</button>
+      </div>
+    </div>
+    <div class="playground-right">
+      <div style="padding:16px;border-bottom:2px solid rgba(255,255,255,0.1);">
+        <div class="panel-title">🎮 Kanvas Animasi</div>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.8rem;font-weight:600;">Lihat karaktermu bergerak!</p>
+      </div>
+      <div class="canvas-area" id="canvasArea">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="canvas-ground"></div>
+        <div class="character-wrap" id="character" style="left:30px;">
+          <div class="character-body">
+            <div class="char-head">
+              <div class="char-eyes">
+                <div class="char-eye"></div>
+                <div class="char-eye"></div>
+              </div>
+              <div class="char-smile"></div>
+            </div>
+            <div class="char-body-main"></div>
+            <div class="char-legs">
+              <div class="char-leg" id="leg-l"></div>
+              <div class="char-leg" id="leg-r"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="console-area" id="consoleArea">
+        <p class="warning">💡 Tekan "Jalankan!" untuk menjalankan kode kamu...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ KOLABORASI PAGE ============ -->
+<div class="page" id="page-kolaborasi">
+  <div class="kol-layout">
+    <div class="kol-main">
+      <h2 style="font-family:'Fredoka One',cursive;font-size:2rem;margin-bottom:24px;">🤝 Ruang Kolaborasi</h2>
+
+      <div class="session-card">
+        <div class="live-dot"></div>
+        <div class="session-info">
+          <h3>Sesi: Algoritma Perulangan</h3>
+          <p>👨‍🏫 Bu Sinta · Informatika Kelas 7 · 12 siswa online</p>
+        </div>
+        <div style="margin-left:auto;">
+          <button class="btn-primary" onclick="showToast('📡 Bergabung ke sesi!','success')">Bergabung</button>
+        </div>
+      </div>
+
+      <div style="background:white;border-radius:20px;padding:24px;border:3px solid #eee;box-shadow:var(--card-shadow);margin-bottom:24px;">
+        <h3 style="font-family:'Fredoka One',cursive;font-size:1.2rem;margin-bottom:16px;">👥 Siswa Online Sekarang</h3>
+        <div class="avatars-grid">
+          <div class="av-item"><div class="av-circle" style="background:linear-gradient(135deg,#9B5DE5,#FF4D8B)">AR<div class="online-badge"></div></div><div class="av-name">Aditya R.</div></div>
+          <div class="av-item"><div class="av-circle" style="background:linear-gradient(135deg,#2EC486,#4DABF7)">SA<div class="online-badge"></div></div><div class="av-name">Sari A.</div></div>
+          <div class="av-item"><div class="av-circle" style="background:linear-gradient(135deg,#FFD93D,#FF6B35)">RP<div class="online-badge"></div></div><div class="av-name">Rafi P.</div></div>
+          <div class="av-item"><div class="av-circle" style="background:linear-gradient(135deg,#FF4D8B,#FF6B35)">DN<div class="online-badge"></div></div><div class="av-name">Dina N.</div></div>
+          <div class="av-item"><div class="av-circle" style="background:linear-gradient(135deg,#4DABF7,#9B5DE5)">FY<div class="online-badge"></div></div><div class="av-name">Fira Y.</div></div>
+          <div class="av-item"><div class="av-circle" style="background:linear-gradient(135deg,#00D4AA,#2EC486)">BW<div class="online-badge"></div></div><div class="av-name">Bima W.</div></div>
+          <div class="av-item"><div class="av-circle" style="background:linear-gradient(135deg,#FF6B35,#FFD93D)">NT<div class="online-badge"></div></div><div class="av-name">Nisa T.</div></div>
+          <div class="av-item"><div class="av-circle" style="background:linear-gradient(135deg,#9B5DE5,#00D4AA)">YS<div class="online-badge"></div></div><div class="av-name">Yoga S.</div></div>
+        </div>
+      </div>
+
+      <div class="shared-canvas">
+        <div class="shared-canvas-title">🎨 Papan Kolaborasi – Klik untuk tambahkan blok!</div>
+        <div id="collab-canvas" onclick="addCollabBlock(event)"></div>
+      </div>
+    </div>
+
+    <div class="kol-sidebar">
+      <div class="chat-sidebar">
+        <div class="chat-header">
+          <h3>💬 Obrolan Kelas</h3>
+          <p style="color:rgba(255,255,255,0.5);font-size:0.8rem;font-weight:600;">12 siswa aktif</p>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-msg">
+            <div class="chat-av" style="background:linear-gradient(135deg,#9B5DE5,#FF4D8B)">AR</div>
+            <div class="chat-bubble">
+              <div class="chat-name">Aditya R.</div>
+              <div class="chat-text">Halo semuanya! Ada yang udah selesai bagian loop? 🙋</div>
+            </div>
+          </div>
+          <div class="chat-msg">
+            <div class="chat-av" style="background:linear-gradient(135deg,#2EC486,#4DABF7)">SA</div>
+            <div class="chat-bubble">
+              <div class="chat-name">Sari A.</div>
+              <div class="chat-text">Udah! Coba pakai blok ULANGI 3x terus KANAN, berhasil! 🎉</div>
+            </div>
+          </div>
+          <div class="chat-msg">
+            <div class="chat-av" style="background:linear-gradient(135deg,#FFD93D,#FF6B35)">RP</div>
+            <div class="chat-bubble">
+              <div class="chat-name">Rafi P.</div>
+              <div class="chat-text">Wah makasih Sari! Mau coba ah! 🚀</div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <input class="chat-input" id="chatInput" placeholder="Tulis pesan..." onkeypress="if(event.key==='Enter')sendChat()">
+          <button class="chat-send" onclick="sendChat()">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PROGRESS PAGE ============ -->
+<div class="page" id="page-progress">
+  <div class="progress-layout">
+    <div class="profile-card">
+      <div class="profile-av-big">FY</div>
+      <div class="profile-info">
+        <h2>Firandita Yunia</h2>
+        <p>🏫 SMP N 7 Jakarta · Kelas 8A</p>
+        <div class="profile-level">⭐ Level 12 – Coder Muda</div>
+      </div>
+      <div style="margin-left:auto;text-align:center;">
+        <div style="font-family:'Fredoka One',cursive;font-size:2.5rem;color:var(--yellow);">🔥7</div>
+        <div style="color:rgba(255,255,255,0.8);font-size:0.85rem;font-weight:700;">Hari Streak</div>
+      </div>
+    </div>
+
+    <div class="stats-grid-progress">
+      <div class="stat-card">
+        <div class="stat-icon">💎</div>
+        <div class="stat-value" style="color:var(--purple)">2.450</div>
+        <div class="stat-key">Total XP</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-value" style="color:var(--green)">18</div>
+        <div class="stat-key">Materi Selesai</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value" style="color:var(--orange)">7</div>
+        <div class="stat-key">Streak Hari</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-value" style="color:var(--yellow)">#3</div>
+        <div class="stat-key">Peringkat Kelas</div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <h3>📊 Progress Per Materi</h3>
+      <div class="subject-progress">
+        <div class="subject-header"><span class="subject-name">🧩 Algoritma</span><span class="subject-pct" style="color:var(--green)">75%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:75%;background:linear-gradient(90deg,#2EC486,#4DABF7)"></div></div>
+      </div>
+      <div class="subject-progress">
+        <div class="subject-header"><span class="subject-name">🔀 Logika IF/ELSE</span><span class="subject-pct" style="color:var(--blue)">60%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:60%;background:linear-gradient(90deg,#4DABF7,#9B5DE5)"></div></div>
+      </div>
+      <div class="subject-progress">
+        <div class="subject-header"><span class="subject-name">🤖 Pengenalan AI</span><span class="subject-pct" style="color:var(--purple)">40%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:40%;background:linear-gradient(90deg,#9B5DE5,#FF4D8B)"></div></div>
+      </div>
+      <div class="subject-progress">
+        <div class="subject-header"><span class="subject-name">🤝 Kolaborasi</span><span class="subject-pct" style="color:var(--pink)">90%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:90%;background:linear-gradient(90deg,#FF4D8B,#FF6B35)"></div></div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <h3>🕒 Aktivitas Terbaru</h3>
+      <ul class="activity-list">
+        <li class="activity-item">
+          <div class="activity-icon" style="background:#e8f5e9">✅</div>
+          <div class="activity-info"><div class="activity-name">Selesaikan Quiz Algoritma Level 5</div><div class="activity-date">Hari ini, 14:30</div></div>
+          <div class="activity-xp">+80 XP</div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon" style="background:#f3e5f5">🎮</div>
+          <div class="activity-info"><div class="activity-name">Bermain di Playground selama 20 menit</div><div class="activity-date">Kemarin, 16:00</div></div>
+          <div class="activity-xp">+25 XP</div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon" style="background:#fff3e0">🤝</div>
+          <div class="activity-info"><div class="activity-name">Sesi Kolaborasi – Proyek Bersama</div><div class="activity-date">2 hari lalu</div></div>
+          <div class="activity-xp">+100 XP</div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon" style="background:#e3f2fd">📖</div>
+          <div class="activity-info"><div class="activity-name">Menyelesaikan Materi Logika IF/ELSE</div><div class="activity-date">3 hari lalu</div></div>
+          <div class="activity-xp">+150 XP</div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon" style="background:#fce4ec">🏆</div>
+          <div class="activity-info"><div class="activity-name">Raih Badge "Bintang Kolaborasi"</div><div class="activity-date">5 hari lalu</div></div>
+          <div class="activity-xp">+200 XP</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="progress-section">
+      <h3>🏅 Koleksi Badge</h3>
+      <div class="badges-grid">
+        <div class="badge-item"><div class="badge-emoji">🌟</div><div class="badge-name">Bintang Pertama</div></div>
+        <div class="badge-item"><div class="badge-emoji">🔥</div><div class="badge-name">Streak 7 Hari</div></div>
+        <div class="badge-item"><div class="badge-emoji">🤝</div><div class="badge-name">Bintang Kolaborasi</div></div>
+        <div class="badge-item locked"><div class="badge-emoji">🏆</div><div class="badge-name">Juara Kelas</div></div>
+        <div class="badge-item locked"><div class="badge-emoji">🤖</div><div class="badge-name">AI Master</div></div>
+        <div class="badge-item locked"><div class="badge-emoji">💎</div><div class="badge-name">Diamond Coder</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ LOGIN PAGE ============ -->
+<div class="page" id="page-login">
+  <div class="login-page">
+    <div class="login-card">
+      <div class="login-logo">🌿 KODAI</div>
+      <div class="tab-switcher">
+        <button class="tab-btn active" id="tab-masuk" onclick="switchTab('masuk')">Masuk</button>
+        <button class="tab-btn" id="tab-daftar" onclick="switchTab('daftar')">Daftar</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="form-masuk">
+        <div class="form-group">
+          <label class="form-label">📧 Email</label>
+          <input class="form-input" id="login-email" type="email" placeholder="nama@email.com">
+          <div class="form-error" id="err-login-email">Email tidak boleh kosong!</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">🔑 Password</label>
+          <input class="form-input" id="login-pass" type="password" placeholder="Masukkan password">
+          <div class="form-error" id="err-login-pass">Password tidak boleh kosong!</div>
+        </div>
+        <button class="btn-submit" onclick="doLogin()">🚀 Masuk Sekarang</button>
+        <div class="divider">atau</div>
+        <button class="btn-google" onclick="doGoogleLogin()">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Lanjutkan dengan Google
+        </button>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="form-daftar" style="display:none">
+        <div class="form-group">
+          <label class="form-label">👤 Nama Lengkap</label>
+          <input class="form-input" id="reg-name" type="text" placeholder="Nama kamu">
+          <div class="form-error" id="err-reg-name">Nama tidak boleh kosong!</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">📧 Email</label>
+          <input class="form-input" id="reg-email" type="email" placeholder="nama@email.com">
+          <div class="form-error" id="err-reg-email">Email tidak valid!</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">🔑 Password</label>
+          <input class="form-input" id="reg-pass" type="password" placeholder="Min. 6 karakter">
+          <div class="form-error" id="err-reg-pass">Password minimal 6 karakter!</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">🎭 Kamu adalah...</label>
+          <div class="role-selector">
+            <button class="role-btn selected" id="role-siswa" onclick="selectRole('siswa')">🎒 Siswa</button>
+            <button class="role-btn" id="role-guru" onclick="selectRole('guru')">👨‍🏫 Guru</button>
+          </div>
+        </div>
+        <button class="btn-submit" onclick="doRegister()">🎉 Buat Akun Gratis!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ LOADER ============
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+    setTimeout(() => loader.style.display = 'none', 500);
+  }, 1800);
+});
+
+// ============ PAGE NAVIGATION ============
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const linkMap = {home:0, materi:1, playground:2, kolaborasi:3, progress:4};
+  const links = document.querySelectorAll('.nav-links .nav-link');
+  if(linkMap[name] !== undefined) links[linkMap[name]].classList.add('active');
+  window.scrollTo(0,0);
+  if(name === 'materi') renderCourses();
+  if(name === 'progress') animateProgress();
+}
+
+// ============ MOBILE MENU ============
+function toggleMobile() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ============ TOAST ============
+function showToast(msg, type = '') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100px)';
+    toast.style.transition = 'all 0.3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ============ STAT COUNTER ============
+function animateCounters() {
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseInt(el.getAttribute('data-count'));
+    let current = 0;
+    const increment = target / 60;
+    const timer = setInterval(() => {
+      current += increment;
+      if(current >= target) { current = target; clearInterval(timer); }
+      el.textContent = Math.floor(current).toLocaleString('id') + (target >= 1000 ? '+' : '%');
+    }, 20);
+  });
+}
+setTimeout(animateCounters, 2000);
+
+// ============ COURSES DATA ============
+const courses = [
+  { id:1, cat:'algoritma', emoji:'🧩', title:'Algoritma Dasar', level:'Pemula', color:'linear-gradient(135deg,#9B5DE5,#4DABF7)', desc:'Pelajari dasar-dasar algoritma dengan cara yang menyenangkan! Kamu akan belajar cara berpikir seperti komputer.', duration:'2 jam', xp:'+200 XP', progress:75, syllabus:['Apa itu Algoritma?','Langkah-langkah berurutan','Percabangan sederhana','Latihan membuat flowchart','Quiz & Badge Algoritma Pemula'] },
+  { id:2, cat:'logika', emoji:'🔀', title:'Logika IF/ELSE', level:'Pemula', color:'linear-gradient(135deg,#2EC486,#FFD93D)', desc:'Buat program yang bisa mengambil keputusan sendiri! Belajar kondisi dan percabangan dengan contoh nyata.', duration:'1.5 jam', xp:'+180 XP', progress:60, syllabus:['Apa itu kondisi?','Menggunakan IF','Menggunakan IF/ELSE','Kondisi bersarang','Quiz Logika Pemula'] },
+  { id:3, cat:'ai', emoji:'🤖', title:'Pengenalan AI', level:'Menengah', color:'linear-gradient(135deg,#FF4D8B,#FF6B35)', desc:'Mulai perjalanan mengenal kecerdasan buatan! Dari machine learning sampai cara kerja AI sehari-hari.', duration:'3 jam', xp:'+350 XP', progress:40, syllabus:['Apa itu Artificial Intelligence?','Cara kerja Machine Learning','Data dan Pelatihan Model','Contoh AI di kehidupan nyata','Proyek AI sederhana'] },
+  { id:4, cat:'algoritma', emoji:'🔄', title:'Perulangan (Loop)', level:'Pemula', color:'linear-gradient(135deg,#4DABF7,#9B5DE5)', desc:'Pelajari cara menjalankan perintah berkali-kali dengan efisien. Kunci penting dalam pemrograman!', duration:'2 jam', xp:'+220 XP', progress:0, syllabus:['Konsep perulangan','For loop dasar','While loop','Perulangan bersarang','Latihan: Bintang pola'] },
+  { id:5, cat:'kolaborasi', emoji:'🤝', title:'Proyek Bareng', level:'Pemula', color:'linear-gradient(135deg,#FFD93D,#FF6B35)', desc:'Belajar bekerja sama dalam tim untuk membuat proyek coding yang keren bersama teman-teman!', duration:'4 jam', xp:'+400 XP', progress:90, syllabus:['Pengantar kerja tim','Pembagian tugas','Git dasar untuk siswa','Code review teman','Presentasi proyek'] },
+  { id:6, cat:'ai', emoji:'🧠', title:'Machine Learning Dasar', level:'Menengah', color:'linear-gradient(135deg,#00D4AA,#9B5DE5)', desc:'Masuk ke dunia machine learning! Pelajari bagaimana komputer bisa belajar dari data secara mandiri.', duration:'4 jam', xp:'+450 XP', progress:0, syllabus:['Dataset dan fitur','Supervised learning','Contoh klasifikasi','Mengukur akurasi model','Proyek prediksi sederhana'] },
+  { id:7, cat:'logika', emoji:'📦', title:'Fungsi & Variabel', level:'Menengah', color:'linear-gradient(135deg,#FF6B35,#FF4D8B)', desc:'Organisasi kode kamu seperti seorang pro! Pelajari variabel, fungsi, dan cara membuat kode yang rapi.', duration:'2.5 jam', xp:'+280 XP', progress:0, syllabus:['Apa itu variabel?','Tipe data dasar','Membuat fungsi','Parameter dan return','Praktik: Kalkulator sederhana'] },
+  { id:8, cat:'kolaborasi', emoji:'🎨', title:'Desain UI Bersama', level:'Lanjut', color:'linear-gradient(135deg,#9B5DE5,#FF4D8B)', desc:'Buat tampilan aplikasi yang indah bersama tim! Belajar HTML, CSS, dan desain yang menarik.', duration:'5 jam', xp:'+500 XP', progress:0, syllabus:['Dasar HTML','Styling dengan CSS','Flexbox dan Grid','Responsif design','Proyek: Website sekolah'] },
+  { id:9, cat:'ai', emoji:'🚀', title:'Proyek AI Final', level:'Lanjut', color:'linear-gradient(135deg,#FFD93D,#2EC486)', desc:'Tantangan akhir! Buat aplikasi AI lengkap dari awal sampai jadi. Perlihatkan kepada dunia!', duration:'8 jam', xp:'+800 XP', progress:0, syllabus:['Perencanaan proyek','Pengumpulan data','Training model','Integrasi ke aplikasi','Demo & presentasi'] },
+];
+
+let activeFilter = 'all';
+function renderCourses() {
+  const grid = document.getElementById('coursesGrid');
+  const filtered = activeFilter === 'all' ? courses : courses.filter(c => c.cat === activeFilter);
+  grid.innerHTML = filtered.map(c => `
+    <div class="course-card" onclick="openCourseModal(${c.id})">
+      <div class="course-thumb" style="background:${c.color}">
+        <div class="thumb-overlay">${c.emoji}</div>
+        <span class="level-badge level-${c.level.toLowerCase()}">${c.level}</span>
+      </div>
+      <div class="course-body">
+        <h3>${c.title}</h3>
+        <p>${c.desc.substring(0,80)}...</p>
+        <div class="course-meta">
+          <span class="course-duration">⏱️ ${c.duration}</span>
+          <span class="course-xp">💎 ${c.xp}</span>
+        </div>
+        ${c.progress > 0 ? `<div class="progress-bar"><div class="progress-fill" style="width:${c.progress}%;background:${c.color}"></div></div>` : '<div class="progress-bar"><div class="progress-fill" style="width:0%;background:#eee"></div></div>'}
+        <button class="btn-course">${c.progress > 0 ? '▶ Lanjutkan' : '🚀 Mulai Belajar'}</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterCourse(btn, cat) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderCourses();
+}
+
+function openCourseModal(id) {
+  const c = courses.find(x => x.id === id);
+  document.getElementById('modal-emoji').textContent = c.emoji;
+  document.getElementById('modal-title').textContent = c.title;
+  document.getElementById('modal-desc').textContent = c.desc;
+  document.getElementById('modal-syllabus').innerHTML = c.syllabus.map((s,i) => `
+    <li><div class="syllabus-num">${i+1}</div>${s}</li>
+  `).join('');
+  document.getElementById('courseModal').classList.add('open');
+}
+
+function closeCourseModal(e) {
+  if(e.target === document.getElementById('courseModal')) {
+    document.getElementById('courseModal').classList.remove('open');
+  }
+}
+
+// ============ PLAYGROUND ============
+let placedBlocks = [];
+let charPos = 30;
+let isRunning = false;
+
+function addBlock(name, color) {
+  placedBlocks.push({name, color});
+  const dz = document.getElementById('dropZone');
+  if(dz.querySelector('p')) dz.querySelector('p').remove();
+
+  const block = document.createElement('div');
+  block.className = 'placed-block';
+  block.style.background = color;
+  block.dataset.idx = placedBlocks.length - 1;
+  block.innerHTML = `${name}<button class="remove-block" onclick="removeBlock(this,event)">✕</button>`;
+  dz.appendChild(block);
+  showToast('✅ Blok ditambahkan!', 'success');
+}
+
+function removeBlock(btn, e) {
+  e.stopPropagation();
+  const block = btn.parentElement;
+  const idx = parseInt(block.dataset.idx);
+  placedBlocks.splice(idx, 1);
+  block.remove();
+  // Re-index
+  document.querySelectorAll('.placed-block').forEach((b,i) => b.dataset.idx = i);
+  if(placedBlocks.length === 0) {
+    const dz = document.getElementById('dropZone');
+    dz.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:0.85rem;font-weight:600;width:100%;text-align:center;padding:20px 0;">Klik blok di atas untuk menambahkan kode disini! 👆</p>';
+  }
+}
+
+async function runCode() {
+  if(isRunning) return;
+  if(placedBlocks.length === 0) { showToast('⚠️ Tambahkan blok dulu!', 'warning'); return; }
+
+  isRunning = true;
+  const console_ = document.getElementById('consoleArea');
+  const char = document.getElementById('character');
+  const canvas = document.getElementById('canvasArea');
+  const maxWidth = canvas.offsetWidth - 80;
+
+  console_.innerHTML = '<p class="success">🚀 Menjalankan program...</p>';
+  setWalking(true);
+
+  let i = 0;
+  let actions = [];
+
+  // Expand ULANGI
+  for(let b of placedBlocks) {
+    if(b.name.includes('ULANGI')) {
+      for(let r=0; r<3; r++) actions.push(...actions.slice(-1));
+    } else {
+      actions.push(b);
+    }
+  }
+  actions = placedBlocks; // simplified
+
+  async function step() {
+    if(i >= actions.length) {
+      setWalking(false);
+      isRunning = false;
+      console_.innerHTML += '<p class="success">✅ Program selesai dijalankan!</p>';
+      return;
+    }
+    const b = actions[i];
+    let logMsg = '';
+
+    if(b.name.includes('MULAI')) {
+      logMsg = '▶ Program dimulai!';
+    } else if(b.name.includes('KANAN')) {
+      charPos = Math.min(charPos + 80, maxWidth);
+      char.style.left = charPos + 'px';
+      logMsg = '➡ Karakter bergerak ke kanan (+80px)';
+    } else if(b.name.includes('KIRI')) {
+      charPos = Math.max(charPos - 80, 10);
+      char.style.left = charPos + 'px';
+      logMsg = '⬅ Karakter bergerak ke kiri (-80px)';
+    } else if(b.name.includes('LOMPAT')) {
+      char.classList.add('char-jump');
+      setTimeout(() => char.classList.remove('char-jump'), 500);
+      logMsg = '⬆ Karakter melompat!';
+    } else if(b.name.includes('ULANGI')) {
+      logMsg = '🔄 Mengulangi aksi terakhir 3x';
+      if(i > 0) {
+        const last = actions[i-1];
+        for(let r=0;r<3;r++) {
+          await new Promise(res => setTimeout(res, 400));
+          if(last.name.includes('KANAN')) {
+            charPos = Math.min(charPos+50, maxWidth);
+            char.style.left = charPos + 'px';
+          } else if(last.name.includes('KIRI')) {
+            charPos = Math.max(charPos-50, 10);
+            char.style.left = charPos + 'px';
+          }
+        }
+      }
+    } else if(b.name.includes('JIKA')) {
+      logMsg = '❓ Mengecek kondisi... (kondisi benar!)';
+    }
+
+    const p = document.createElement('p');
+    p.textContent = '> ' + logMsg;
+    console_.appendChild(p);
+    console_.scrollTop = console_.scrollHeight;
+
+    i++;
+    setTimeout(step, 600);
+  }
+  step();
+}
+
+function setWalking(val) {
+  const ll = document.getElementById('leg-l');
+  const lr = document.getElementById('leg-r');
+  if(val) { ll.classList.add('walking'); lr.classList.add('walking'); }
+  else { ll.classList.remove('walking'); lr.classList.remove('walking'); }
+}
+
+function resetPlayground() {
+  placedBlocks = [];
+  charPos = 30;
+  isRunning = false;
+  setWalking(false);
+  document.getElementById('character').style.left = '30px';
+  document.getElementById('dropZone').innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:0.85rem;font-weight:600;width:100%;text-align:center;padding:20px 0;">Klik blok di atas untuk menambahkan kode disini! 👆</p>';
+  document.getElementById('consoleArea').innerHTML = '<p class="warning">💡 Tekan "Jalankan!" untuk menjalankan kode kamu...</p>';
+  showToast('🔄 Direset!', '');
+}
+
+// ============ KOLABORASI ============
+const collabColors = ['#9B5DE5','#2EC486','#FFD93D','#FF4D8B','#4DABF7','#FF6B35','#00D4AA','#FF4444'];
+const collabEmojis = ['⭐','🌟','🎯','🚀','💡','🔥','❤️','✨'];
+let collabColorIdx = 0;
+
+function addCollabBlock(e) {
+  const canvas = document.getElementById('collab-canvas');
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left - 30;
+  const y = e.clientY - rect.top - 30;
+  const block = document.createElement('div');
+  block.className = 'collab-block';
+  block.style.left = Math.max(0, x) + 'px';
+  block.style.top = Math.max(0, y) + 'px';
+  block.style.background = collabColors[collabColorIdx % collabColors.length];
+  block.textContent = collabEmojis[collabColorIdx % collabEmojis.length];
+  collabColorIdx++;
+  canvas.appendChild(block);
+  showToast('🎨 Blok ditambahkan ke papan!', 'success');
+}
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text) return;
+  const msgs = document.getElementById('chatMessages');
+  const msg = document.createElement('div');
+  msg.className = 'chat-msg';
+  msg.innerHTML = `
+    <div class="chat-av" style="background:linear-gradient(135deg,#4DABF7,#9B5DE5)">AK</div>
+    <div class="chat-bubble">
+      <div class="chat-name">Kamu</div>
+      <div class="chat-text">${text}</div>
+    </div>`;
+  msgs.appendChild(msg);
+  msgs.scrollTop = msgs.scrollHeight;
+  input.value = '';
+  showToast('💬 Pesan terkirim!', 'success');
+}
+
+// ============ PROGRESS ANIMATION ============
+function animateProgress() {
+  setTimeout(() => {
+    document.querySelectorAll('.prog-fill').forEach(bar => {
+      const w = bar.style.width;
+      bar.style.width = '0%';
+      setTimeout(() => bar.style.width = w, 100);
+    });
+  }, 200);
+}
+
+// ============ LOGIN ============
+function switchTab(tab) {
+  document.getElementById('form-masuk').style.display = tab === 'masuk' ? 'block' : 'none';
+  document.getElementById('form-daftar').style.display = tab === 'daftar' ? 'block' : 'none';
+  document.getElementById('tab-masuk').classList.toggle('active', tab === 'masuk');
+  document.getElementById('tab-daftar').classList.toggle('active', tab === 'daftar');
+}
+
+let selectedRole = 'siswa';
+function selectRole(r) {
+  selectedRole = r;
+  document.getElementById('role-siswa').classList.toggle('selected', r === 'siswa');
+  document.getElementById('role-guru').classList.toggle('selected', r === 'guru');
+}
+
+function showErr(id, show) {
+  const el = document.getElementById(id);
+  el.style.display = show ? 'block' : 'none';
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value.trim();
+  let valid = true;
+  if(!email) { showErr('err-login-email', true); document.getElementById('login-email').classList.add('error'); valid = false; }
+  else { showErr('err-login-email', false); document.getElementById('login-email').classList.remove('error'); }
+  if(!pass) { showErr('err-login-pass', true); document.getElementById('login-pass').classList.add('error'); valid = false; }
+  else { showErr('err-login-pass', false); document.getElementById('login-pass').classList.remove('error'); }
+  if(valid) { showToast('🎉 Berhasil masuk! Selamat datang!', 'success'); setTimeout(() => showPage('home'), 1000); }
+}
+
+function doGoogleLogin() {
+  showToast('🎉 Masuk dengan Google berhasil!', 'success');
+  setTimeout(() => showPage('home'), 1000);
+}
+
+function doRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-pass').value.trim();
+  let valid = true;
+  if(!name) { showErr('err-reg-name', true); valid = false; } else showErr('err-reg-name', false);
+  if(!email || !email.includes('@')) { showErr('err-reg-email', true); valid = false; } else showErr('err-reg-email', false);
+  if(pass.length < 6) { showErr('err-reg-pass', true); valid = false; } else showErr('err-reg-pass', false);
+  if(valid) {
+    showToast(`🎉 Akun berhasil dibuat! Halo, ${name}!`, 'success');
+    setTimeout(() => showPage('home'), 1200);
+  }
+}
+</script>
+</body>
+</html>
