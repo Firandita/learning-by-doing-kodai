@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KODAI – Playground</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/playground.css">
+<style>
+/* ===== GAME 2: URUTKAN ALGORITMA ===== */
+.algo-layout{flex-direction:column;align-items:center;padding:28px;gap:18px;width:100%;overflow-y:auto;}
+.algo-card{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:20px;padding:24px;max-width:740px;width:100%;}
+.algo-title{font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--yellow);margin-bottom:6px;}
+.algo-desc{color:rgba(255,255,255,.7);font-size:.88rem;font-weight:600;line-height:1.6;margin-bottom:16px;}
+.algo-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.algo-step{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .2s;
+}
+.algo-step:hover{border-color:var(--yellow);background:rgba(255,217,61,.08);}
+.algo-step.selected{border-color:var(--yellow);background:rgba(255,217,61,.15);}
+.step-num{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--purple);color:white;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka One',cursive;font-size:1rem;flex-shrink:0;
+}
+.step-text{flex:1;font-size:.9rem;font-weight:700;color:rgba(255,255,255,.9);}
+.step-arrows{display:flex;flex-direction:column;gap:2px;}
+.step-arrows button{
+  background:rgba(255,255,255,.1);border:none;border-radius:4px;
+  color:white;cursor:pointer;padding:2px 6px;font-size:.7rem;line-height:1.4;
+  transition:background .2s;
+}
+.step-arrows button:hover{background:rgba(255,255,255,.25);}
+#algo-feedback{min-height:24px;font-size:.88rem;font-weight:700;margin-top:8px;}
+
+/* ===== GAME 3: IF-ELSE ===== */
+.ifelse-layout{flex-direction:column;align-items:center;padding:28px;gap:18px;width:100%;overflow-y:auto;}
+.ifelse-card{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:20px;padding:24px;max-width:740px;width:100%;}
+.ie-title{font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--teal);margin-bottom:8px;}
+.ie-scenario{
+  background:#0D1117;border-radius:12px;padding:16px;
+  font-family:'Courier New',monospace;font-size:.88rem;color:#e2e8f0;
+  line-height:1.8;white-space:pre-wrap;border:2px solid rgba(255,255,255,.08);
+  margin-bottom:16px;
+}
+.ie-question{font-size:1rem;font-weight:800;color:var(--yellow);margin-bottom:16px;}
+.ie-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.ie-option{
+  padding:14px;border:3px solid rgba(255,255,255,.15);border-radius:12px;
+  background:rgba(255,255,255,.06);
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:.92rem;
+  color:white;cursor:pointer;transition:all .2s;text-align:center;
+}
+.ie-option:hover{border-color:var(--yellow);background:rgba(255,217,61,.1);}
+.ie-option.ie-correct{background:rgba(46,196,134,.3);border-color:var(--green);}
+.ie-option.ie-wrong{background:rgba(255,68,68,.3);border-color:var(--red);animation:shake .3s;}
+#ie-explanation{
+  font-size:.88rem;font-weight:700;line-height:1.6;
+  padding:12px 16px;border-radius:10px;background:rgba(255,255,255,.05);
+  white-space:pre-wrap;
+}
+
+/* ===== SHARED HEADER BAR ===== */
+.game-header-bar{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;
+}
+.game-level-badge{
+  font-family:'Fredoka One',cursive;font-size:.9rem;color:var(--yellow);
+}
+.game-score-badge{
+  font-family:'Fredoka One',cursive;font-size:.9rem;color:var(--green);
+}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">🌿 KODAI</a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">🏠 Beranda</a>
+    <a class="nav-link" href="materi.html">📚 Materi</a>
+    <a class="nav-link active" href="playground.html">🎮 Playground</a>
+    <a class="nav-link" href="kolaborasi.html">🤝 Kolaborasi</a>
+    <a class="nav-link" href="progress.html">⭐ Progress</a>
+  </div>
+  <a class="nav-cta" href="login.html">✨ Mulai Belajar</a>
+  <div class="hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a class="nav-link" href="index.html">🏠 Beranda</a>
+  <a class="nav-link active" href="playground.html">🎮 Playground</a>
+  <a class="nav-link" href="login.html">✨ Mulai</a>
+</div>
+<div id="toast-container"></div>
+
+<div class="playground-wrapper">
+  <!-- Game Tabs -->
+  <div class="game-tabs">
+    <button class="game-tab active" data-game="maze"    onclick="switchGame('maze')">🧩 Puzzle Maze</button>
+    <button class="game-tab"        data-game="algo"    onclick="switchGame('algo')">📋 Urutkan Algoritma</button>
+    <button class="game-tab"        data-game="ifelse"  onclick="switchGame('ifelse')">🔀 Logika IF-ELSE</button>
+    <button class="game-tab"        data-game="pattern" onclick="switchGame('pattern')">🔢 Tebak Pola</button>
+    <button class="game-tab"        data-game="ai"      onclick="switchGame('ai')">🤖 AI Trainer</button>
+  </div>
+
+  <!-- ============================== -->
+  <!-- GAME 1: PUZZLE MAZE            -->
+  <!-- ============================== -->
+  <div class="game-panel active" id="game-maze">
+    <div class="maze-layout">
+      <div class="maze-left">
+        <div>
+          <div class="panel-title">🧩 Puzzle Maze</div>
+          <div class="panel-sub" id="maze-level-label">Level 1 / 3</div>
+        </div>
+        <div style="background:rgba(255,217,61,.1);border:2px solid rgba(255,217,61,.3);border-radius:12px;padding:12px;">
+          <div style="font-weight:800;font-size:.85rem;color:#FFD93D;margin-bottom:4px;">🎯 Konsep: Algoritma & Urutan</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.7);font-weight:600;">Bawa Kodi 🤖 ke bintang ⭐! Urutan blok kode sangat penting — komputer mengikuti perintah dari atas ke bawah!</div>
+        </div>
+        <div>
+          <div class="panel-title">🧩 Blok Kode</div>
+          <div class="panel-sub" style="margin-bottom:10px;">Klik untuk tambahkan ke program</div>
+          <div class="blocks-palette">
+            <button class="block-btn bb-maju"   onclick="addMazeBlock('⬆ MAJU','#2EC486')">⬆ MAJU</button>
+            <button class="block-btn bb-kanan"  onclick="addMazeBlock('➡ KANAN','#4DABF7')">➡ KANAN</button>
+            <button class="block-btn bb-kiri"   onclick="addMazeBlock('⬅ KIRI','#FF6B35')">⬅ KIRI</button>
+            <button class="block-btn bb-mundur" onclick="addMazeBlock('⬇ MUNDUR','#FF6B6B')">⬇ MUNDUR</button>
+            <button class="block-btn bb-u3"     onclick="addMazeBlock('🔄 ULANGI×3','#9B5DE5')">🔄 ULANGI×3</button>
+            <button class="block-btn bb-jika"   onclick="addMazeBlock('❓ JIKA','#FF4D8B')">❓ JIKA</button>
+          </div>
+        </div>
+        <div>
+          <div class="panel-title">📝 Program Kamu</div>
+          <div class="drop-zone" id="dropZone">
+            <div id="dz-ph" style="color:rgba(255,255,255,.2);font-size:.8rem;font-weight:600;width:100%;text-align:center;padding:18px 0;">Klik blok di atas untuk tambah 👆</div>
+          </div>
+        </div>
+        <div class="pg-btns">
+          <button class="btn-run" onclick="runMaze()">▶ Jalankan!</button>
+          <button class="btn-reset" onclick="resetMaze()">🔄 Reset</button>
+        </div>
+        <div class="game-status-bar">
+          <div class="gs-item"><div class="gs-val" id="mazeScore">0</div><div class="gs-lbl">Total XP</div></div>
+          <div class="gs-item"><div class="gs-val" id="maze-lv-num">1</div><div class="gs-lbl">Level</div></div>
+        </div>
+        <div class="maze-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#9B5DE5"></div>Kodi 🤖</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(255,217,61,.4)"></div>Tujuan ⭐</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#374151"></div>Tembok 🧱</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(46,196,134,.2)"></div>Start 🏁</div>
+        </div>
+      </div>
+      <div class="maze-right">
+        <div style="padding:12px 16px;border-bottom:2px solid rgba(255,255,255,.08);">
+          <div class="panel-title">🗺️ Peta Maze</div>
+          <div class="panel-sub">Urutan perintah menentukan jalur Kodi!</div>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:20px;">
+          <div id="mazeGrid" class="maze-grid"></div>
+        </div>
+        <div class="console-area" id="mazeConsole">
+          <p class="warn">> Tekan Jalankan! untuk mulai...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- GAME 2: URUTKAN ALGORITMA      -->
+  <!-- ============================== -->
+  <div class="game-panel" id="game-algo">
+    <div class="algo-layout game-panel" style="display:flex;">
+      <div class="algo-card">
+        <div class="game-header-bar">
+          <div class="algo-title" id="algo-title"></div>
+          <div style="display:flex;gap:16px;">
+            <div class="game-level-badge" id="algo-level">Soal 1/3</div>
+            <div class="game-score-badge">Skor: <span id="algo-score">0</span></div>
+          </div>
+        </div>
+        <div class="algo-desc" id="algo-desc"></div>
+        <div style="font-size:.82rem;color:rgba(255,255,255,.5);font-weight:700;margin-bottom:10px;">
+          👆 Klik dua langkah untuk tukar posisi, atau pakai tombol ⬆⬇ untuk geser:
+        </div>
+        <div class="algo-steps" id="algoSteps"></div>
+        <div id="algo-feedback"></div>
+        <div style="display:flex;gap:10px;margin-top:14px;">
+          <button class="btn-run" onclick="checkAlgo()">✅ Cek Urutan!</button>
+          <button class="btn-reset" onclick="resetAlgo()">🔄 Acak Ulang</button>
+        </div>
+      </div>
+      <div style="background:rgba(155,93,229,.08);border:2px solid rgba(155,93,229,.2);border-radius:16px;padding:16px;max-width:740px;width:100%;">
+        <div style="font-family:'Fredoka One',cursive;color:#9B5DE5;margin-bottom:8px;">💡 Apa itu Algoritma?</div>
+        <p style="color:rgba(255,255,255,.6);font-size:.85rem;font-weight:600;line-height:1.7;">
+          Algoritma adalah <strong style="color:var(--yellow)">urutan langkah-langkah yang logis</strong> untuk menyelesaikan masalah. 
+          Komputer mengikuti instruksi dari atas ke bawah — jadi urutannya harus benar! 
+          Ini adalah konsep dasar dalam coding dan kehidupan sehari-hari. 🧩
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- GAME 3: LOGIKA IF-ELSE         -->
+  <!-- ============================== -->
+  <div class="game-panel" id="game-ifelse">
+    <div class="ifelse-layout game-panel" style="display:flex;">
+      <div class="ifelse-card">
+        <div class="game-header-bar">
+          <div class="ie-title" id="ie-title"></div>
+          <div style="display:flex;gap:16px;">
+            <div class="game-level-badge" id="ie-level">Soal 1/4</div>
+            <div class="game-score-badge">Skor: <span id="ie-score">0</span></div>
+          </div>
+        </div>
+        <div class="ie-scenario" id="ie-scenario"></div>
+        <div class="ie-question" id="ie-question"></div>
+        <div class="ie-options" id="ie-options"></div>
+        <div id="ie-explanation" style="display:none;"></div>
+      </div>
+      <div style="background:rgba(0,212,170,.08);border:2px solid rgba(0,212,170,.2);border-radius:16px;padding:16px;max-width:740px;width:100%;">
+        <div style="font-family:'Fredoka One',cursive;color:var(--teal);margin-bottom:10px;">🔀 Cara Berpikir IF-ELSE</div>
+        <div style="font-family:'Courier New',monospace;font-size:.88rem;color:#e2e8f0;line-height:2;background:#0D1117;padding:14px;border-radius:10px;">
+          <span style="color:#FF79C6">JIKA</span> kondisi <span style="color:#FF79C6">benar</span>:<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8BE9FD">lakukan aksi A</span><br>
+          <span style="color:#FF79C6">LAINNYA</span>:<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8BE9FD">lakukan aksi B</span>
+        </div>
+        <p style="color:rgba(255,255,255,.6);font-size:.82rem;font-weight:600;margin-top:10px;">
+          Program membuat keputusan berdasarkan kondisi — seperti otak kita berpikir! 🧠
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- GAME 4: TEBAK POLA             -->
+  <!-- ============================== -->
+  <div class="game-panel" id="game-pattern">
+    <div class="pattern-layout game-panel" style="display:flex;">
+      <div class="pattern-score" style="margin-bottom:8px;">
+        <div class="ps-item"><div class="ps-val" id="pat-score">0</div><div class="ps-lbl">Skor</div></div>
+        <div class="ps-item"><div class="ps-val" id="pat-streak">0</div><div class="ps-lbl">Streak 🔥</div></div>
+      </div>
+      <div class="pattern-card">
+        <div class="pattern-level" id="pat-level">Level 1 / 6</div>
+        <div class="pattern-question">Apa yang melanjutkan pola ini?</div>
+        <div class="pattern-seq" id="patSeq"></div>
+        <div style="color:rgba(255,255,255,.5);font-size:.85rem;font-weight:600;margin-bottom:16px;">Pilih jawaban yang benar:</div>
+        <div class="pattern-choices" id="patChoices"></div>
+        <div style="margin-top:16px;font-size:.88rem;font-weight:700;min-height:24px;color:rgba(255,255,255,.6);" id="pat-rule"></div>
+      </div>
+      <div style="background:rgba(77,171,247,.08);border:2px solid rgba(77,171,247,.2);border-radius:16px;padding:16px;max-width:700px;width:100%;">
+        <div style="font-family:'Fredoka One',cursive;color:var(--blue);margin-bottom:8px;">🔢 Pengenalan Pola = Berpikir Komputasional</div>
+        <p style="color:rgba(255,255,255,.6);font-size:.85rem;font-weight:600;line-height:1.7;">
+          Kemampuan mengenali pola adalah dasar dari <strong style="color:var(--yellow)">berpikir komputasional</strong> — cara kerja komputer dan AI! 
+          AI seperti ChatGPT juga belajar dengan mengenali pola dari jutaan data. 🤖
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- GAME 5: AI TRAINER             -->
+  <!-- ============================== -->
+  <div class="game-panel" id="game-ai">
+    <div class="ai-layout game-panel" style="display:flex;">
+      <div class="ai-card">
+        <div class="ai-card-title">🤖 Latih AI-mu Sendiri!</div>
+        <div class="ai-desc">
+          Ini simulasi cara AI belajar dari data — persis seperti cara kerja Machine Learning sungguhan!<br>
+          <strong>Langkah 1:</strong> Klik setiap gambar → labeli "Hewan" atau "Bukan Hewan" (klik lagi untuk ganti).<br>
+          <strong>Langkah 2:</strong> Klik "Train AI" setelah labeli minimal 5 data.<br>
+          <strong>Langkah 3:</strong> Lihat akurasi modelmu, lalu prediksi data baru!
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="font-family:'Fredoka One',cursive;font-size:1rem;color:rgba(255,255,255,.8);">📊 Data Training:</div>
+          <div style="background:rgba(0,212,170,.15);border:2px solid var(--teal);border-radius:50px;padding:4px 14px;font-family:'Fredoka One',cursive;color:var(--teal);">
+            <span id="ai-labeled-count">0</span>/10 dilabeli
+          </div>
+        </div>
+        <div class="training-data" id="aiDataGrid"></div>
+        <div class="ai-controls">
+          <button class="train-btn" onclick="trainAI()">🧠 Train AI Sekarang!</button>
+          <button class="btn-reset" onclick="initAITrainer();showToast('🔄 Data direset!','')">🔄 Reset</button>
+        </div>
+        <div class="ai-result" id="aiResult">
+          <div class="ai-result-title">📈 Hasil Training Model Kamu</div>
+          <div class="ai-bar"><div class="ai-bar-label">Akurasi</div><div class="ai-bar-track"><div class="ai-bar-fill" id="ai-acc-bar" style="width:0%"></div></div><div class="ai-bar-pct" id="ai-acc-val">0%</div></div>
+          <div class="ai-bar"><div class="ai-bar-label">Presisi</div><div class="ai-bar-track"><div class="ai-bar-fill" id="ai-prec-bar" style="width:0%;background:#9B5DE5"></div></div><div class="ai-bar-pct" id="ai-prec-val">0%</div></div>
+          <div class="ai-bar"><div class="ai-bar-label">Recall</div><div class="ai-bar-track"><div class="ai-bar-fill" id="ai-rec-bar" style="width:0%;background:#FF4D8B"></div></div><div class="ai-bar-pct" id="ai-rec-val">0%</div></div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.5);font-weight:600;margin-top:10px;">
+            💡 Makin banyak label yang benar → akurasi makin tinggi! Ini persis cara ML sungguhan bekerja.
+          </div>
+        </div>
+      </div>
+      <div class="ai-card" style="max-width:760px;width:100%;">
+        <div class="ai-card-title" style="font-size:1.1rem;">🔮 Uji Model: Prediksi Data Baru</div>
+        <div class="ai-desc">Setelah training, klik gambar di bawah untuk prediksi apakah itu hewan atau bukan!</div>
+        <div class="ai-predict-zone" id="aiPredictZone" style="display:none;"></div>
+        <div style="font-size:.82rem;color:rgba(0,212,170,.7);font-weight:600;margin-top:12px;line-height:1.6;">
+          🎓 <strong>Inilah cara kerja AI nyata:</strong> diberi data berlabel → belajar pola → prediksi data baru yang belum pernah dilihat!
+          Sama seperti ChatGPT, Google Translate, atau face recognition di HP kamu.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WIN OVERLAY -->
+<div class="win-overlay" id="winOverlay" onclick="hideWin()">
+  <div class="win-card" onclick="event.stopPropagation()">
+    <div class="win-emoji">🎉</div>
+    <div class="win-title" id="winTitle">Selamat!</div>
+    <div class="win-sub" id="winSub">Kamu berhasil!</div>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+      <button class="btn-primary" onclick="nextMazeLevel();hideWin()">▶ Level Berikutnya</button>
+      <button class="btn-secondary" onclick="hideWin()">Main Lagi</button>
+    </div>
+  </div>
+</div>
+
+<!-- KODI AI -->
+<button class="kodi-fab" onclick="toggleKodiChat()" title="Minta hint dari Kodi!">🤖</button>
+<div class="kodi-chat-panel" id="kodiPanel">
+  <div class="kodi-chat-header">
+    <div class="kodi-av">🤖</div>
+    <div><div class="kodi-name">Kodi AI</div><div class="kodi-status">Minta hint kapan saja!</div></div>
+    <button class="kodi-close-btn" onclick="toggleKodiChat()">✕</button>
+  </div>
+  <div class="kodi-messages" id="kodiMessages"></div>
+  <div class="kodi-input-area">
+    <input class="kodi-input" id="kodiInput" placeholder="Minta hint dari Kodi...">
+    <button class="kodi-send" onclick="sendKodiMessage()">➤</button>
+  </div>
+</div>
+
+<script src="js/nav.js"></script>
+<script src="js/games.js"></script>
+</body>
+</html>

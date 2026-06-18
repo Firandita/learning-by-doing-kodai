@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KODAI – Materi Belajar</title>
+<link rel="stylesheet" href="css/main.css">
+<style>
+.filter-tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:28px 40px 0;}
+.filter-tab{padding:10px 22px;border-radius:50px;border:3px solid #ddd;background:white;font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;transition:all .2s;}
+.filter-tab:hover{border-color:#9B5DE5;color:#9B5DE5;}
+.filter-tab.active{background:#9B5DE5;color:white;border-color:#9B5DE5;}
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;padding:32px 40px;max-width:1200px;margin:0 auto;}
+.course-card{background:white;border-radius:24px;overflow:hidden;border:3px solid #eee;box-shadow:0 8px 0 rgba(0,0,0,.15);cursor:pointer;transition:all .2s;}
+.course-card:hover{transform:translateY(-6px);box-shadow:0 14px 0 rgba(0,0,0,.15);border-color:#FFD93D;}
+.course-thumb{height:140px;position:relative;display:flex;align-items:center;justify-content:center;}
+.thumb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3.5rem;}
+.level-badge{position:absolute;top:12px;right:12px;padding:4px 12px;border-radius:50px;font-size:.75rem;font-weight:800;border:2px solid rgba(255,255,255,.5);color:white;backdrop-filter:blur(4px);}
+.level-pemula{background:#2EC486;}
+.level-menengah{background:#FF6B35;}
+.level-lanjut{background:#FF4D8B;}
+.course-body{padding:20px;}
+.course-body h3{font-family:'Fredoka One',cursive;font-size:1.2rem;margin-bottom:6px;}
+.course-body p{font-size:.85rem;color:#666;line-height:1.5;margin-bottom:14px;font-weight:600;}
+.course-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.course-dur{font-size:.8rem;color:#888;font-weight:700;}
+.course-xp{font-size:.8rem;color:#9B5DE5;font-weight:800;}
+.btn-course{width:100%;padding:12px;background:#9B5DE5;color:white;border:none;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;transition:all .2s;box-shadow:0 4px 0 #6a3fa0;}
+.btn-course:hover{transform:translateY(-2px);}
+
+/* Video placeholder in modal */
+.video-thumb{
+  background:linear-gradient(135deg,#1A1A2E,#0F3460);
+  border-radius:16px; aspect-ratio:16/9;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;position:relative;overflow:hidden;margin-bottom:20px;
+  border:3px solid rgba(255,255,255,.1);
+}
+.video-thumb:hover .play-btn{transform:scale(1.1);}
+.play-btn{
+  width:64px;height:64px;border-radius:50%;
+  background:rgba(255,255,255,.9);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;margin-bottom:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+  transition:transform .2s;
+}
+.video-title-text{color:rgba(255,255,255,.9);font-weight:800;font-size:.95rem;}
+.video-desc-text{color:rgba(255,255,255,.5);font-size:.8rem;margin-top:6px;font-weight:600;}
+.video-scanlines{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0,rgba(0,0,0,.08) 1px,transparent 1px,transparent 4px);}
+.video-tag{position:absolute;top:12px;left:12px;background:rgba(255,68,68,.9);color:white;padding:4px 10px;border-radius:6px;font-size:.72rem;font-weight:800;}
+/* Animated equalizer for video "playing" feel */
+.eq-bars{display:flex;gap:3px;position:absolute;bottom:16px;right:16px;}
+.eq-bar{width:4px;background:#FFD93D;border-radius:2px;animation:eqAnim 1s ease infinite alternate;}
+.eq-bar:nth-child(1){height:12px;animation-delay:0s;}
+.eq-bar:nth-child(2){height:20px;animation-delay:.15s;}
+.eq-bar:nth-child(3){height:8px;animation-delay:.3s;}
+.eq-bar:nth-child(4){height:16px;animation-delay:.1s;}
+@keyframes eqAnim{to{transform:scaleY(.3)}}
+
+.syllabus-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+.syllabus-list li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#f8f8f8;border-radius:12px;font-weight:700;font-size:.92rem;}
+.syllabus-num{width:26px;height:26px;border-radius:50%;background:#9B5DE5;color:white;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;flex-shrink:0;}
+@media(max-width:600px){.courses-grid{grid-template-columns:1fr;padding:16px;}.filter-tabs{padding:20px 16px 0;}}
+</style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<nav>
+  <a class="nav-logo" href="index.html">🌿 KODAI</a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">🏠 Beranda</a>
+    <a class="nav-link active" href="materi.html">📚 Materi</a>
+    <a class="nav-link" href="playground.html">🎮 Playground</a>
+    <a class="nav-link" href="kolaborasi.html">🤝 Kolaborasi</a>
+    <a class="nav-link" href="progress.html">⭐ Progress</a>
+  </div>
+  <a class="nav-cta" href="login.html">✨ Mulai Belajar</a>
+  <div class="hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a class="nav-link" href="index.html">🏠 Beranda</a>
+  <a class="nav-link active" href="materi.html">📚 Materi</a>
+  <a class="nav-link" href="playground.html">🎮 Playground</a>
+  <a class="nav-link" href="kolaborasi.html">🤝 Kolaborasi</a>
+  <a class="nav-link" href="progress.html">⭐ Progress</a>
+  <a class="nav-link" href="login.html">✨ Mulai</a>
+</div>
+
+<div class="page-header">
+  <h1>📚 Materi Belajar</h1>
+  <p>Pilih materi yang ingin kamu pelajari dan mulai petualanganmu!</p>
+</div>
+
+<div class="filter-tabs">
+  <button class="filter-tab active" onclick="filterCourse(this,'all')">🌟 Semua</button>
+  <button class="filter-tab" onclick="filterCourse(this,'algoritma')">🧩 Algoritma</button>
+  <button class="filter-tab" onclick="filterCourse(this,'logika')">🔀 Logika</button>
+  <button class="filter-tab" onclick="filterCourse(this,'ai')">🤖 AI & ML</button>
+  <button class="filter-tab" onclick="filterCourse(this,'kolaborasi')">🤝 Kolaborasi</button>
+</div>
+<div class="courses-grid" id="coursesGrid"></div>
+
+<!-- COURSE MODAL -->
+<div class="modal-overlay" id="courseModal" onclick="closeCourseModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div id="modal-emoji" style="font-size:2.5rem;margin-bottom:8px;"></div>
+        <h2 id="modal-title"></h2>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('courseModal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Animated video placeholder -->
+      <div class="video-thumb" onclick="showToast('▶ Video animasi akan segera hadir!','warning')">
+        <div class="video-scanlines"></div>
+        <div class="video-tag">📹 VIDEO MATERI</div>
+        <div class="play-btn">▶</div>
+        <div class="video-title-text" id="modal-video-label"></div>
+        <div class="video-desc-text" id="modal-video-desc"></div>
+        <div class="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
+      </div>
+      <p id="modal-desc" style="color:#555;line-height:1.7;font-weight:600;margin-bottom:20px;"></p>
+      <h3 style="font-family:'Fredoka One',cursive;font-size:1.1rem;margin-bottom:12px;">📋 Yang Akan Kamu Pelajari:</h3>
+      <ul class="syllabus-list" id="modal-syllabus"></ul>
+      <div style="margin-top:24px;display:flex;gap:10px;">
+        <button class="btn-course" style="border-radius:14px;padding:14px;" onclick="document.getElementById('courseModal').classList.remove('open');showToast('🚀 Yuk mulai belajar!','success')">🚀 Mulai Sekarang!</button>
+        <button onclick="document.getElementById('courseModal').classList.remove('open')" style="padding:14px 20px;border:3px solid #eee;border-radius:14px;background:white;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;">Nanti Dulu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="kodi-fab" onclick="toggleKodiChat()" title="Tanya Kodi AI">🤖</button>
+<div class="kodi-chat-panel" id="kodiPanel">
+  <div class="kodi-chat-header">
+    <div class="kodi-av">🤖</div>
+    <div><div class="kodi-name">Kodi AI</div><div class="kodi-status">Tanya soal materi apa saja!</div></div>
+    <button class="kodi-close-btn" onclick="toggleKodiChat()">✕</button>
+  </div>
+  <div class="kodi-messages" id="kodiMessages"></div>
+  <div class="kodi-input-area">
+    <input class="kodi-input" id="kodiInput" placeholder="Tanya Kodi tentang materi...">
+    <button class="kodi-send" onclick="sendKodiMessage()">➤</button>
+  </div>
+</div>
+
+<script src="js/nav.js"></script>
+<script src="js/data.js"></script>
+</body>
+</html>

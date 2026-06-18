@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KODAI – Progress</title>
+<link rel="stylesheet" href="css/main.css">
+<style>
+.progress-layout{padding:40px;max-width:1000px;margin:0 auto;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
+.stat-card{background:white;border-radius:20px;padding:20px;text-align:center;border:3px solid #eee;box-shadow:0 8px 0 rgba(0,0,0,.15);transition:all .2s;}
+.stat-card:hover{transform:translateY(-4px);}
+.stat-card .si{font-size:2rem;margin-bottom:8px;}
+.stat-card .sv{font-family:'Fredoka One',cursive;font-size:2rem;}
+.stat-card .sk{font-size:.8rem;color:#888;font-weight:700;margin-top:4px;}
+.progress-section{background:white;border-radius:20px;padding:24px;margin-bottom:24px;border:3px solid #eee;box-shadow:0 8px 0 rgba(0,0,0,.15);}
+.progress-section h3{font-family:'Fredoka One',cursive;font-size:1.3rem;margin-bottom:20px;}
+.subj-row{margin-bottom:18px;}
+.subj-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.subj-name{font-weight:800;font-size:.95rem;}
+.subj-pct{font-family:'Fredoka One',cursive;font-size:1rem;}
+.activity-list{list-style:none;display:flex;flex-direction:column;gap:12px;}
+.activity-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#f8f8f8;border-radius:14px;transition:all .2s;}
+.activity-item:hover{background:#eee;}
+.activity-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.activity-info{flex:1;}
+.activity-name{font-weight:800;font-size:.9rem;}
+.activity-date{font-size:.78rem;color:#888;font-weight:600;margin-top:2px;}
+.activity-xp{font-family:'Fredoka One',cursive;color:#9B5DE5;font-size:.95rem;}
+.badges-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.badge-item{text-align:center;padding:20px 12px;background:#f8f8f8;border-radius:18px;border:3px solid #eee;transition:all .2s;}
+.badge-item:hover{transform:translateY(-4px);border-color:#FFD93D;}
+.badge-item.locked{opacity:.5;filter:grayscale(1);}
+.badge-emoji{font-size:2.5rem;margin-bottom:8px;}
+.badge-name{font-weight:800;font-size:.85rem;}
+@media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr;}.badges-grid{grid-template-columns:repeat(2,1fr);}.progress-layout{padding:20px;}}
+</style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+<nav>
+  <a class="nav-logo" href="index.html">🌿 KODAI</a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">🏠 Beranda</a>
+    <a class="nav-link" href="materi.html">📚 Materi</a>
+    <a class="nav-link" href="playground.html">🎮 Playground</a>
+    <a class="nav-link" href="kolaborasi.html">🤝 Kolaborasi</a>
+    <a class="nav-link active" href="progress.html">⭐ Progress</a>
+  </div>
+  <a class="nav-cta" href="login.html">✨ Mulai Belajar</a>
+  <div class="hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a class="nav-link" href="index.html">🏠 Beranda</a><a class="nav-link active" href="progress.html">⭐ Progress</a><a class="nav-link" href="login.html">✨ Mulai</a>
+</div>
+
+<div class="progress-layout">
+  <div class="profile-card">
+    <div class="profile-av">FY</div>
+    <div class="profile-info">
+      <h2>Firandita Yunia</h2>
+      <p>🏫 SMP N 7 Jakarta · Kelas 8A</p>
+      <div class="profile-level">⭐ Level 12 – Coder Muda</div>
+    </div>
+    <div style="margin-left:auto;text-align:center;">
+      <div style="font-family:'Fredoka One',cursive;font-size:2.5rem;color:#FFD93D;">🔥7</div>
+      <div style="color:rgba(255,255,255,.8);font-size:.85rem;font-weight:700;">Hari Streak</div>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="si">💎</div><div class="sv" style="color:#9B5DE5">2.450</div><div class="sk">Total XP</div></div>
+    <div class="stat-card"><div class="si">📚</div><div class="sv" style="color:#2EC486">18</div><div class="sk">Materi Selesai</div></div>
+    <div class="stat-card"><div class="si">🔥</div><div class="sv" style="color:#FF6B35">7</div><div class="sk">Streak Hari</div></div>
+    <div class="stat-card"><div class="si">🏆</div><div class="sv" style="color:#FFD93D">#3</div><div class="sk">Peringkat Kelas</div></div>
+  </div>
+  <div class="progress-section">
+    <h3>📊 Progress Per Materi</h3>
+    <div class="subj-row"><div class="subj-hdr"><span class="subj-name">🧩 Algoritma</span><span class="subj-pct" style="color:#2EC486">75%</span></div><div class="prog-bar"><div class="prog-fill" data-width="75%" style="background:linear-gradient(90deg,#2EC486,#4DABF7)"></div></div></div>
+    <div class="subj-row"><div class="subj-hdr"><span class="subj-name">🔀 Logika IF/ELSE</span><span class="subj-pct" style="color:#4DABF7">60%</span></div><div class="prog-bar"><div class="prog-fill" data-width="60%" style="background:linear-gradient(90deg,#4DABF7,#9B5DE5)"></div></div></div>
+    <div class="subj-row"><div class="subj-hdr"><span class="subj-name">🤖 Pengenalan AI</span><span class="subj-pct" style="color:#9B5DE5">40%</span></div><div class="prog-bar"><div class="prog-fill" data-width="40%" style="background:linear-gradient(90deg,#9B5DE5,#FF4D8B)"></div></div></div>
+    <div class="subj-row"><div class="subj-hdr"><span class="subj-name">🤝 Kolaborasi</span><span class="subj-pct" style="color:#FF4D8B">90%</span></div><div class="prog-bar"><div class="prog-fill" data-width="90%" style="background:linear-gradient(90deg,#FF4D8B,#FF6B35)"></div></div></div>
+    <div class="subj-row"><div class="subj-hdr"><span class="subj-name">🎮 Playground Games</span><span class="subj-pct" style="color:#FFD93D">55%</span></div><div class="prog-bar"><div class="prog-fill" data-width="55%" style="background:linear-gradient(90deg,#FFD93D,#FF6B35)"></div></div></div>
+  </div>
+  <div class="progress-section">
+    <h3>🕒 Aktivitas Terbaru</h3>
+    <ul class="activity-list">
+      <li class="activity-item"><div class="activity-icon" style="background:#e8f5e9">✅</div><div class="activity-info"><div class="activity-name">Selesaikan Quiz Algoritma Level 5</div><div class="activity-date">Hari ini, 14:30</div></div><div class="activity-xp">+80 XP</div></li>
+      <li class="activity-item"><div class="activity-icon" style="background:#f3e5f5">🎮</div><div class="activity-info"><div class="activity-name">Menang Puzzle Maze Level 2</div><div class="activity-date">Kemarin, 16:00</div></div><div class="activity-xp">+300 XP</div></li>
+      <li class="activity-item"><div class="activity-icon" style="background:#fff3e0">🔦</div><div class="activity-info"><div class="activity-name">Debug Challenge — 2 bug ditemukan!</div><div class="activity-date">2 hari lalu, 10:20</div></div><div class="activity-xp">+200 XP</div></li>
+      <li class="activity-item"><div class="activity-icon" style="background:#e0f7fa">🤖</div><div class="activity-info"><div class="activity-name">AI Trainer — akurasi 88%!</div><div class="activity-date">3 hari lalu</div></div><div class="activity-xp">+150 XP</div></li>
+      <li class="activity-item"><div class="activity-icon" style="background:#fce4ec">🏆</div><div class="activity-info"><div class="activity-name">Raih Badge "Bintang Kolaborasi"</div><div class="activity-date">5 hari lalu</div></div><div class="activity-xp">+200 XP</div></li>
+    </ul>
+  </div>
+  <div class="progress-section">
+    <h3>🏅 Koleksi Badge</h3>
+    <div class="badges-grid">
+      <div class="badge-item"><div class="badge-emoji">🌟</div><div class="badge-name">Bintang Pertama</div></div>
+      <div class="badge-item"><div class="badge-emoji">🔥</div><div class="badge-name">Streak 7 Hari</div></div>
+      <div class="badge-item"><div class="badge-emoji">🤝</div><div class="badge-name">Bintang Kolaborasi</div></div>
+      <div class="badge-item"><div class="badge-emoji">🧩</div><div class="badge-name">Maze Master</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">🏆</div><div class="badge-name">Juara Kelas</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">🤖</div><div class="badge-name">AI Master</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">🔦</div><div class="badge-name">Bug Hunter</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">💎</div><div class="badge-name">Diamond Coder</div></div>
+      <div class="badge-item locked"><div class="badge-emoji">🚀</div><div class="badge-name">Roket Pelajar</div></div>
+    </div>
+  </div>
+</div>
+
+<button class="kodi-fab" onclick="toggleKodiChat()">🤖</button>
+<div class="kodi-chat-panel" id="kodiPanel">
+  <div class="kodi-chat-header"><div class="kodi-av">🤖</div><div><div class="kodi-name">Kodi AI</div><div class="kodi-status">Lihat progressmu!</div></div><button class="kodi-close-btn" onclick="toggleKodiChat()">✕</button></div>
+  <div class="kodi-messages" id="kodiMessages"></div>
+  <div class="kodi-input-area"><input class="kodi-input" id="kodiInput" placeholder="Tanya Kodi..."><button class="kodi-send" onclick="sendKodiMessage()">➤</button></div>
+</div>
+
+<script src="js/nav.js"></script>
+<script>document.addEventListener('DOMContentLoaded', animateProgressBars);</script>
+</body>
+</html>

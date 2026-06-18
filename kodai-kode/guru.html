@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KODAI – Dashboard Guru</title>
+<link rel="stylesheet" href="css/main.css">
+<style>
+.guru-layout{padding:32px 40px;max-width:1200px;margin:0 auto;}
+.guru-header{background:linear-gradient(135deg,#1A1A2E,#16213E);border-radius:24px;padding:28px 32px;margin-bottom:28px;display:flex;align-items:center;gap:20px;box-shadow:0 8px 0 rgba(0,0,0,.15);}
+.guru-av{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#9B5DE5,#FF4D8B);border:4px solid white;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:1.5rem;color:white;flex-shrink:0;}
+.guru-info h2{font-family:'Fredoka One',cursive;font-size:1.8rem;color:white;}
+.guru-info p{color:rgba(255,255,255,.7);font-weight:600;font-size:.9rem;margin-top:4px;}
+.guru-badge{margin-top:8px;display:inline-block;background:#9B5DE5;color:white;padding:4px 14px;border-radius:50px;font-weight:800;font-size:.8rem;}
+.guru-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.gs-card{background:white;border-radius:20px;padding:20px;text-align:center;border:3px solid #eee;box-shadow:0 8px 0 rgba(0,0,0,.15);}
+.gs-card .icon{font-size:1.8rem;margin-bottom:8px;}
+.gs-card .val{font-family:'Fredoka One',cursive;font-size:2rem;}
+.gs-card .lbl{font-size:.8rem;color:#888;font-weight:700;margin-top:4px;}
+.guru-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.guru-panel{background:white;border-radius:20px;padding:24px;border:3px solid #eee;box-shadow:0 8px 0 rgba(0,0,0,.15);}
+.guru-panel h3{font-family:'Fredoka One',cursive;font-size:1.2rem;margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid #eee;}
+.leaderboard{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.lb-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#f8f8f8;border-radius:14px;transition:all .2s;cursor:pointer;}
+.lb-item:hover{background:#f0f0f0;transform:translateX(4px);}
+.lb-rank{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:.9rem;flex-shrink:0;}
+.lb-rank.gold{background:#FFD93D;color:#1A1A2E;}
+.lb-rank.silver{background:#C0C0C0;color:#1A1A2E;}
+.lb-rank.bronze{background:#CD7F32;color:white;}
+.lb-rank.normal{background:#eee;color:#555;}
+.lb-info{flex:1;}
+.lb-name{font-weight:800;font-size:.9rem;}
+.lb-bar{height:6px;background:#eee;border-radius:3px;margin-top:4px;overflow:hidden;}
+.lb-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#9B5DE5,#FF4D8B);transition:width 1s;}
+.lb-xp{font-family:'Fredoka One',cursive;color:#9B5DE5;font-size:.9rem;}
+.progress-table{width:100%;border-collapse:collapse;}
+.progress-table th{font-size:.8rem;font-weight:800;padding:8px 12px;background:#f8f8f8;text-align:left;color:#555;}
+.progress-table td{padding:10px 12px;font-size:.88rem;font-weight:700;border-bottom:2px solid #f0f0f0;}
+.progress-table tr:hover td{background:#fafafa;}
+.pct-green{color:#2EC486;font-weight:900;}
+.pct-orange{color:#FF6B35;font-weight:900;}
+.pct-red{color:#FF4444;font-weight:900;}
+.session-live{background:linear-gradient(135deg,#9B5DE5,#4DABF7);border-radius:16px;padding:18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;}
+.session-live-dot{width:12px;height:12px;border-radius:50%;background:#2EC486;border:2px solid white;animation:pulse 2s infinite;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,196,134,.4)}70%{box-shadow:0 0 0 10px rgba(46,196,134,0)}100%{box-shadow:0 0 0 0 rgba(46,196,134,0)}}
+.session-live-info h4{font-family:'Fredoka One',cursive;font-size:1rem;color:white;}
+.session-live-info p{color:rgba(255,255,255,.8);font-size:.8rem;font-weight:600;margin-top:2px;}
+.room-code-display{background:#1A1A2E;border-radius:14px;padding:18px;text-align:center;margin-bottom:16px;}
+.room-code-num{font-family:'Fredoka One',cursive;font-size:2.5rem;color:#FFD93D;letter-spacing:8px;}
+.room-code-hint{font-size:.78rem;color:rgba(255,255,255,.5);font-weight:700;margin-top:6px;}
+.challenge-form{display:flex;flex-direction:column;gap:12px;}
+.challenge-form input,.challenge-form select{padding:12px 16px;border:3px solid #eee;border-radius:12px;font-family:'Nunito',sans-serif;font-size:.92rem;font-weight:700;outline:none;transition:border-color .2s;}
+.challenge-form input:focus,.challenge-form select:focus{border-color:#9B5DE5;}
+.challenge-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ctype-btn{padding:10px;border:3px solid #eee;border-radius:12px;background:white;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;text-align:center;transition:all .2s;}
+.ctype-btn.sel,.ctype-btn:hover{border-color:#9B5DE5;background:#f0e8ff;color:#9B5DE5;}
+@media(max-width:900px){.guru-grid{grid-template-columns:1fr;}.guru-stats{grid-template-columns:repeat(2,1fr);}.guru-layout{padding:20px;}}
+</style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+<nav>
+  <a class="nav-logo" href="index.html">🌿 KODAI</a>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">🏠 Beranda</a>
+    <a class="nav-link" href="materi.html">📚 Materi</a>
+    <a class="nav-link" href="playground.html">🎮 Playground</a>
+    <a class="nav-link" href="kolaborasi.html">🤝 Kolaborasi</a>
+    <a class="nav-link active" href="guru.html">📊 Dashboard Guru</a>
+  </div>
+  <a class="nav-cta" href="login.html" style="background:#FF4D8B;box-shadow:0 4px 0 #a0005a;">🚪 Keluar</a>
+  <div class="hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a class="nav-link" href="index.html">🏠 Beranda</a><a class="nav-link active" href="guru.html">📊 Dashboard</a><a class="nav-link" href="login.html">🚪 Keluar</a>
+</div>
+
+<div class="guru-layout">
+  <div class="guru-header">
+    <div class="guru-av">BS</div>
+    <div class="guru-info">
+      <h2>Budi Santoso, S.Pd</h2>
+      <p>👨‍🏫 Guru TIK · SMP N 7 Jakarta · Kelas 8A</p>
+      <div class="guru-badge">📊 Mode Guru Aktif</div>
+    </div>
+    <div style="margin-left:auto;">
+      <button class="btn-primary" onclick="showToast('📋 Membuat sesi baru...','success')">+ Sesi Baru</button>
+    </div>
+  </div>
+
+  <div class="guru-stats">
+    <div class="gs-card"><div class="icon">👥</div><div class="val" style="color:#9B5DE5">32</div><div class="lbl">Total Siswa</div></div>
+    <div class="gs-card"><div class="icon">✅</div><div class="val" style="color:#2EC486">28</div><div class="lbl">Aktif Hari Ini</div></div>
+    <div class="gs-card"><div class="icon">📚</div><div class="val" style="color:#4DABF7">18</div><div class="lbl">Materi Aktif</div></div>
+    <div class="gs-card"><div class="icon">🏆</div><div class="val" style="color:#FFD93D">156</div><div class="lbl">Tantangan Selesai</div></div>
+  </div>
+
+  <div class="guru-grid">
+    <!-- Leaderboard -->
+    <div class="guru-panel">
+      <h3>🏆 Leaderboard Kelas 8A</h3>
+      <ul class="leaderboard">
+        <li class="lb-item"><div class="lb-rank gold">1</div><div class="lb-info"><div class="lb-name">Sari Anindita</div><div class="lb-bar"><div class="lb-bar-fill" style="width:95%"></div></div></div><div class="lb-xp">3.200 XP</div></li>
+        <li class="lb-item"><div class="lb-rank silver">2</div><div class="lb-info"><div class="lb-name">Aditya Ramadhan</div><div class="lb-bar"><div class="lb-bar-fill" style="width:88%"></div></div></div><div class="lb-xp">2.800 XP</div></li>
+        <li class="lb-item"><div class="lb-rank bronze">3</div><div class="lb-info"><div class="lb-name">Firandita Yunia</div><div class="lb-bar"><div class="lb-bar-fill" style="width:76%"></div></div></div><div class="lb-xp">2.450 XP</div></li>
+        <li class="lb-item"><div class="lb-rank normal">4</div><div class="lb-info"><div class="lb-name">Rafi Pratama</div><div class="lb-bar"><div class="lb-bar-fill" style="width:68%;background:linear-gradient(90deg,#aaa,#888)"></div></div></div><div class="lb-xp">2.100 XP</div></li>
+        <li class="lb-item"><div class="lb-rank normal">5</div><div class="lb-info"><div class="lb-name">Nisa Tsabita</div><div class="lb-bar"><div class="lb-bar-fill" style="width:55%;background:linear-gradient(90deg,#aaa,#888)"></div></div></div><div class="lb-xp">1.750 XP</div></li>
+      </ul>
+    </div>
+
+    <!-- Progress table -->
+    <div class="guru-panel">
+      <h3>📊 Progress Per Siswa</h3>
+      <table class="progress-table">
+        <thead><tr><th>Nama</th><th>Algoritma</th><th>Logika</th><th>AI</th><th>Game</th></tr></thead>
+        <tbody>
+          <tr><td>Sari A.</td><td class="pct-green">95%</td><td class="pct-green">88%</td><td class="pct-green">70%</td><td class="pct-green">90%</td></tr>
+          <tr><td>Aditya R.</td><td class="pct-green">88%</td><td class="pct-orange">75%</td><td class="pct-orange">60%</td><td class="pct-green">80%</td></tr>
+          <tr><td>Firandita Y.</td><td class="pct-orange">75%</td><td class="pct-orange">60%</td><td class="pct-red">40%</td><td class="pct-orange">55%</td></tr>
+          <tr><td>Rafi P.</td><td class="pct-orange">65%</td><td class="pct-red">45%</td><td class="pct-red">30%</td><td class="pct-orange">60%</td></tr>
+          <tr><td>Nisa T.</td><td class="pct-orange">60%</td><td class="pct-red">40%</td><td class="pct-red">25%</td><td class="pct-red">35%</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:14px;display:flex;gap:8px;">
+        <button class="btn-green" onclick="showToast('📊 Export laporan...','success')" style="font-size:.82rem;padding:10px 16px;">📊 Export</button>
+        <button class="btn-purple" onclick="showToast('📧 Kirim ke orang tua...','success')" style="font-size:.82rem;padding:10px 16px;">📧 Kirim ke Ortu</button>
+      </div>
+    </div>
+
+    <!-- Session management -->
+    <div class="guru-panel">
+      <h3>🎯 Kelola Sesi Kelas</h3>
+      <div class="session-live">
+        <div class="session-live-dot"></div>
+        <div class="session-live-info">
+          <h4>Algoritma Perulangan</h4>
+          <p>12 siswa online · Aktif sekarang</p>
+        </div>
+        <button class="btn-secondary" style="margin-left:auto;border-color:rgba(255,255,255,.5);font-size:.82rem;padding:8px 16px;" onclick="showToast('⏹ Sesi dihentikan','warning')">⏹ Stop</button>
+      </div>
+      <div class="room-code-display">
+        <div class="room-code-num">KD-7A2F</div>
+        <div class="room-code-hint">Bagikan kode ini ke siswa untuk bergabung (seperti Kahoot!)</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-primary" style="flex:1;justify-content:center;font-size:.85rem;" onclick="showToast('🔗 Link disalin!','success')">🔗 Salin Link</button>
+        <button class="btn-green" style="font-size:.85rem;" onclick="showToast('🔄 Kode baru dibuat!','success')">🔄 Kode Baru</button>
+      </div>
+    </div>
+
+    <!-- Create challenge -->
+    <div class="guru-panel">
+      <h3>🏆 Buat Tantangan Baru</h3>
+      <div class="challenge-form">
+        <div><label style="font-size:.85rem;font-weight:800;color:#555;display:block;margin-bottom:6px;">Nama Tantangan</label>
+          <input placeholder="Misal: Raih 3 piala dengan 5 blok!"></div>
+        <div><label style="font-size:.85rem;font-weight:800;color:#555;display:block;margin-bottom:6px;">Tipe Game</label>
+          <div class="challenge-type-grid">
+            <button class="ctype-btn sel" onclick="this.closest('.challenge-type-grid').querySelectorAll('.ctype-btn').forEach(b=>b.classList.remove('sel'));this.classList.add('sel')">🧩 Maze</button>
+            <button class="ctype-btn" onclick="this.closest('.challenge-type-grid').querySelectorAll('.ctype-btn').forEach(b=>b.classList.remove('sel'));this.classList.add('sel')">🔢 Pattern</button>
+            <button class="ctype-btn" onclick="this.closest('.challenge-type-grid').querySelectorAll('.ctype-btn').forEach(b=>b.classList.remove('sel'));this.classList.add('sel')">🔦 Debug</button>
+            <button class="ctype-btn" onclick="this.closest('.challenge-type-grid').querySelectorAll('.ctype-btn').forEach(b=>b.classList.remove('sel'));this.classList.add('sel')">🏗️ Build</button>
+          </div>
+        </div>
+        <div><label style="font-size:.85rem;font-weight:800;color:#555;display:block;margin-bottom:6px;">Deadline</label>
+          <input type="datetime-local"></div>
+        <button class="btn-primary" style="width:100%;justify-content:center;" onclick="showToast('🏆 Tantangan dikirim ke semua siswa!','success')">🚀 Kirim ke Kelas</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="kodi-fab" onclick="toggleKodiChat()">🤖</button>
+<div class="kodi-chat-panel" id="kodiPanel">
+  <div class="kodi-chat-header"><div class="kodi-av">🤖</div><div><div class="kodi-name">Kodi AI</div><div class="kodi-status">Asisten guru siap membantu!</div></div><button class="kodi-close-btn" onclick="toggleKodiChat()">✕</button></div>
+  <div class="kodi-messages" id="kodiMessages"></div>
+  <div class="kodi-input-area"><input class="kodi-input" id="kodiInput" placeholder="Tanya Kodi tentang kelas..."><button class="kodi-send" onclick="sendKodiMessage()">➤</button></div>
+</div>
+<script src="js/nav.js"></script>
+</body>
+</html>
