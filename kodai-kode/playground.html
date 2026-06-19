@@ -1,81 +1,362 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>KODAI – Playground</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css">
-<link rel="stylesheet" href="css/playground.css">
 <style>
-/* ===== GAME 2: URUTKAN ALGORITMA ===== */
-.algo-layout{flex-direction:column;align-items:center;padding:28px;gap:18px;width:100%;overflow-y:auto;}
-.algo-card{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:20px;padding:24px;max-width:740px;width:100%;}
-.algo-title{font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--yellow);margin-bottom:6px;}
-.algo-desc{color:rgba(255,255,255,.7);font-size:.88rem;font-weight:600;line-height:1.6;margin-bottom:16px;}
-.algo-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
-.algo-step{
-  display:flex;align-items:center;gap:12px;
-  background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);
-  border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .2s;
+/* ===== RESET & BASE ===== */
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0f1117;
+  --card:#1a1d27;
+  --card2:#22263a;
+  --border:rgba(255,255,255,.08);
+  --purple:#9B5DE5;
+  --green:#2EC486;
+  --yellow:#FFD93D;
+  --orange:#FF6B35;
+  --red:#FF4D8B;
+  --blue:#4DABF7;
+  --teal:#00D4AA;
+  --text:rgba(255,255,255,.9);
+  --sub:rgba(255,255,255,.5);
+
+  /* World colors */
+  --w1:#43C6AC; --w1d:#2a8a78;
+  --w2:#4DABF7; --w2d:#2a7ab5;
+  --w3:#f7971e; --w3d:#b56e10;
+  --w4:#9B5DE5; --w4d:#6a3fa0;
+  --w5:#FF4D8B; --w5d:#b53360;
+  --w6:#FFD93D; --w6d:#c4a300;
 }
-.algo-step:hover{border-color:var(--yellow);background:rgba(255,217,61,.08);}
-.algo-step.selected{border-color:var(--yellow);background:rgba(255,217,61,.15);}
-.step-num{
-  width:32px;height:32px;border-radius:50%;
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-weight:700;min-height:100vh;}
+
+/* ===== NAV ===== */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(15,17,23,.95);backdrop-filter:blur(12px);
+  border-bottom:2px solid var(--border);
+  display:flex;align-items:center;gap:8px;padding:0 28px;height:64px;
+}
+/* .nav-logo{font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--green);text-decoration:none;margin-right:auto;}
+.nav-links{display:flex;gap:4px;}
+.nav-link{padding:8px 14px;border-radius:10px;color:var(--sub);text-decoration:none;font-size:.88rem;transition:all .2s;}
+.nav-link:hover,.nav-link.active{background:rgba(255,255,255,.08);color:var(--text);}
+.nav-cta{background:var(--purple);color:white;padding:9px 18px;border-radius:12px;text-decoration:none;font-size:.88rem;transition:all .2s;white-space:nowrap;}
+.nav-cta:hover{background:#7b3fc4;} */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;}
+.hamburger span{width:22px;height:2px;background:var(--text);border-radius:2px;}
+.mobile-menu{display:none;flex-direction:column;gap:4px;padding:12px 16px;background:rgba(15,17,23,.98);border-bottom:2px solid var(--border);}
+@media(max-width:700px){
+  .nav-links,.nav-cta{display:none;}
+  .hamburger{display:flex;}
+  .mobile-menu.open{display:flex;}
+}
+
+/* ===== TOP BAR ===== */
+.top-bar{
+  max-width:780px;margin:24px auto 0;padding:0 20px;
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+}
+.xp-pill{
+  display:flex;align-items:center;gap:8px;
+  background:var(--card);border:2px solid rgba(255,217,61,.3);
+  border-radius:50px;padding:8px 18px;
+  font-family:'Fredoka One',cursive;font-size:1rem;color:var(--yellow);
+}
+.streak-pill{
+  display:flex;align-items:center;gap:8px;
+  background:var(--card);border:2px solid rgba(255,107,53,.3);
+  border-radius:50px;padding:8px 18px;
+  font-family:'Fredoka One',cursive;font-size:1rem;color:var(--orange);
+}
+.reset-btn{
+  margin-left:auto;padding:7px 14px;background:rgba(255,77,139,.1);
+  border:2px solid rgba(255,77,139,.3);border-radius:10px;
+  color:var(--red);font-family:'Nunito',sans-serif;font-weight:800;font-size:.78rem;cursor:pointer;transition:all .2s;
+}
+.reset-btn:hover{background:rgba(255,77,139,.2);}
+
+/* ===== WORLD MAP ===== */
+.world-map{max-width:780px;margin:0 auto;padding:28px 20px 80px;}
+
+.world-section{margin-bottom:48px;}
+.world-banner{
+  border-radius:20px;padding:20px 24px;margin-bottom:32px;
+  display:flex;align-items:center;gap:16px;
+  border:3px solid rgba(255,255,255,.12);
+  position:relative;overflow:hidden;
+}
+.world-banner::before{content:'';position:absolute;inset:0;opacity:.12;background:repeating-linear-gradient(45deg,rgba(255,255,255,.1) 0,rgba(255,255,255,.1) 1px,transparent 1px,transparent 12px);}
+.world-num{font-family:'Fredoka One',cursive;font-size:2rem;opacity:.4;}
+.world-info{}
+.world-label{font-size:.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;opacity:.7;margin-bottom:2px;}
+.world-name{font-family:'Fredoka One',cursive;font-size:1.5rem;}
+.world-sub{font-size:.82rem;opacity:.7;margin-top:2px;}
+
+/* ===== LEVEL PATH ===== */
+.level-path{display:flex;flex-direction:column;align-items:center;gap:0;}
+.level-row{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;position:relative;
+  margin-bottom:8px;
+}
+/* zigzag: odd rows push right, even push left */
+.level-row:nth-child(odd){padding-right:120px;}
+.level-row:nth-child(even){padding-left:120px;}
+
+.level-connector{
+  position:absolute;top:50%;
+  width:64px;height:4px;
+  border-radius:4px;
+  opacity:.35;
+}
+
+.level-bubble{
+  width:72px;height:72px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;position:relative;
+  border:4px solid rgba(255,255,255,.15);
+  transition:transform .15s,box-shadow .15s;
+  user-select:none;
+  flex-shrink:0;
+}
+.level-bubble:hover:not(.locked){transform:scale(1.1);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.level-bubble.locked{opacity:.35;cursor:not-allowed;filter:grayscale(.6);}
+.level-bubble.current{animation:pulse-ring 2s infinite;}
+.level-bubble.boss{width:88px;height:88px;border-width:5px;}
+.bubble-emoji{font-size:1.5rem;line-height:1;}
+.bubble-num{font-family:'Fredoka One',cursive;font-size:.75rem;margin-top:2px;}
+.lock-icon{position:absolute;bottom:-4px;right:-4px;font-size:.9rem;}
+.check-icon{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:.7rem;border:3px solid var(--bg);}
+.star-ring{position:absolute;inset:-6px;border-radius:50%;border:3px dashed var(--yellow);animation:spin 8s linear infinite;opacity:.5;}
+
+@keyframes pulse-ring{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.4);}
+  50%{box-shadow:0 0 0 12px rgba(255,255,255,0);}
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== GAME MODAL ===== */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);
+  z-index:200;display:flex;align-items:center;justify-content:center;
+  padding:16px;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{
+  background:var(--card);border-radius:28px;
+  border:2px solid var(--border);
+  width:100%;max-width:640px;max-height:90vh;
+  display:flex;flex-direction:column;overflow:hidden;
+  transform:translateY(20px);transition:transform .2s;
+}
+.modal-overlay.open .modal-box{transform:translateY(0);}
+.modal-head{
+  padding:20px 24px 16px;border-bottom:2px solid var(--border);
+  display:flex;align-items:center;gap:14px;flex-shrink:0;
+}
+.modal-world-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+.modal-head-info{flex:1;}
+.modal-head-title{font-family:'Fredoka One',cursive;font-size:1.2rem;}
+.modal-head-sub{font-size:.78rem;color:var(--sub);margin-top:2px;}
+.modal-close{width:36px;height:36px;border-radius:50%;border:2px solid var(--border);background:none;color:var(--sub);cursor:pointer;font-size:1rem;transition:all .2s;}
+.modal-close:hover{background:rgba(255,255,255,.08);color:var(--text);}
+.modal-body{flex:1;overflow-y:auto;padding:24px;}
+
+/* ===== GAME SHARED ===== */
+.game-q{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:16px;line-height:1.5;}
+.game-score-row{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+.score-chip{background:var(--card2);border:2px solid var(--border);border-radius:50px;padding:5px 14px;font-family:'Fredoka One',cursive;font-size:.88rem;}
+.btn-primary{
+  background:var(--purple);color:white;border:none;
+  border-radius:12px;padding:12px 24px;
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:.95rem;
+  cursor:pointer;transition:all .2s;box-shadow:0 4px 0 #6a3fa0;
+}
+.btn-primary:hover{transform:translateY(-2px);}
+.btn-primary:active{transform:translateY(2px);box-shadow:none;}
+.btn-secondary{
+  background:var(--card2);color:var(--text);border:2px solid var(--border);
+  border-radius:12px;padding:12px 20px;
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:.9rem;
+  cursor:pointer;transition:all .2s;
+}
+.btn-secondary:hover{border-color:rgba(255,255,255,.3);}
+.btn-row{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+.feedback{
+  margin-top:14px;padding:12px 16px;border-radius:12px;
+  font-size:.9rem;font-weight:800;min-height:20px;
+  display:none;
+}
+.feedback.ok{background:rgba(46,196,134,.15);border:2px solid rgba(46,196,134,.4);color:var(--green);display:block;}
+.feedback.err{background:rgba(255,77,139,.15);border:2px solid rgba(255,77,139,.4);color:var(--red);display:block;animation:shake .3s;}
+
+/* ===== GAME: MULTIPLE CHOICE ===== */
+.mc-options{display:flex;flex-direction:column;gap:10px;}
+.mc-opt{
+  padding:14px 18px;border:3px solid var(--border);border-radius:14px;
+  background:var(--card2);cursor:pointer;transition:all .2s;
+  font-size:.92rem;font-weight:800;
+}
+.mc-opt:hover:not(.disabled){border-color:var(--purple);background:rgba(155,93,229,.1);}
+.mc-opt.correct{border-color:var(--green);background:rgba(46,196,134,.15);color:var(--green);}
+.mc-opt.wrong{border-color:var(--red);background:rgba(255,77,139,.15);color:var(--red);}
+.mc-opt.disabled{cursor:not-allowed;opacity:.6;}
+
+/* ===== GAME: DRAG & DROP SORT ===== */
+.sort-list{display:flex;flex-direction:column;gap:8px;}
+.sort-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;border:2px solid var(--border);border-radius:12px;
+  background:var(--card2);cursor:grab;transition:all .2s;
+  user-select:none;
+}
+.sort-item:active{cursor:grabbing;opacity:.7;}
+.sort-item.drag-over{border-color:var(--yellow);background:rgba(255,217,61,.08);}
+.sort-handle{color:var(--sub);font-size:1.1rem;}
+.sort-num{
+  width:28px;height:28px;border-radius:50%;
   background:var(--purple);color:white;
   display:flex;align-items:center;justify-content:center;
-  font-family:'Fredoka One',cursive;font-size:1rem;flex-shrink:0;
+  font-family:'Fredoka One',cursive;font-size:.85rem;flex-shrink:0;
 }
-.step-text{flex:1;font-size:.9rem;font-weight:700;color:rgba(255,255,255,.9);}
-.step-arrows{display:flex;flex-direction:column;gap:2px;}
-.step-arrows button{
-  background:rgba(255,255,255,.1);border:none;border-radius:4px;
-  color:white;cursor:pointer;padding:2px 6px;font-size:.7rem;line-height:1.4;
+.sort-text{flex:1;font-size:.88rem;}
+.sort-arrows{display:flex;flex-direction:column;gap:2px;}
+.sort-arr{background:rgba(255,255,255,.1);border:none;border-radius:4px;color:white;cursor:pointer;padding:2px 8px;font-size:.7rem;transition:background .15s;}
+.sort-arr:hover{background:rgba(255,255,255,.25);}
+
+/* ===== GAME: GRID / MAP ===== */
+.grid-game{display:flex;gap:20px;flex-wrap:wrap;}
+.grid-board{
+  display:grid;border-radius:12px;overflow:hidden;
+  border:2px solid var(--border);flex-shrink:0;
+}
+.grid-cell{
+  width:52px;height:52px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;border:1px solid rgba(255,255,255,.05);
   transition:background .2s;
 }
-.step-arrows button:hover{background:rgba(255,255,255,.25);}
-#algo-feedback{min-height:24px;font-size:.88rem;font-weight:700;margin-top:8px;}
+.cell-empty{background:var(--card2);}
+.cell-wall{background:#374151;}
+.cell-start{background:rgba(46,196,134,.2);}
+.cell-goal{background:rgba(255,217,61,.2);}
+.cell-kodi{background:rgba(155,93,229,.3);}
+.grid-controls{display:flex;flex-direction:column;gap:8px;}
+.dir-pad{display:grid;grid-template-columns:repeat(3,44px);gap:4px;}
+.dir-btn{
+  width:44px;height:44px;border-radius:10px;border:2px solid var(--border);
+  background:var(--card2);color:var(--text);cursor:pointer;font-size:1.1rem;
+  transition:all .15s;display:flex;align-items:center;justify-content:center;
+}
+.dir-btn:hover{background:rgba(155,93,229,.3);border-color:var(--purple);}
+.code-seq{
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;
+  min-height:40px;padding:8px;background:var(--card2);
+  border:2px dashed var(--border);border-radius:10px;
+}
+.code-block{
+  padding:4px 10px;border-radius:8px;font-size:.78rem;font-weight:800;
+  color:white;cursor:pointer;
+}
+.code-block:hover{opacity:.7;}
 
-/* ===== GAME 3: IF-ELSE ===== */
-.ifelse-layout{flex-direction:column;align-items:center;padding:28px;gap:18px;width:100%;overflow-y:auto;}
-.ifelse-card{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:20px;padding:24px;max-width:740px;width:100%;}
-.ie-title{font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--teal);margin-bottom:8px;}
-.ie-scenario{
-  background:#0D1117;border-radius:12px;padding:16px;
-  font-family:'Courier New',monospace;font-size:.88rem;color:#e2e8f0;
-  line-height:1.8;white-space:pre-wrap;border:2px solid rgba(255,255,255,.08);
-  margin-bottom:16px;
+/* ===== GAME: PATTERN ===== */
+.pattern-seq{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center;}
+.pat-item{
+  width:52px;height:52px;border-radius:12px;border:2px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;font-size:1.4rem;
 }
-.ie-question{font-size:1rem;font-weight:800;color:var(--yellow);margin-bottom:16px;}
-.ie-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-.ie-option{
-  padding:14px;border:3px solid rgba(255,255,255,.15);border-radius:12px;
-  background:rgba(255,255,255,.06);
-  font-family:'Nunito',sans-serif;font-weight:800;font-size:.92rem;
-  color:white;cursor:pointer;transition:all .2s;text-align:center;
+.pat-blank{border-style:dashed;border-color:var(--yellow);background:rgba(255,217,61,.05);}
+.pat-choices{display:flex;gap:10px;flex-wrap:wrap;}
+.pat-choice{
+  width:56px;height:56px;border-radius:12px;border:3px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:1.5rem;
+  cursor:pointer;transition:all .2s;background:var(--card2);
 }
-.ie-option:hover{border-color:var(--yellow);background:rgba(255,217,61,.1);}
-.ie-option.ie-correct{background:rgba(46,196,134,.3);border-color:var(--green);}
-.ie-option.ie-wrong{background:rgba(255,68,68,.3);border-color:var(--red);animation:shake .3s;}
-#ie-explanation{
-  font-size:.88rem;font-weight:700;line-height:1.6;
-  padding:12px 16px;border-radius:10px;background:rgba(255,255,255,.05);
-  white-space:pre-wrap;
-}
+.pat-choice:hover{border-color:var(--yellow);transform:scale(1.05);}
+.pat-choice.correct{border-color:var(--green);background:rgba(46,196,134,.15);}
+.pat-choice.wrong{border-color:var(--red);background:rgba(255,77,139,.15);animation:shake .3s;}
 
-/* ===== SHARED HEADER BAR ===== */
-.game-header-bar{
-  display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;
+/* ===== GAME: MATCH ===== */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.match-col{display:flex;flex-direction:column;gap:8px;}
+.match-item{
+  padding:12px 14px;border:3px solid var(--border);border-radius:12px;
+  background:var(--card2);cursor:pointer;transition:all .2s;font-size:.88rem;text-align:center;
 }
-.game-level-badge{
-  font-family:'Fredoka One',cursive;font-size:.9rem;color:var(--yellow);
+.match-item:hover{border-color:var(--yellow);}
+.match-item.selected-a{border-color:var(--purple);background:rgba(155,93,229,.15);}
+.match-item.selected-b{border-color:var(--blue);background:rgba(77,171,247,.15);}
+.match-item.matched{border-color:var(--green);background:rgba(46,196,134,.15);cursor:default;opacity:.7;}
+.match-item.wrong-flash{border-color:var(--red);animation:shake .3s;}
+
+/* ===== WIN OVERLAY ===== */
+.win-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
 }
-.game-score-badge{
-  font-family:'Fredoka One',cursive;font-size:.9rem;color:var(--green);
+.win-overlay.open{opacity:1;pointer-events:all;}
+.win-card{
+  background:var(--card);border-radius:28px;border:3px solid var(--green);
+  padding:40px 48px;text-align:center;max-width:380px;width:100%;
+  transform:scale(.8);transition:transform .3s;
 }
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.win-overlay.open .win-card{transform:scale(1);}
+.win-emoji{font-size:3.5rem;margin-bottom:12px;}
+.win-title{font-family:'Fredoka One',cursive;font-size:2rem;color:var(--yellow);}
+.win-xp{font-size:1.1rem;color:var(--green);margin-top:8px;font-weight:800;}
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:299;}
+.confetti-piece{
+  position:absolute;top:-10px;width:10px;height:14px;border-radius:3px;
+  animation:confetti-fall 2.5s ease-in forwards;
+}
+@keyframes confetti-fall{
+  to{transform:translateY(110vh) rotate(720deg);opacity:0;}
+}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* ===== TOAST ===== */
+#toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;}
+.toast{
+  background:var(--card2);border:2px solid var(--border);border-radius:12px;
+  padding:12px 18px;font-size:.88rem;font-weight:800;
+  animation:slide-in .3s ease;max-width:280px;
+}
+.toast.success{border-color:rgba(46,196,134,.5);color:var(--green);}
+.toast.error{border-color:rgba(255,77,139,.5);color:var(--red);}
+@keyframes slide-in{from{transform:translateX(100%);opacity:0}to{transform:none;opacity:1}}
+
+/* ===== KODI CHAT ===== */
+.kodi-fab{
+  position:fixed;bottom:28px;right:28px;z-index:150;
+  width:56px;height:56px;border-radius:50%;
+  background:var(--purple);border:3px solid rgba(155,93,229,.4);
+  font-size:1.5rem;cursor:pointer;transition:transform .2s;
+  box-shadow:0 8px 24px rgba(155,93,229,.4);
+}
+.kodi-fab:hover{transform:scale(1.1);}
+
+@media(max-width:600px){
+  .level-row:nth-child(odd){padding-right:60px;}
+  .level-row:nth-child(even){padding-left:60px;}
+  .level-bubble{width:60px;height:60px;}
+  .level-bubble.boss{width:72px;height:72px;}
+  .bubble-emoji{font-size:1.2rem;}
+  .grid-cell{width:42px;height:42px;}
+  .modal-box{max-height:95vh;}
+  .modal-body{padding:16px;}
+}
 </style>
 </head>
 <body>
+
+<!-- NAV -->
 <nav>
   <a class="nav-logo" href="index.html">🌿 KODAI</a>
   <div class="nav-links">
@@ -86,258 +367,1273 @@
     <a class="nav-link" href="progress.html">⭐ Progress</a>
   </div>
   <a class="nav-cta" href="login.html">✨ Mulai Belajar</a>
-  <div class="hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></div>
+  <div class="hamburger" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
   <a class="nav-link" href="index.html">🏠 Beranda</a>
   <a class="nav-link active" href="playground.html">🎮 Playground</a>
+  <a class="nav-link" href="materi.html">📚 Materi</a>
   <a class="nav-link" href="login.html">✨ Mulai</a>
 </div>
 <div id="toast-container"></div>
 
-<div class="playground-wrapper">
-  <!-- Game Tabs -->
-  <div class="game-tabs">
-    <button class="game-tab active" data-game="maze"    onclick="switchGame('maze')">🧩 Puzzle Maze</button>
-    <button class="game-tab"        data-game="algo"    onclick="switchGame('algo')">📋 Urutkan Algoritma</button>
-    <button class="game-tab"        data-game="ifelse"  onclick="switchGame('ifelse')">🔀 Logika IF-ELSE</button>
-    <button class="game-tab"        data-game="pattern" onclick="switchGame('pattern')">🔢 Tebak Pola</button>
-    <button class="game-tab"        data-game="ai"      onclick="switchGame('ai')">🤖 AI Trainer</button>
-  </div>
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="xp-pill">⭐ <span id="totalXP">0</span> XP</div>
+  <div class="streak-pill">🔥 <span id="streakCount">0</span> Hari</div>
+  <button class="reset-btn" onclick="if(confirm('Reset semua progress?')){resetProgress();}">🔄 Reset</button>
+</div>
 
-  <!-- ============================== -->
-  <!-- GAME 1: PUZZLE MAZE            -->
-  <!-- ============================== -->
-  <div class="game-panel active" id="game-maze">
-    <div class="maze-layout">
-      <div class="maze-left">
-        <div>
-          <div class="panel-title">🧩 Puzzle Maze</div>
-          <div class="panel-sub" id="maze-level-label">Level 1 / 3</div>
-        </div>
-        <div style="background:rgba(255,217,61,.1);border:2px solid rgba(255,217,61,.3);border-radius:12px;padding:12px;">
-          <div style="font-weight:800;font-size:.85rem;color:#FFD93D;margin-bottom:4px;">🎯 Konsep: Algoritma & Urutan</div>
-          <div style="font-size:.82rem;color:rgba(255,255,255,.7);font-weight:600;">Bawa Kodi 🤖 ke bintang ⭐! Urutan blok kode sangat penting — komputer mengikuti perintah dari atas ke bawah!</div>
-        </div>
-        <div>
-          <div class="panel-title">🧩 Blok Kode</div>
-          <div class="panel-sub" style="margin-bottom:10px;">Klik untuk tambahkan ke program</div>
-          <div class="blocks-palette">
-            <button class="block-btn bb-maju"   onclick="addMazeBlock('⬆ MAJU','#2EC486')">⬆ MAJU</button>
-            <button class="block-btn bb-kanan"  onclick="addMazeBlock('➡ KANAN','#4DABF7')">➡ KANAN</button>
-            <button class="block-btn bb-kiri"   onclick="addMazeBlock('⬅ KIRI','#FF6B35')">⬅ KIRI</button>
-            <button class="block-btn bb-mundur" onclick="addMazeBlock('⬇ MUNDUR','#FF6B6B')">⬇ MUNDUR</button>
-            <button class="block-btn bb-u3"     onclick="addMazeBlock('🔄 ULANGI×3','#9B5DE5')">🔄 ULANGI×3</button>
-            <button class="block-btn bb-jika"   onclick="addMazeBlock('❓ JIKA','#FF4D8B')">❓ JIKA</button>
-          </div>
-        </div>
-        <div>
-          <div class="panel-title">📝 Program Kamu</div>
-          <div class="drop-zone" id="dropZone">
-            <div id="dz-ph" style="color:rgba(255,255,255,.2);font-size:.8rem;font-weight:600;width:100%;text-align:center;padding:18px 0;">Klik blok di atas untuk tambah 👆</div>
-          </div>
-        </div>
-        <div class="pg-btns">
-          <button class="btn-run" onclick="runMaze()">▶ Jalankan!</button>
-          <button class="btn-reset" onclick="resetMaze()">🔄 Reset</button>
-        </div>
-        <div class="game-status-bar">
-          <div class="gs-item"><div class="gs-val" id="mazeScore">0</div><div class="gs-lbl">Total XP</div></div>
-          <div class="gs-item"><div class="gs-val" id="maze-lv-num">1</div><div class="gs-lbl">Level</div></div>
-        </div>
-        <div class="maze-legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#9B5DE5"></div>Kodi 🤖</div>
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(255,217,61,.4)"></div>Tujuan ⭐</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#374151"></div>Tembok 🧱</div>
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(46,196,134,.2)"></div>Start 🏁</div>
-        </div>
-      </div>
-      <div class="maze-right">
-        <div style="padding:12px 16px;border-bottom:2px solid rgba(255,255,255,.08);">
-          <div class="panel-title">🗺️ Peta Maze</div>
-          <div class="panel-sub">Urutan perintah menentukan jalur Kodi!</div>
-        </div>
-        <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:20px;">
-          <div id="mazeGrid" class="maze-grid"></div>
-        </div>
-        <div class="console-area" id="mazeConsole">
-          <p class="warn">> Tekan Jalankan! untuk mulai...</p>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- WORLD MAP -->
+<div class="world-map" id="worldMap"></div>
 
-  <!-- ============================== -->
-  <!-- GAME 2: URUTKAN ALGORITMA      -->
-  <!-- ============================== -->
-  <div class="game-panel" id="game-algo">
-    <div class="algo-layout game-panel" style="display:flex;">
-      <div class="algo-card">
-        <div class="game-header-bar">
-          <div class="algo-title" id="algo-title"></div>
-          <div style="display:flex;gap:16px;">
-            <div class="game-level-badge" id="algo-level">Soal 1/3</div>
-            <div class="game-score-badge">Skor: <span id="algo-score">0</span></div>
-          </div>
-        </div>
-        <div class="algo-desc" id="algo-desc"></div>
-        <div style="font-size:.82rem;color:rgba(255,255,255,.5);font-weight:700;margin-bottom:10px;">
-          👆 Klik dua langkah untuk tukar posisi, atau pakai tombol ⬆⬇ untuk geser:
-        </div>
-        <div class="algo-steps" id="algoSteps"></div>
-        <div id="algo-feedback"></div>
-        <div style="display:flex;gap:10px;margin-top:14px;">
-          <button class="btn-run" onclick="checkAlgo()">✅ Cek Urutan!</button>
-          <button class="btn-reset" onclick="resetAlgo()">🔄 Acak Ulang</button>
-        </div>
+<!-- GAME MODAL -->
+<div class="modal-overlay" id="gameModal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-world-dot" id="modalDot"></div>
+      <div class="modal-head-info">
+        <div class="modal-head-title" id="modalTitle"></div>
+        <div class="modal-head-sub" id="modalSub"></div>
       </div>
-      <div style="background:rgba(155,93,229,.08);border:2px solid rgba(155,93,229,.2);border-radius:16px;padding:16px;max-width:740px;width:100%;">
-        <div style="font-family:'Fredoka One',cursive;color:#9B5DE5;margin-bottom:8px;">💡 Apa itu Algoritma?</div>
-        <p style="color:rgba(255,255,255,.6);font-size:.85rem;font-weight:600;line-height:1.7;">
-          Algoritma adalah <strong style="color:var(--yellow)">urutan langkah-langkah yang logis</strong> untuk menyelesaikan masalah. 
-          Komputer mengikuti instruksi dari atas ke bawah — jadi urutannya harus benar! 
-          Ini adalah konsep dasar dalam coding dan kehidupan sehari-hari. 🧩
-        </p>
-      </div>
+      <button class="modal-close" onclick="document.getElementById('gameModal').classList.remove('open')">✕</button>
     </div>
-  </div>
-
-  <!-- ============================== -->
-  <!-- GAME 3: LOGIKA IF-ELSE         -->
-  <!-- ============================== -->
-  <div class="game-panel" id="game-ifelse">
-    <div class="ifelse-layout game-panel" style="display:flex;">
-      <div class="ifelse-card">
-        <div class="game-header-bar">
-          <div class="ie-title" id="ie-title"></div>
-          <div style="display:flex;gap:16px;">
-            <div class="game-level-badge" id="ie-level">Soal 1/4</div>
-            <div class="game-score-badge">Skor: <span id="ie-score">0</span></div>
-          </div>
-        </div>
-        <div class="ie-scenario" id="ie-scenario"></div>
-        <div class="ie-question" id="ie-question"></div>
-        <div class="ie-options" id="ie-options"></div>
-        <div id="ie-explanation" style="display:none;"></div>
-      </div>
-      <div style="background:rgba(0,212,170,.08);border:2px solid rgba(0,212,170,.2);border-radius:16px;padding:16px;max-width:740px;width:100%;">
-        <div style="font-family:'Fredoka One',cursive;color:var(--teal);margin-bottom:10px;">🔀 Cara Berpikir IF-ELSE</div>
-        <div style="font-family:'Courier New',monospace;font-size:.88rem;color:#e2e8f0;line-height:2;background:#0D1117;padding:14px;border-radius:10px;">
-          <span style="color:#FF79C6">JIKA</span> kondisi <span style="color:#FF79C6">benar</span>:<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8BE9FD">lakukan aksi A</span><br>
-          <span style="color:#FF79C6">LAINNYA</span>:<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#8BE9FD">lakukan aksi B</span>
-        </div>
-        <p style="color:rgba(255,255,255,.6);font-size:.82rem;font-weight:600;margin-top:10px;">
-          Program membuat keputusan berdasarkan kondisi — seperti otak kita berpikir! 🧠
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================== -->
-  <!-- GAME 4: TEBAK POLA             -->
-  <!-- ============================== -->
-  <div class="game-panel" id="game-pattern">
-    <div class="pattern-layout game-panel" style="display:flex;">
-      <div class="pattern-score" style="margin-bottom:8px;">
-        <div class="ps-item"><div class="ps-val" id="pat-score">0</div><div class="ps-lbl">Skor</div></div>
-        <div class="ps-item"><div class="ps-val" id="pat-streak">0</div><div class="ps-lbl">Streak 🔥</div></div>
-      </div>
-      <div class="pattern-card">
-        <div class="pattern-level" id="pat-level">Level 1 / 6</div>
-        <div class="pattern-question">Apa yang melanjutkan pola ini?</div>
-        <div class="pattern-seq" id="patSeq"></div>
-        <div style="color:rgba(255,255,255,.5);font-size:.85rem;font-weight:600;margin-bottom:16px;">Pilih jawaban yang benar:</div>
-        <div class="pattern-choices" id="patChoices"></div>
-        <div style="margin-top:16px;font-size:.88rem;font-weight:700;min-height:24px;color:rgba(255,255,255,.6);" id="pat-rule"></div>
-      </div>
-      <div style="background:rgba(77,171,247,.08);border:2px solid rgba(77,171,247,.2);border-radius:16px;padding:16px;max-width:700px;width:100%;">
-        <div style="font-family:'Fredoka One',cursive;color:var(--blue);margin-bottom:8px;">🔢 Pengenalan Pola = Berpikir Komputasional</div>
-        <p style="color:rgba(255,255,255,.6);font-size:.85rem;font-weight:600;line-height:1.7;">
-          Kemampuan mengenali pola adalah dasar dari <strong style="color:var(--yellow)">berpikir komputasional</strong> — cara kerja komputer dan AI! 
-          AI seperti ChatGPT juga belajar dengan mengenali pola dari jutaan data. 🤖
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================== -->
-  <!-- GAME 5: AI TRAINER             -->
-  <!-- ============================== -->
-  <div class="game-panel" id="game-ai">
-    <div class="ai-layout game-panel" style="display:flex;">
-      <div class="ai-card">
-        <div class="ai-card-title">🤖 Latih AI-mu Sendiri!</div>
-        <div class="ai-desc">
-          Ini simulasi cara AI belajar dari data — persis seperti cara kerja Machine Learning sungguhan!<br>
-          <strong>Langkah 1:</strong> Klik setiap gambar → labeli "Hewan" atau "Bukan Hewan" (klik lagi untuk ganti).<br>
-          <strong>Langkah 2:</strong> Klik "Train AI" setelah labeli minimal 5 data.<br>
-          <strong>Langkah 3:</strong> Lihat akurasi modelmu, lalu prediksi data baru!
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <div style="font-family:'Fredoka One',cursive;font-size:1rem;color:rgba(255,255,255,.8);">📊 Data Training:</div>
-          <div style="background:rgba(0,212,170,.15);border:2px solid var(--teal);border-radius:50px;padding:4px 14px;font-family:'Fredoka One',cursive;color:var(--teal);">
-            <span id="ai-labeled-count">0</span>/10 dilabeli
-          </div>
-        </div>
-        <div class="training-data" id="aiDataGrid"></div>
-        <div class="ai-controls">
-          <button class="train-btn" onclick="trainAI()">🧠 Train AI Sekarang!</button>
-          <button class="btn-reset" onclick="initAITrainer();showToast('🔄 Data direset!','')">🔄 Reset</button>
-        </div>
-        <div class="ai-result" id="aiResult">
-          <div class="ai-result-title">📈 Hasil Training Model Kamu</div>
-          <div class="ai-bar"><div class="ai-bar-label">Akurasi</div><div class="ai-bar-track"><div class="ai-bar-fill" id="ai-acc-bar" style="width:0%"></div></div><div class="ai-bar-pct" id="ai-acc-val">0%</div></div>
-          <div class="ai-bar"><div class="ai-bar-label">Presisi</div><div class="ai-bar-track"><div class="ai-bar-fill" id="ai-prec-bar" style="width:0%;background:#9B5DE5"></div></div><div class="ai-bar-pct" id="ai-prec-val">0%</div></div>
-          <div class="ai-bar"><div class="ai-bar-label">Recall</div><div class="ai-bar-track"><div class="ai-bar-fill" id="ai-rec-bar" style="width:0%;background:#FF4D8B"></div></div><div class="ai-bar-pct" id="ai-rec-val">0%</div></div>
-          <div style="font-size:.82rem;color:rgba(255,255,255,.5);font-weight:600;margin-top:10px;">
-            💡 Makin banyak label yang benar → akurasi makin tinggi! Ini persis cara ML sungguhan bekerja.
-          </div>
-        </div>
-      </div>
-      <div class="ai-card" style="max-width:760px;width:100%;">
-        <div class="ai-card-title" style="font-size:1.1rem;">🔮 Uji Model: Prediksi Data Baru</div>
-        <div class="ai-desc">Setelah training, klik gambar di bawah untuk prediksi apakah itu hewan atau bukan!</div>
-        <div class="ai-predict-zone" id="aiPredictZone" style="display:none;"></div>
-        <div style="font-size:.82rem;color:rgba(0,212,170,.7);font-weight:600;margin-top:12px;line-height:1.6;">
-          🎓 <strong>Inilah cara kerja AI nyata:</strong> diberi data berlabel → belajar pola → prediksi data baru yang belum pernah dilihat!
-          Sama seperti ChatGPT, Google Translate, atau face recognition di HP kamu.
-        </div>
-      </div>
-    </div>
+    <div class="modal-body" id="modalBody"></div>
   </div>
 </div>
 
 <!-- WIN OVERLAY -->
-<div class="win-overlay" id="winOverlay" onclick="hideWin()">
+<div class="win-overlay" id="winOverlay">
+  <div class="confetti-wrap" id="confettiWrap"></div>
   <div class="win-card" onclick="event.stopPropagation()">
     <div class="win-emoji">🎉</div>
-    <div class="win-title" id="winTitle">Selamat!</div>
-    <div class="win-sub" id="winSub">Kamu berhasil!</div>
-    <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
-      <button class="btn-primary" onclick="nextMazeLevel();hideWin()">▶ Level Berikutnya</button>
-      <button class="btn-secondary" onclick="hideWin()">Main Lagi</button>
+    <div class="win-title" id="winTitle">Level Selesai!</div>
+    <div class="win-xp" id="winXP">+50 XP</div>
+    <div class="btn-row" style="justify-content:center;margin-top:20px;">
+      <button class="btn-primary" onclick="closeWin();nextLevel();">▶ Lanjut!</button>
+      <button class="btn-secondary" onclick="closeWin()">✕ Tutup</button>
     </div>
   </div>
 </div>
 
-<!-- KODI AI -->
-<button class="kodi-fab" onclick="toggleKodiChat()" title="Minta hint dari Kodi!">🤖</button>
-<div class="kodi-chat-panel" id="kodiPanel">
-  <div class="kodi-chat-header">
-    <div class="kodi-av">🤖</div>
-    <div><div class="kodi-name">Kodi AI</div><div class="kodi-status">Minta hint kapan saja!</div></div>
-    <button class="kodi-close-btn" onclick="toggleKodiChat()">✕</button>
-  </div>
-  <div class="kodi-messages" id="kodiMessages"></div>
-  <div class="kodi-input-area">
-    <input class="kodi-input" id="kodiInput" placeholder="Minta hint dari Kodi...">
-    <button class="kodi-send" onclick="sendKodiMessage()">➤</button>
-  </div>
-</div>
+<button class="kodi-fab" title="Kodi AI">🤖</button>
 
-<script src="js/nav.js"></script>
-<script src="js/games.js"></script>
+<script>
+// ===== LEVEL DATA =====
+const WORLDS = [
+  {
+    id:1, name:'Dunia Perintah', emoji:'🌿', color:'--w1', colorHex:'#43C6AC',
+    desc:'Instruksi, urutan, dan pola dasar',
+    levels:[
+      {id:1, emoji:'🤖', label:'Instruksi', xp:50, boss:false, game:'mc',
+       title:'Mengenal Instruksi',
+       concept:'Sequence — Instruksi Tunggal',
+       data:{
+         rounds:[
+           {q:'Kodi berdiri diam. Bintang ⭐ ada tepat di DEPAN Kodi. Instruksi mana yang benar?',
+            opts:['⬆ MAJU','⬇ MUNDUR','⬅ KIRI','➡ KANAN'], ans:0,
+            explain:'Bintang ada di depan, jadi Kodi harus MAJU! Komputer hanya melakukan tepat seperti yang diperintahkan.'},
+           {q:'Kodi menghadap ke atas. Bintang ⭐ ada di sebelah KANAN Kodi. Pilih instruksi yang tepat!',
+            opts:['⬆ MAJU','⬇ MUNDUR','⬅ KIRI','➡ KANAN'], ans:3,
+            explain:'Bintang ada di kanan, jadi instruksinya KANAN. Instruksi harus spesifik!'},
+           {q:'Kodi perlu mundur satu langkah untuk menghindari rintangan. Instruksi apa yang digunakan?',
+            opts:['⬆ MAJU','⬇ MUNDUR','⬅ KIRI','➡ KANAN'], ans:1,
+            explain:'Untuk bergerak ke belakang, gunakan MUNDUR. Setiap instruksi punya arti yang jelas!'},
+         ]
+       }
+      },
+      {id:2, emoji:'⏰', label:'Urutan Pagi', xp:60, boss:false, game:'sort',
+       title:'Urutan Kegiatan Pagi',
+       concept:'Sequence — Urutan Berurutan',
+       data:{
+         items:['😴 Bangun tidur','🚿 Mandi','👕 Berpakaian','🍳 Sarapan','🎒 Berangkat sekolah'],
+         correct:[0,1,2,3,4],
+         hint:'Susun kegiatan pagi Kodi dari pertama sampai terakhir! Ingat, mandi sebelum berpakaian ya!'
+       }
+      },
+      {id:3, emoji:'🗺️', label:'Ayo Arah!', xp:60, boss:false, game:'maze',
+       title:'Ayo Ikuti Arah!',
+       concept:'Sequence — Perintah Arah',
+       data:{
+         grid:5,
+         start:[0,0],
+         goal:[4,4],
+         walls:[[1,1],[2,2],[3,1],[1,3]],
+         maxSteps:10,
+         hint:'Susun urutan arah untuk membawa Kodi 🤖 ke bintang ⭐. Grid 5×5, mulai dari pojok kiri atas!'
+       }
+      },
+      {id:4, emoji:'🌈', label:'Pola Warna', xp:55, boss:false, game:'pattern',
+       title:'Pola Warna dan Bentuk',
+       concept:'Pattern Recognition',
+       data:{
+         rounds:[
+           {seq:['🔴','🔵','🔴','🔵','🔴','?'],ans:'🔵',choices:['🔵','🟡','🟢','🔴'],rule:'Pola: Merah-Biru berulang'},
+           {seq:['🌟','🌙','🌟','🌙','?'],ans:'🌟',choices:['🌙','🌟','☀️','⭐'],rule:'Pola: Bintang-Bulan berulang'},
+           {seq:['🍎','🍊','🍋','🍎','🍊','?'],ans:'🍋',choices:['🍎','🍊','🍋','🍇'],rule:'Pola: Merah-Oranye-Kuning berulang'},
+         ]
+       }
+      },
+      {id:5, emoji:'🔍', label:'Debugging', xp:65, boss:false, game:'sort',
+       title:'Kodi Tersesat — Debugging',
+       concept:'Debugging Dasar',
+       data:{
+         items:['🏠 Keluar dari rumah','🚶 Berjalan ke jalan utama','🚌 Naik angkot','🏫 Tiba di sekolah','🧺 Bawa bekal'],
+         correct:[0,4,1,2,3],
+         hint:'Ada satu langkah yang salah posisi! "Bawa bekal" harusnya dilakukan sebelum keluar rumah. Coba susun ulang!'
+       }
+      },
+      {id:6, emoji:'🏫', label:'Langkah Sekolah', xp:55, boss:false, game:'mc',
+       title:'Langkah Demi Langkah ke Sekolah',
+       concept:'Algoritma Sederhana',
+       data:{
+         rounds:[
+           {q:'Kodi ingin pergi dari rumah ke sekolah. Mana urutan algoritma yang BENAR?',
+            opts:['Tiba di sekolah → Jalan → Keluar rumah','Keluar rumah → Jalan ke halte → Naik angkot → Tiba','Naik angkot → Keluar rumah → Jalan','Tiba → Keluar → Naik angkot'], ans:1,
+            explain:'Algoritma yang benar: Keluar rumah → Jalan ke halte → Naik angkot → Tiba di sekolah. Urutannya penting!'},
+           {q:'Ini adalah algoritma memasak mie instan:\n1. Rebus air\n2. Masukkan mie\n3. Tambahkan bumbu\nAda yang hilang! Langkah mana yang harus ditambahkan setelah langkah 3?',
+            opts:['Menyalakan kompor','Aduk dan tunggu matang','Beli mie dulu','Siapkan piring, tiriskan'], ans:3,
+            explain:'Setelah tambah bumbu, mie perlu disiapkan di piring! Algoritma harus lengkap agar hasilnya sempurna.'},
+           {q:'Algoritma yang baik harus...',
+            opts:['Bisa langsung dimengerti tanpa dibaca','Memiliki langkah yang jelas, berurutan, dan lengkap','Hanya terdiri dari satu langkah','Bisa diubah urutannya kapan saja'], ans:1,
+            explain:'Algoritma yang baik: langkah jelas, berurutan, dan lengkap — seperti resep masakan yang bagus!'},
+         ]
+       }
+      },
+      {id:7, emoji:'📗', label:'Buku Resep', xp:100, boss:true, game:'sort',
+       title:'Proyek Mini: Buku Resep Teh Manis',
+       concept:'Sequence + Algoritma — BOSS LEVEL',
+       data:{
+         items:['🫖 Siapkan gelas dan teh celup','💧 Rebus air hingga mendidih','☕ Tuang air panas ke gelas','🍬 Tambahkan gula secukupnya','🥄 Aduk hingga rata','😋 Teh manis siap diminum!'],
+         correct:[0,1,2,3,4,5],
+         hint:'Ini BOSS LEVEL! Susun 6 langkah membuat teh manis Kodi dengan urutan yang benar dari awal sampai selesai!'
+       }
+      },
+    ]
+  },
+  {
+    id:2, name:'Dunia Algoritma', emoji:'🧠', color:'--w2', colorHex:'#4DABF7',
+    desc:'Algoritma, dekomposisi, dan debugging',
+    levels:[
+      {id:8, emoji:'🧠', label:'Algoritma', xp:65, boss:false, game:'mc',
+       title:'Apa itu Algoritma?',
+       concept:'Algorithm',
+       data:{
+         rounds:[
+           {q:'Mana definisi algoritma yang PALING tepat?',
+            opts:['Kumpulan kode komputer yang sulit','Urutan langkah-langkah jelas untuk menyelesaikan masalah','Nama sebuah aplikasi ponsel','Daftar belanja supermarket'], ans:1,
+            explain:'Algoritma = urutan langkah yang jelas dan berurutan untuk menyelesaikan suatu masalah. Seperti resep masakan!'},
+           {q:'Kodi punya dua "resep" untuk merapikan tas:\nA: Masukkan buku → Masukkan bekal → Kunci tas\nB: Kunci tas → Masukkan buku → Masukkan bekal\nMana algoritma yang benar?',
+            opts:['A','B','Keduanya benar','Keduanya salah'], ans:0,
+            explain:'Algoritma A benar! Kita harus memasukkan isi tas dulu sebelum mengunci. Urutan itu penting!'},
+           {q:'Apa yang terjadi jika algoritma tidak diikuti dengan urutan yang benar?',
+            opts:['Tidak ada yang terjadi, hasilnya sama saja','Hasilnya bisa salah atau tidak sesuai harapan','Komputer akan memperbaiki sendiri','Algoritma akan berhenti di tengah jalan'], ans:1,
+            explain:'Jika urutan salah, hasilnya bisa kacau — seperti memakai sepatu sebelum kaos kaki!'},
+         ]
+       }
+      },
+      {id:9, emoji:'🍵', label:'Resep Teh', xp:65, boss:false, game:'sort',
+       title:'Algoritma Membuat Teh',
+       concept:'Algorithm — Konteks Lokal',
+       data:{
+         items:['🔥 Nyalakan kompor','💧 Rebus air sampai mendidih','🫖 Siapkan gelas dan teh celup','☕ Tuang air panas ke gelas berisi teh','🍬 Tambahkan gula dan aduk'],
+         correct:[0,1,2,3,4],
+         hint:'Susun langkah membuat teh dalam 30 detik! Ingat: air harus direbus dulu sebelum dituang ke gelas.'
+       }
+      },
+      {id:10, emoji:'🐛', label:'Bug Hunting', xp:70, boss:false, game:'sort',
+       title:'Menemukan Kesalahan (Debugging)',
+       concept:'Debugging',
+       data:{
+         items:['🌱 Siapkan pot berisi tanah','💧 Siram tanah agar lembab','🌿 Tancapkan biji ke dalam tanah','☀️ Letakkan pot di tempat yang terkena sinar matahari','🌻 Tunggu biji tumbuh menjadi tanaman'],
+         correct:[0,1,2,3,4],
+         hint:'Ada langkah yang terbalik! "Siram tanah" harusnya SETELAH "Tancapkan biji". Temukan dan perbaiki! (Ini versi benar, coba kamu susun dulu lalu cek!)'
+       }
+      },
+      {id:11, emoji:'🧩', label:'Decomposisi', xp:65, boss:false, game:'match',
+       title:'Decomposition: Memecah Tugas Besar',
+       concept:'Decomposition',
+       data:{
+         left:['Bersihkan kelas','Siapkan pesta ulang tahun','Bikin presentasi'],
+         right:['Sapu lantai + lap meja + buang sampah','Beli kue + pasang dekorasi + undang teman','Pilih topik + buat slide + latihan berbicara'],
+         pairs:[0,1,2],
+         hint:'Pasangkan tugas BESAR dengan cara memecahnya menjadi tugas-tugas KECIL!'
+       }
+      },
+      {id:12, emoji:'🌱', label:'Tanam Biji', xp:75, boss:false, game:'sort',
+       title:'Algoritma Menanam Biji',
+       concept:'Algorithm + Decomposition',
+       data:{
+         items:['🪣 Gemburkan tanah dalam pot','🕳️ Buat lubang kecil di tanah','🌱 Masukkan biji ke dalam lubang','🌿 Tutup lubang dengan tanah','💧 Siram dengan air secukupnya'],
+         correct:[0,1,2,3,4],
+         hint:'Susun langkah menanam biji yang benar. Ingat: biji harus dimasukkan ke lubang SETELAH lubang dibuat!'
+       }
+      },
+      {id:13, emoji:'🧹', label:'Proyek Piket', xp:120, boss:true, game:'mc',
+       title:'Proyek Piket Kelas — BOSS LEVEL',
+       concept:'Algorithm + Debugging — BOSS LEVEL',
+       data:{
+         rounds:[
+           {q:'Algoritma piket Kodi ada yang salah:\n1. Buang sampah ke tempat sampah\n2. Sapu lantai\n3. Lap papan tulis\n4. Rapikan meja\n\nLangkah mana yang urutannya KELIRU?',
+            opts:['Langkah 1 (Buang sampah harus terakhir)','Langkah 3 (Lap papan tulis harus sebelum sapu)','Semua sudah benar','Langkah 4 (Rapikan meja harus pertama)'], ans:0,
+            explain:'Betul! Buang sampah harusnya SETELAH sapu lantai — baru ada sampah yang bisa dibuang setelah disapu!'},
+           {q:'Mana pembagian tugas piket yang menggunakan dekomposisi dengan baik?',
+            opts:['Semua siswa melakukan semua tugas bersama','Bagi tugas: A sapu, B lap papan, C buang sampah','Hanya ketua kelas yang bekerja','Tidak perlu tugas karena sudah ada janitor'], ans:1,
+            explain:'Dekomposisi yang baik: pecah tugas besar menjadi bagian kecil dan bagikan ke anggota tim!'},
+           {q:'Kodi menemukan bug: lantai masih kotor meski sudah "diselesaikan". Apa langkah debugging pertama?',
+            opts:['Langsung menyalahkan teman','Cek kembali urutan algoritma piket dari awal','Berhenti dan pulang saja','Panggil guru untuk bantu'],ans:1,
+            explain:'Debugging yang benar: telusuri algoritma dari awal untuk menemukan di mana kesalahannya terjadi!'},
+         ]
+       }
+      },
+    ]
+  },
+  {
+    id:3, name:'Dunia Keputusan', emoji:'🚦', color:'--w3', colorHex:'#f7971e',
+    desc:'Logika kondisi IF-THEN-ELSE',
+    levels:[
+      {id:14, emoji:'🤔', label:'Pilihan', xp:70, boss:false, game:'mc',
+       title:'Mengenal Pilihan',
+       concept:'Decision Making',
+       data:{
+         rounds:[
+           {q:'Kodi melihat langit mendung gelap. Apa pilihan terbaik sebelum berangkat sekolah?',
+            opts:['Pergi tanpa bawa apapun','Bawa payung atau jas hujan','Tidak jadi sekolah','Menunggu sampai hujan reda'], ans:1,
+            explain:'Kondisi: langit mendung → Pilihan: bawa payung. Kita membuat keputusan berdasarkan kondisi yang ada!'},
+           {q:'Di perempatan, lampu MERAH menyala untuk Kodi yang berjalan kaki. Apa yang harus dilakukan?',
+            opts:['Lari cepat-cepat menyeberang','Berhenti dan tunggu lampu hijau','Berputar mencari jalan lain','Tetap jalan karena tidak ada kendaraan'], ans:1,
+            explain:'Lampu merah = berhenti. Ini contoh pengambilan keputusan berdasarkan kondisi lampu lalu lintas!'},
+           {q:'Sebelum membuat keputusan yang baik, kita perlu...',
+            opts:['Langsung bertindak tanpa berpikir','Memperhatikan dan memahami kondisi yang ada','Menunggu orang lain memutuskan','Memilih opsi pertama yang terlihat'], ans:1,
+            explain:'Keputusan yang baik dibuat setelah kita memahami kondisi atau situasi yang sedang terjadi!'},
+         ]
+       }
+      },
+      {id:15, emoji:'🚦', label:'JIKA-MAKA', xp:75, boss:false, game:'mc',
+       title:'JIKA...MAKA...',
+       concept:'Condition — IF-THEN',
+       data:{
+         rounds:[
+           {q:'Lengkapi aturan ini:\nJIKA lampu lalu lintas MERAH,\nMAKA Kodi harus...',
+            opts:['Berjalan cepat','Berhenti','Belok kiri','Belok kanan'], ans:1,
+            explain:'JIKA merah → MAKA berhenti. Struktur IF-THEN: kondisi menentukan tindakan!'},
+           {q:'JIKA hari ini HUJAN,\nMAKA Kodi membawa...',
+            opts:['Kacamata hitam','Sendal jepit','Payung','Topi pantai'], ans:2,
+            explain:'JIKA hujan → MAKA bawa payung. Logika IF-THEN digunakan setiap hari tanpa kita sadari!'},
+           {q:'Kodi menulis aturan: "JIKA nilai ulangan di atas 80, MAKA mendapat bintang."\nNilai Budi adalah 75. Apa yang terjadi?',
+            opts:['Budi mendapat bintang','Budi tidak mendapat bintang','Budi mendapat setengah bintang','Aturan tidak berlaku untuk Budi'], ans:1,
+            explain:'75 tidak di atas 80, jadi kondisi tidak terpenuhi → tidak mendapat bintang. IF-THEN bekerja persis!'},
+         ]
+       }
+      },
+      {id:16, emoji:'☂️', label:'IF-ELSE', xp:80, boss:false, game:'mc',
+       title:'JIKA-KALAU TIDAK (IF-ELSE)',
+       concept:'Condition — IF-ELSE',
+       data:{
+         rounds:[
+           {q:'Lengkapi aturan IF-ELSE ini:\nJIKA cuaca PANAS → pakai baju tipis\nKALAU TIDAK (cuaca dingin) → pakai...',
+            opts:['Baju renang','Jas hujan','Jaket tebal','Kostum pesta'], ans:2,
+            explain:'IF-ELSE memberikan dua pilihan tindakan: satu jika kondisi BENAR, satu lagi jika kondisi SALAH!'},
+           {q:'JIKA Kodi membawa uang saku → beli makanan di kantin\nKALAU TIDAK → ...',
+            opts:['Tetap beli, tapi hutang','Makan bekal dari rumah','Pulang untuk ambil uang','Tidak makan sama sekali'], ans:1,
+            explain:'Jika tidak punya uang → makan bekal. IF-ELSE memastikan selalu ada tindakan untuk setiap kondisi!'},
+           {q:'Apa perbedaan utama IF-THEN dan IF-THEN-ELSE?',
+            opts:['Tidak ada bedanya','IF-THEN-ELSE punya tindakan untuk kondisi TIDAK TERPENUHI juga','IF-THEN lebih canggih','IF-ELSE hanya untuk komputer'], ans:1,
+            explain:'IF-THEN: hanya ada tindakan jika kondisi benar. IF-ELSE: ada tindakan untuk KEDUA kemungkinan kondisi!'},
+         ]
+       }
+      },
+      {id:17, emoji:'🚸', label:'Keselamatan', xp:80, boss:false, game:'mc',
+       title:'Menyeberang Jalan dengan Aman',
+       concept:'Kondisi Berganda',
+       data:{
+         rounds:[
+           {q:'Kodi akan menyeberang. Kondisi saat ini:\n• Lampu pejalan kaki: HIJAU ✅\n• Ada kendaraan lewat: TIDAK ADA ✅\n• Ada zebra cross: ADA ✅\n\nAman untuk menyeberang?',
+            opts:['Ya, semua kondisi aman!','Tidak, tunggu dulu','Hanya jika ada orang dewasa','Tidak pernah aman'], ans:0,
+            explain:'Semua kondisi terpenuhi: lampu hijau + tidak ada kendaraan + ada zebra cross = AMAN! Periksa SEMUA kondisi sekaligus.'},
+           {q:'Kondisi:\n• Lampu pejalan kaki: MERAH ❌\n• Tidak ada kendaraan: ✅\n\nApakah aman menyeberang?',
+            opts:['Ya, karena tidak ada kendaraan','Tidak, lampu masih merah','Ya, kalau cepat-cepat','Tidak ada aturan tentang ini'], ans:1,
+            explain:'TIDAK aman! Meski tidak ada kendaraan, lampu masih MERAH. Dalam kondisi berganda, SEMUA kondisi harus terpenuhi!'},
+           {q:'Saat menyeberang jalan, kondisi mana yang PALING penting diperiksa PERTAMA?',
+            opts:['Apakah ada teman yang ikut','Warna lampu lalu lintas untuk pejalan kaki','Apakah jalan terbuat dari aspal','Apakah cuaca cerah'], ans:1,
+            explain:'Lampu lalu lintas adalah kondisi utama keselamatan! Selalu cek lampu terlebih dahulu sebelum kondisi lain.'},
+         ]
+       }
+      },
+      {id:18, emoji:'🌳', label:'Kondisi Bertingkat', xp:85, boss:false, game:'mc',
+       title:'Kondisi Bertingkat (Nested IF)',
+       concept:'Nested Condition',
+       data:{
+         rounds:[
+           {q:'Algoritma rencana Kodi:\nJIKA tidak hujan:\n  JIKA tidak ada PR → main di taman\n  KALAU TIDAK → belajar di rumah\nKALAU TIDAK (hujan):\n  Nonton film\n\nHari ini tidak hujan dan Kodi punya PR. Apa yang dilakukan Kodi?',
+            opts:['Main di taman','Belajar di rumah','Nonton film','Tidak ada rencana'], ans:1,
+            explain:'Tidak hujan (masuk kondisi pertama) → ada PR (kondisi kedua tidak terpenuhi) → BELAJAR DI RUMAH!'},
+           {q:'Menggunakan algoritma yang sama:\nHari ini HUJAN. Apa yang dilakukan Kodi?',
+            opts:['Main di taman','Belajar di rumah','Nonton film','Pergi ke mall'], ans:2,
+            explain:'Hujan → langsung ke KALAU TIDAK → nonton film. Kondisi pertama menentukan cabang mana yang diikuti!'},
+           {q:'Mengapa kondisi bertingkat berguna dalam kehidupan nyata?',
+            opts:['Karena membuat keputusan lebih sulit','Karena keputusan nyata sering butuh cek beberapa hal sekaligus','Karena komputer tidak bisa berpikir','Karena lebih keren kedengarannya'], ans:1,
+            explain:'Keputusan nyata jarang sesederhana satu kondisi. Kondisi bertingkat memungkinkan logika yang lebih realistis!'},
+         ]
+       }
+      },
+      {id:19, emoji:'🎲', label:'Aturan Game', xp:130, boss:true, game:'mc',
+       title:'Proyek Aturan Permainan — BOSS LEVEL',
+       concept:'IF-THEN-ELSE — BOSS LEVEL',
+       data:{
+         rounds:[
+           {q:'Kodi membuat aturan permainan lempar bola:\n"JIKA bola masuk keranjang → dapat 2 poin\n KALAU TIDAK → dapat 0 poin"\n\nRia melempar dan MASUK. Berapa poin Ria?',
+            opts:['0 poin','1 poin','2 poin','3 poin'], ans:2,
+            explain:'JIKA masuk → 2 poin. Kondisi terpenuhi! Aturan permainan menggunakan IF-ELSE yang kita pelajari.'},
+           {q:'Tambahan aturan:\n"JIKA jarak lemparan JAUH (>3 meter) → dapat bonus 1 poin"\n\nBudi melempar dari jarak 2 meter dan masuk. Total poin Budi?',
+            opts:['0 poin','2 poin','3 poin','1 poin'], ans:1,
+            explain:'Masuk = 2 poin. Tapi jarak 2 meter TIDAK >3 meter, jadi tidak ada bonus. Total = 2 poin!'},
+           {q:'Mana aturan permainan yang menggunakan logika IF-ELSE dengan BENAR?',
+            opts:['Semua pemain menang','JIKA pemain tiba pertama → menang, KALAU TIDAK → coba lagi','Tidak ada yang menang','Pemenang ditentukan acak'], ans:1,
+            explain:'Aturan yang baik menggunakan IF-ELSE: ada hasil yang jelas untuk SETIAP kemungkinan kondisi!'},
+         ]
+       }
+      },
+    ]
+  },
+  {
+    id:4, name:'Dunia Ulang', emoji:'🔁', color:'--w4', colorHex:'#9B5DE5',
+    desc:'Perulangan, iterasi, dan efisiensi',
+    levels:[
+      {id:20, emoji:'🔁', label:'Loop Dasar', xp:75, boss:false, game:'mc',
+       title:'Mengenal Perulangan (Loop)',
+       concept:'Repetition',
+       data:{
+         rounds:[
+           {q:'Daripada menulis "MAJU" sebanyak 8 kali, kita bisa menulis...',
+            opts:['"MAJU MAJU MAJU MAJU MAJU MAJU MAJU MAJU"','ULANGI 8 KALI: { MAJU }','Hanya "MAJU" satu kali','MAJU × tidak terbatas'], ans:1,
+            explain:'Inilah kegunaan LOOP! Daripada menulis instruksi yang sama berkali-kali, kita bisa gunakan "ULANGI N KALI".'},
+           {q:'Kodi perlu melompat 5 kali. Mana instruksi yang LEBIH EFISIEN?',
+            opts:['LOMPAT, LOMPAT, LOMPAT, LOMPAT, LOMPAT','ULANGI 5 KALI: { LOMPAT }','LOMPAT × 10','ULANGI: { LOMPAT }'], ans:1,
+            explain:'ULANGI 5 KALI: { LOMPAT } jauh lebih ringkas! Isi loop (LOMPAT) dan batas ulangan (5) keduanya jelas.'},
+           {q:'Apa yang dimaksud "isi loop" (body of loop)?',
+            opts:['Jumlah pengulangan','Instruksi yang diulang-ulang di dalam loop','Nama loop','Tempat loop disimpan'], ans:1,
+            explain:'Isi loop adalah instruksi yang akan dieksekusi setiap kali perulangan terjadi — bisa satu atau beberapa instruksi!'},
+         ]
+       }
+      },
+      {id:21, emoji:'🔢', label:'Hitung Iterasi', xp:75, boss:false, game:'mc',
+       title:'Berapa Kali Harus Diulang?',
+       concept:'Iteration Count',
+       data:{
+         rounds:[
+           {q:'Kodi perlu mengangkut 20 apel. Tiap perjalanan ia bisa bawa 4 apel.\nBerapa kali Kodi harus bolak-balik?',
+            opts:['4 kali','5 kali','20 kali','80 kali'], ans:1,
+            explain:'20 apel ÷ 4 apel per perjalanan = 5 perjalanan. Menentukan jumlah iterasi adalah keterampilan penting!'},
+           {q:'Kolam renang bisa diisi dengan 10 ember air. Satu ember berisi 5 liter.\nBerapa kali Kodi harus mengisi ember untuk memenuhi kolam?',
+            opts:['5 kali','10 kali','50 kali','2 kali'], ans:1,
+            explain:'Butuh 10 ember → ULANGI 10 KALI: { isi ember dan tuang ke kolam }. Iterasi = 10!'},
+           {q:'Apa yang terjadi jika jumlah iterasi yang ditentukan terlalu SEDIKIT?',
+            opts:['Tidak ada masalah','Tugas tidak akan selesai sepenuhnya','Program akan otomatis melanjutkan','Loop berhenti sendiri'], ans:1,
+            explain:'Jika iterasi terlalu sedikit, tugas tidak selesai! Seperti Kodi yang bolak-balik 4 kali tapi butuh 5 kali — masih ada apel yang tertinggal.'},
+         ]
+       }
+      },
+      {id:22, emoji:'⚡', label:'Efisiensi', xp:80, boss:false, game:'mc',
+       title:'Efisiensi: Kerja Cerdas!',
+       concept:'Efficiency',
+       data:{
+         rounds:[
+           {q:'Program A: MAJU, MAJU, MAJU, MAJU, MAJU (5 baris)\nProgram B: ULANGI 5 KALI: { MAJU } (1 baris)\n\nKeduanya menghasilkan hasil yang sama. Mana yang lebih EFISIEN?',
+            opts:['Program A karena lebih detail','Program B karena lebih ringkas','Keduanya sama efisiennya','Tidak bisa dibandingkan'], ans:1,
+            explain:'Program B lebih efisien! Menghasilkan hasil yang sama dengan lebih sedikit baris kode. Ini prinsip dasar pemrograman!'},
+           {q:'Apa arti EFISIENSI dalam konteks algoritma?',
+            opts:['Seberapa panjang kodenya','Menyelesaikan tugas dengan langkah/waktu sesedikit mungkin','Seberapa mahal komputernya','Berapa banyak orang yang menulis kodenya'], ans:1,
+            explain:'Efisiensi = mencapai tujuan yang sama dengan usaha, waktu, atau langkah yang lebih sedikit — tanpa mengorbankan hasil!'},
+           {q:'Kodi harus menyapu 6 kelas yang identik. Cara mana yang lebih efisien?',
+            opts:['Buat algoritma berbeda untuk tiap kelas','Buat 1 algoritma menyapu, ulangi 6 kali untuk tiap kelas','Tidak usah menyapu','Minta bantuan 6 orang'], ans:1,
+            explain:'Buat 1 algoritma menyapu, lalu ULANGI 6 KALI! Tidak perlu menulis ulang algoritma yang sama untuk setiap kelas.'},
+         ]
+       }
+      },
+      {id:23, emoji:'🌿', label:'Loop di Hidup', xp:75, boss:false, game:'match',
+       title:'Perulangan dalam Kehidupan',
+       concept:'Repetition — Konteks Nyata',
+       data:{
+         left:['Siram tanaman setiap pagi','Upacara bendera setiap Senin','Bayar tagihan setiap bulan'],
+         right:['Loop harian: ULANGI tiap HARI','Loop mingguan: ULANGI tiap MINGGU','Loop bulanan: ULANGI tiap BULAN'],
+         pairs:[0,1,2],
+         hint:'Pasangkan aktivitas sehari-hari dengan jenis perulangannya!'
+       }
+      },
+      {id:24, emoji:'🔲', label:'Nested Loop', xp:90, boss:false, game:'mc',
+       title:'Perulangan Bersarang (Nested Loop)',
+       concept:'Nested Loop',
+       data:{
+         rounds:[
+           {q:'Kodi menyiram taman 3 BARIS, masing-masing baris ada 4 POT.\nTotal berapa pot yang disiram?\n\nLOOP LUAR: 3 baris\nLOOP DALAM: 4 pot per baris',
+            opts:['3 pot','4 pot','7 pot','12 pot'], ans:3,
+            explain:'3 baris × 4 pot = 12 pot total! Loop luar (baris) mengulang loop dalam (pot). Ini nested loop!'},
+           {q:'Nested loop berarti...',
+            opts:['Loop yang sangat besar','Loop yang ada di dalam loop lain','Loop yang tidak pernah berhenti','Dua loop yang berjalan bersamaan'], ans:1,
+            explain:'Nested loop = loop di dalam loop. Loop dalam dijalankan PENUH setiap kali loop luar berulang satu kali!'},
+           {q:'Kodi membersihkan gedung 2 LANTAI, tiap lantai ada 5 KELAS, tiap kelas ada 3 PAPAN TULIS.\nBerapa total papan tulis yang dibersihkan?',
+            opts:['10','15','30','6'], ans:2,
+            explain:'2 lantai × 5 kelas × 3 papan tulis = 30 papan tulis! Ini nested loop 3 tingkat (triple nested loop)!'},
+         ]
+       }
+      },
+      {id:25, emoji:'🕺', label:'Tarian Robot', xp:130, boss:true, game:'sort',
+       title:'Tarian Robot Berulang — BOSS LEVEL',
+       concept:'Repetition + Efisiensi — BOSS LEVEL',
+       data:{
+         items:['🙌 Angkat tangan ke atas 2 kali','🤸 Putar badan 1 kali','🦵 Hentak kaki 3 kali','👏 Tepuk tangan 4 kali','🎵 ULANGI seluruh gerakan 3 kali!'],
+         correct:[0,1,2,3,4],
+         hint:'BOSS LEVEL! Susun koreografi tarian robot Kodi. Gerakan terakhir adalah "ulangi seluruh tarian 3 kali" — inilah loop-nya!'
+       }
+      },
+    ]
+  },
+  {
+    id:5, name:'Dunia Memori', emoji:'📦', color:'--w5', colorHex:'#FF4D8B',
+    desc:'Variabel, data, dan events',
+    levels:[
+      {id:26, emoji:'📦', label:'Variabel', xp:80, boss:false, game:'mc',
+       title:'Apa itu Variabel?',
+       concept:'Variables',
+       data:{
+         rounds:[
+           {q:'Variabel dalam pemrograman ibarat...',
+            opts:['Kata kunci khusus di komputer','Kotak berlabel yang bisa menyimpan dan mengubah nilai','Jenis bahasa pemrograman','Program yang sudah selesai'], ans:1,
+            explain:'Variabel = kotak berlabel! Contoh: kotak bernama "Skor" berisi angka 0, lalu berubah menjadi 10 ketika menjawab benar.'},
+           {q:'Variabel "Skor" awalnya bernilai 0.\nKodi menjawab benar → Skor +10\nKodi menjawab benar lagi → Skor +10\nBerapa nilai Skor sekarang?',
+            opts:['0','10','20','100'], ans:2,
+            explain:'0 + 10 + 10 = 20. Nilai variabel bisa BERUBAH setiap saat! Itulah bedanya variabel dengan angka biasa.'},
+           {q:'Mana yang BUKAN contoh variabel dalam kehidupan nyata?',
+            opts:['Jumlah uang di dompet','Skor permainan','Umur seseorang','Nama ibu kota Indonesia'], ans:3,
+            explain:'"Jakarta" adalah nilai TETAP (konstanta). Uang, skor, dan umur berubah dari waktu ke waktu — itu variabel!'},
+         ]
+       }
+      },
+      {id:27, emoji:'🗄️', label:'Kotak Memori', xp:80, boss:false, game:'mc',
+       title:'Kotak Penyimpanan Memori',
+       concept:'Memory + Variables',
+       data:{
+         rounds:[
+           {q:'Kodi punya 3 variabel: Nama="Kodi", Level=5, XP=320.\nSetelah menyelesaikan quest, XP bertambah 80.\nBerapa nilai XP sekarang?',
+            opts:['80','320','400','240'], ans:2,
+            explain:'XP = 320 + 80 = 400. Variabel XP berubah, tapi Nama dan Level tetap sama. Setiap variabel independen!'},
+           {q:'Mengapa penting memberi NAMA yang jelas untuk setiap variabel?',
+            opts:['Agar kodenya terlihat lebih panjang','Agar mudah dimengerti saat dibaca ulang','Karena aturan bahasa pemrograman','Tidak penting, nama bebas'], ans:1,
+            explain:'Nama variabel yang jelas seperti "skorPemain" jauh lebih mudah dipahami daripada "x" atau "abc1". Kode harus bisa dibaca manusia!'},
+           {q:'Kodi punya variabel: energi=100. Setiap berlari, energi -5. Setelah lari 6 kali, berapa energi Kodi?',
+            opts:['100','70','40','30'], ans:1,
+            explain:'100 - (5×6) = 100 - 30 = 70. Variabel energi berkurang setiap ada aksi tertentu. Seperti HP (health point) di game!'},
+         ]
+       }
+      },
+      {id:28, emoji:'📊', label:'Data', xp:85, boss:false, game:'mc',
+       title:'Mengumpulkan dan Membaca Data',
+       concept:'Data Understanding',
+       data:{
+         rounds:[
+           {q:'Kodi bertanya ke 10 teman: makanan favorit apa?\n🍜 Mie: 4 orang\n🍚 Nasi: 3 orang  \n🍕 Pizza: 2 orang\n🍔 Burger: 1 orang\n\nMakanan favorit TERBANYAK adalah...',
+            opts:['🍕 Pizza','🍔 Burger','🍜 Mie','🍚 Nasi'], ans:2,
+            explain:'Mie dipilih 4 orang — paling banyak! Inilah gunanya mengumpulkan dan menganalisis data.'},
+           {q:'Apa manfaat mencatat data dengan RAPI dalam sebuah tabel?',
+            opts:['Membuang-buang waktu','Mudah dibaca, dibandingkan, dan dianalisis','Agar terlihat pintar','Tidak ada manfaatnya'], ans:1,
+            explain:'Data yang rapi dalam tabel memudahkan kita menemukan pola, membandingkan, dan membuat keputusan berdasarkan fakta!'},
+           {q:'Kodi mencatat cuaca selama 5 hari: ☀️☀️🌧️☀️🌧️\nBerapa hari cuaca cerah?',
+            opts:['2 hari','3 hari','4 hari','5 hari'], ans:1,
+            explain:'☀️☀️☀️ = 3 hari cerah, 🌧️🌧️ = 2 hari hujan. Membaca data berarti menghitung dan menginterpretasi informasi!'},
+         ]
+       }
+      },
+      {id:29, emoji:'🔔', label:'Event', xp:80, boss:false, game:'match',
+       title:'Event: Aksi dan Reaksi',
+       concept:'Events',
+       data:{
+         left:['🔔 Bel sekolah berbunyi','🌧️ Hujan turun','👆 Tombol ditekan','📱 Notifikasi HP muncul'],
+         right:['Siswa keluar kelas','Orang-orang membuka payung','Karakter di game melompat','Pengguna melihat pesan masuk'],
+         pairs:[0,1,2,3],
+         hint:'Pasangkan setiap EVENT (pemicu) dengan REAKSI yang tepat!'
+       }
+      },
+      {id:30, emoji:'🏆', label:'Skor Game', xp:85, boss:false, game:'mc',
+       title:'Variabel dalam Sistem Skor',
+       concept:'Variables — Skor Permainan',
+       data:{
+         rounds:[
+           {q:'Kuis Kodi: Skor awal = 0\n✅ Jawab benar → +10 poin\n❌ Jawab salah → -5 poin\n\nKodi: Benar, Salah, Benar, Benar\nBerapa skor akhir Kodi?',
+            opts:['25','20','15','30'], ans:0,
+            explain:'+10, -5, +10, +10 = +25. Skor akhir = 0 + 25 = 25 poin! Variabel skor berubah setiap ada event jawaban.'},
+           {q:'Dalam game, variabel "nyawa" = 3. Setiap tertabrak musuh, nyawa -1.\nSetelah tertabrak 2 kali, berapa nyawa tersisa? Dan apa artinya?',
+            opts:['1 nyawa — masih bisa main tapi hati-hati!','0 nyawa — game over','2 nyawa — aman','3 nyawa — tidak berpengaruh'], ans:0,
+            explain:'3 - 2 = 1 nyawa tersisa. Variabel "nyawa" seperti kondisi pemain. Jika mencapai 0, game over!'},
+           {q:'Kodi ingin buat sistem skor untuk kuis kelas. Variabel apa saja yang PALING penting untuk dilacak?',
+            opts:['Hanya skor akhir','Skor saat ini, jumlah jawaban benar, dan jumlah soal tersisa','Nama pemain saja','Waktu bermain saja'], ans:1,
+            explain:'Sistem skor yang baik melacak beberapa variabel sekaligus: skor, jawaban benar, soal tersisa. Setiap variabel punya perannya!'},
+         ]
+       }
+      },
+      {id:31, emoji:'📓', label:'Catatan Data', xp:140, boss:true, game:'mc',
+       title:'Buku Catatan Data Kelas — BOSS LEVEL',
+       concept:'Variables + Data + Events — BOSS LEVEL',
+       data:{
+         rounds:[
+           {q:'Kodi mencatat data kehadiran selama seminggu:\nSenin: 30 siswa\nSelasa: 28 siswa\nRabu: 32 siswa\nKamis: 29 siswa\nJumat: 31 siswa\n\nHari dengan kehadiran TERENDAH adalah?',
+            opts:['Senin','Selasa','Rabu','Kamis'], ans:1,
+            explain:'Selasa = 28 siswa — paling sedikit! Dengan data yang tercatat rapi, kita mudah menemukan nilai minimum.'},
+           {q:'Rata-rata kehadiran dari data di atas adalah...\n(30+28+32+29+31) ÷ 5 = ?',
+            opts:['28','30','32','150'], ans:1,
+            explain:'(30+28+32+29+31) = 150 ÷ 5 = 30 siswa rata-rata per hari. Data membantu kita menghitung dan memahami tren!'},
+           {q:'Kodi ingin buat dashboard data otomatis. MANA PASANGAN EVENT-VARIABEL yang tepat?\nSaat ada siswa absen → variabel _____ berkurang 1',
+            opts:['nama_siswa','jumlah_hadir','skor_kelas','nomor_absen'], ans:1,
+            explain:'Event "siswa absen" → variabel "jumlah_hadir" berkurang 1. Event memicu perubahan variabel — itulah cara program bekerja!'},
+         ]
+       }
+      },
+    ]
+  },
+  {
+    id:6, name:'Dunia Kreasi', emoji:'🔧', color:'--w6', colorHex:'#FFD93D',
+    desc:'Fungsi, modular, problem solving, dan capstone',
+    levels:[
+      {id:32, emoji:'🔧', label:'Fungsi', xp:90, boss:false, game:'mc',
+       title:'Mengenal Fungsi (Function)',
+       concept:'Function Concept',
+       data:{
+         rounds:[
+           {q:'Fungsi dalam pemrograman ibarat...',
+            opts:['Tombol power komputer','Resep bernama yang bisa dipanggil kapan saja','Jenis komputer tertentu','File di folder'],ans:1,
+            explain:'Fungsi = resep bernama! Contoh: fungsi "BuatTeh()" berisi semua langkah membuat teh. Panggil sekali, semua langkah berjalan!'},
+           {q:'Tanpa fungsi, untuk melayani 3 tamu dengan teh, Kodi harus menulis:\n[5 langkah × 3 kali = 15 baris]\n\nDengan fungsi BuatTeh(), Kodi cukup menulis:',
+            opts:['15 baris juga','BuatTeh(); BuatTeh(); BuatTeh(); (3 baris)','1 baris saja','Tidak bisa menggunakan fungsi'], ans:1,
+            explain:'Dengan fungsi, cukup panggil BuatTeh() tiga kali! Dari 15 baris jadi 3 baris. Fungsi membuat kode lebih ringkas dan rapi.'},
+           {q:'Apa keuntungan UTAMA menggunakan fungsi?',
+            opts:['Kode jadi lebih sulit dibaca','Bisa dipanggil berkali-kali tanpa menulis ulang isinya','Komputer jadi lebih lambat','Membuat bug lebih mudah terjadi'], ans:1,
+            explain:'Fungsi bisa dipanggil berulang kali dari mana saja! Jika ada perubahan, cukup ubah di dalam fungsinya — semua pemanggilan otomatis ikut berubah.'},
+         ]
+       }
+      },
+      {id:33, emoji:'🧱', label:'Modular', xp:90, boss:false, game:'mc',
+       title:'Memecah Proyek Jadi Modul',
+       concept:'Modular Thinking + Decomposition',
+       data:{
+         rounds:[
+           {q:'Kodi ditugaskan buat Festival Sekolah. Mana PEMBAGIAN MODUL yang paling tepat?',
+            opts:['Satu orang mengerjakan semua','Modul: Dekorasi, Makanan, Hiburan, Dokumentasi','Tidak perlu dibagi, langsung kerjakan','Hanya Modul Makanan saja'], ans:1,
+            explain:'Berpikir modular: pecah proyek besar jadi modul-modul kecil yang bisa dikerjakan tim berbeda secara paralel!'},
+           {q:'Keuntungan berpikir MODULAR adalah...',
+            opts:['Proyek jadi lebih lama','Lebih mudah dikerjakan, dites, dan diperbaiki per bagian','Tidak ada manfaatnya','Hanya untuk proyek komputer'],ans:1,
+            explain:'Modular = setiap bagian bisa dikerjakan, diuji, dan diperbaiki secara terpisah. Jika modul Makanan bermasalah, tidak mempengaruhi modul Hiburan!'},
+           {q:'Perancang website memecah proyeknya menjadi: Modul Login, Modul Profil, Modul Pencarian, Modul Bayar.\nIni contoh dari...',
+            opts:['Debugging','Berpikir Modular / Dekomposisi','Perulangan','Variabel'],ans:1,
+            explain:'Memecah sistem besar (website) menjadi modul-modul kecil yang bisa dikembangkan secara terpisah = berpikir modular!'},
+         ]
+       }
+      },
+      {id:34, emoji:'🧩', label:'Gabung Modul', xp:95, boss:false, game:'sort',
+       title:'Menggabungkan Modul Jadi Solusi',
+       concept:'Modular Integration',
+       data:{
+         items:['📋 Rencanakan agenda festival','🎨 Selesaikan modul dekorasi','🍱 Selesaikan modul makanan & minuman','🎭 Selesaikan modul hiburan & panggung','🔗 Gabungkan semua modul & uji coba','🎉 Festival siap dijalankan!'],
+         correct:[0,1,2,3,4,5],
+         hint:'Susun urutan yang benar untuk menggabungkan modul festival sekolah! Semua modul harus selesai sebelum digabungkan.'
+       }
+      },
+      {id:35, emoji:'🌍', label:'Problem Solving', xp:110, boss:false, game:'mc',
+       title:'Problem Solving: Proyek Sosial',
+       concept:'Computational Thinking — Problem Solving',
+       data:{
+         rounds:[
+           {q:'Kodi melihat banyak sampah plastik di taman sekolah. Langkah PERTAMA problem solving yang tepat adalah...',
+            opts:['Langsung mulai memungut semua sampah','Identifikasi masalah: berapa banyak sampah? Di mana saja? Kenapa bisa ada?','Lapor ke kepala sekolah dulu','Tunggu teman lain yang membersihkan'], ans:1,
+            explain:'Langkah pertama: IDENTIFIKASI masalah dengan jelas! Tanpa memahami akar masalah, solusi bisa tidak tepat sasaran.'},
+           {q:'Setelah mengidentifikasi masalah sampah plastik, langkah selanjutnya adalah...',
+            opts:['Langsung beli tempat sampah banyak-banyak','Gunakan dekomposisi: pecah masalah menjadi sub-masalah (jenis sampah, lokasi, penyebab, solusi)','Menyerah karena masalah terlalu besar','Tidak ada yang bisa dilakukan'], ans:1,
+            explain:'Dekomposisi! Pecah masalah besar menjadi sub-masalah yang lebih kecil dan mudah diselesaikan satu per satu.'},
+           {q:'Kodi menyusun solusi:\n1. Pasang tempat sampah di 5 titik\n2. Buat kampanye buang sampah pada tempatnya\n3. Jadwal piket taman rutin\n\nIni menggunakan konsep CT apa?',
+            opts:['Hanya variabel','Algoritma + Dekomposisi + Perulangan (jadwal piket)','Hanya IF-ELSE','Hanya nested loop'], ans:1,
+            explain:'Solusi lengkap menggunakan: algoritma (langkah terurut), dekomposisi (dipecah 3 sub-solusi), dan perulangan (jadwal piket rutin)!'},
+         ]
+       }
+      },
+      {id:36, emoji:'🔬', label:'Debug Lanjut', xp:100, boss:false, game:'mc',
+       title:'Debugging Tingkat Lanjut',
+       concept:'Debugging — Multi-Module',
+       data:{
+         rounds:[
+           {q:'Festival Kodi punya 3 modul. Modul Makanan selesai lebih awal, Modul Hiburan masih belum siap, tapi Modul Dekorasi sudah ok. Apa yang harus di-debug?',
+            opts:['Modul Dekorasi','Modul Makanan','Modul Hiburan','Semua modul'], ans:2,
+            explain:'Modul Hiburan yang bermasalah! Debugging modular: isolasi dulu modul mana yang error, lalu perbaiki hanya di sana.'},
+           {q:'Strategi debugging yang SISTEMATIS adalah...',
+            opts:['Langsung menghapus semua kode dan mulai ulang','Periksa modul satu per satu dari awal, catat temuan, perbaiki bertahap','Minta bantuan orang lain untuk menebak masalahnya','Abaikan bug dan harapkan yang terbaik'], ans:1,
+            explain:'Debugging sistematis: periksa satu per satu, catat apa yang ditemukan, perbaiki dengan sabar. Ini skill wajib programmer!'},
+           {q:'Kodi menemukan bug: "Jadwal acara hiburan bentrok dengan jadwal makan siang."\nIni bug terjadi di...',
+            opts:['Dalam satu modul saja','Di antara dua modul (Hiburan dan Makanan) — bug integrasi!','Di modul Dekorasi','Bukan bug, itu fitur'], ans:1,
+            explain:'Bug integrasi! Terjadi saat dua modul yang bekerja baik secara terpisah, tapi bermasalah saat digabungkan. Harus cek titik integrasi antar modul!'},
+         ]
+       }
+      },
+      {id:37, emoji:'🤝', label:'Kolaborasi', xp:110, boss:false, game:'match',
+       title:'Kolaborasi dalam Proyek Tim',
+       concept:'Collaboration + Modular',
+       data:{
+         left:['Perancang Sistem','Pembuat Modul A','Tester / Debugger','Presentator'],
+         right:['Merancang arsitektur keseluruhan dan pembagian modul','Mengerjakan satu bagian modul secara mendalam','Mencari dan melaporkan bug di setiap modul','Menyampaikan hasil proyek kepada audiens'],
+         pairs:[0,1,2,3],
+         hint:'Pasangkan setiap PERAN TIM dengan TANGGUNG JAWAB yang tepat!'
+       }
+      },
+      {id:38, emoji:'🏅', label:'CAPSTONE', xp:250, boss:true, game:'capstone',
+       title:'🏅 Capstone Project KODAI — FINAL BOSS',
+       concept:'Semua Konsep CT — FINAL BOSS LEVEL',
+       data:{
+         stages:[
+           {q:'TAHAP 1/6 — Identifikasi Masalah\nKodi melihat tiga masalah di sekolah. Pilih masalah yang PALING SPESIFIK dan bisa diselesaikan dengan CT:',
+            opts:['Sekolah kurang bagus','Sistem peminjaman buku perpustakaan masih manual dan sering hilang','Guru tidak baik','Makanan kantin tidak enak'], ans:1,
+            explain:'Masalah spesifik → solusi spesifik! "Sistem peminjaman buku manual" jelas dan bisa diselesaikan dengan algoritma + database.'},
+           {q:'TAHAP 2/6 — Dekomposisi\nMasalah: sistem peminjaman buku manual. Mana PEMBAGIAN sub-masalah yang paling tepat?',
+            opts:['Beli buku baru saja','Catat peminjam + Lacak status buku + Ingatkan pengembalian + Laporan data','Tidak perlu dibagi','Hanya perlu satu solusi'], ans:1,
+            explain:'Dekomposisi! 4 sub-masalah yang bisa diselesaikan satu per satu dan menjadi modul-modul dalam solusi akhir!'},
+           {q:'TAHAP 3/6 — Algoritma\nUntuk sub-masalah "Catat Peminjam", mana urutan algoritma yang BENAR?',
+            opts:['Catat nama peminjam → Selesai','Cek identitas peminjam → Catat nama + buku → Catat tanggal pinjam + kembali → Simpan data','Langsung kasih bukunya','Simpan data dulu baru cek identitas'], ans:1,
+            explain:'Algoritma yang lengkap dan berurutan: cek identitas → catat data → simpan. Setiap langkah punya tujuan yang jelas!'},
+           {q:'TAHAP 4/6 — Kondisi IF-ELSE\nSistem perpustakaan perlu aturan:\nJIKA buku sudah lewat batas waktu → kirim pengingat\nKALAU TIDAK → ...',
+            opts:['Tidak ada tindakan','Tetap kirim pengingat juga','Update status "masih dipinjam" dan tampilkan sisa hari','Hapus data peminjam'], ans:2,
+            explain:'IF buku telat → kirim pengingat. ELSE → update status + tampilkan sisa hari. Kedua kondisi harus ditangani!'},
+           {q:'TAHAP 5/6 — Perulangan\nSistem harus cek status SEMUA buku setiap hari. Ada 200 buku. Cara terbaik?',
+            opts:['Cek manual satu per satu setiap hari','ULANGI 200 KALI: { cek status buku ke-i, jika terlambat → kirim notif }','Hanya cek 10 buku saja','Tidak perlu dicek'], ans:1,
+            explain:'Loop! Sistem otomatis melakukan pengecekan untuk SEMUA 200 buku setiap hari. Ini kekuatan komputasi — cepat dan akurat!'},
+           {q:'TAHAP 6/6 — Debugging & Refleksi\nSolusi sudah dibuat. Saat diuji, notifikasi dikirim ke peminjam yang SUDAH mengembalikan buku. Ini adalah bug di...',
+            opts:['Modul Catat Peminjam','Modul kondisi IF-ELSE (status buku tidak diupdate saat buku dikembalikan)','Modul Laporan Data','Bukan bug, itu fitur'], ans:1,
+            explain:'Bug di modul kondisi! Saat buku dikembalikan, status buku harus diupdate → JIKA buku dikembalikan, MAKA ubah status menjadi "tersedia". Perbaiki logika IF-ELSE-nya!'},
+         ]
+       }
+      },
+    ]
+  },
+];
+
+// ===== STATE =====
+let progress = JSON.parse(localStorage.getItem('kodai_progress') || '{}');
+let totalXP = parseInt(localStorage.getItem('kodai_xp') || '0');
+let streak = parseInt(localStorage.getItem('kodai_streak') || '0');
+let currentLevelId = null;
+let currentRound = 0;
+let roundScore = 0;
+let winPending = null;
+
+function saveProgress(){
+  localStorage.setItem('kodai_progress', JSON.stringify(progress));
+  localStorage.setItem('kodai_xp', totalXP);
+  localStorage.setItem('kodai_streak', streak);
+}
+function resetProgress(){
+  progress = {};
+  totalXP = 0;
+  streak = 0;
+  saveProgress();
+  document.getElementById('totalXP').textContent = 0;
+  document.getElementById('streakCount').textContent = 0;
+  renderMap();
+  showToast('🔄 Progress direset!','');
+}
+
+function isUnlocked(levelId){
+  if(levelId === 1) return true;
+  return !!progress[levelId - 1];
+}
+function isCompleted(lv){ return !!progress[lv.id]; }
+
+// ===== RENDER MAP =====
+function renderMap(){
+  const container = document.getElementById('worldMap');
+  container.innerHTML = '';
+  WORLDS.forEach(w => {
+    const section = document.createElement('div');
+    section.className = 'world-section';
+
+    // Banner
+    const banner = document.createElement('div');
+    banner.className = 'world-banner';
+    banner.style.background = `linear-gradient(135deg, ${w.colorHex}22, ${w.colorHex}11)`;
+    banner.style.borderColor = `${w.colorHex}44`;
+    banner.innerHTML = `
+      <div class="world-num">${w.id}</div>
+      <div class="world-info">
+        <div class="world-label" style="color:${w.colorHex}">Dunia ${w.id}</div>
+        <div class="world-name">${w.emoji} ${w.name}</div>
+        <div class="world-sub">${w.desc}</div>
+      </div>
+    `;
+    section.appendChild(banner);
+
+    // Level path
+    const path = document.createElement('div');
+    path.className = 'level-path';
+
+    w.levels.forEach((lv, i) => {
+      const row = document.createElement('div');
+      row.className = 'level-row';
+
+      const completed = isCompleted(lv);
+      const unlocked = isUnlocked(lv.id);
+      const isCurrent = unlocked && !completed;
+
+      const bubble = document.createElement('div');
+      bubble.className = `level-bubble${lv.boss?' boss':''}${completed?' completed':isCurrent?' current':!unlocked?' locked':''}`;
+      bubble.style.background = completed
+        ? `linear-gradient(135deg, ${w.colorHex}, ${w.colorHex}bb)`
+        : unlocked
+        ? `linear-gradient(135deg, ${w.colorHex}cc, ${w.colorHex}88)`
+        : '#2a2d3a';
+      bubble.style.borderColor = completed ? w.colorHex : unlocked ? `${w.colorHex}66` : 'rgba(255,255,255,.1)';
+
+      if(lv.boss){ bubble.innerHTML += `<div class="star-ring"></div>`; }
+
+      bubble.innerHTML += `
+        <div class="bubble-emoji">${lv.emoji}</div>
+        <div class="bubble-num" style="color:${completed?'white':unlocked?'rgba(255,255,255,.9)':'rgba(255,255,255,.3)'}">${lv.id}</div>
+        ${completed ? '<div class="check-icon">✓</div>' : !unlocked ? '<div class="lock-icon">🔒</div>' : ''}
+      `;
+
+      if(unlocked){
+        bubble.onclick = () => openLevel(lv, w);
+        bubble.title = lv.title;
+      }
+      row.appendChild(bubble);
+      path.appendChild(row);
+    });
+
+    section.appendChild(path);
+    container.appendChild(section);
+  });
+
+  document.getElementById('totalXP').textContent = totalXP;
+  document.getElementById('streakCount').textContent = streak;
+}
+
+// ===== OPEN LEVEL =====
+function openLevel(lv, w){
+  currentLevelId = lv.id;
+  currentRound = 0;
+  roundScore = 0;
+  winPending = {lv, w};
+
+  document.getElementById('modalDot').style.background = w.colorHex;
+  document.getElementById('modalTitle').textContent = `${lv.emoji} ${lv.title}`;
+  document.getElementById('modalSub').textContent = lv.concept;
+
+  const body = document.getElementById('modalBody');
+  body.innerHTML = '';
+
+  if(lv.game === 'mc') renderMC(lv, body);
+  else if(lv.game === 'sort') renderSort(lv, body);
+  else if(lv.game === 'pattern') renderPattern(lv, body);
+  else if(lv.game === 'match') renderMatch(lv, body);
+  else if(lv.game === 'maze') renderMaze(lv, body);
+  else if(lv.game === 'capstone') renderCapstone(lv, body);
+
+  document.getElementById('gameModal').classList.add('open');
+}
+
+function closeModal(e){
+  if(e.target === document.getElementById('gameModal'))
+    document.getElementById('gameModal').classList.remove('open');
+}
+
+// ===== GAME: MULTIPLE CHOICE =====
+function renderMC(lv, body){
+  const rounds = lv.data.rounds;
+  let ci = 0;
+  function showRound(){
+    const r = rounds[ci];
+    body.innerHTML = `
+      <div class="game-score-row">
+        <div class="score-chip">📝 Soal <span id="mc-ci">${ci+1}</span>/${rounds.length}</div>
+        <div class="score-chip">⭐ Benar: <span id="mc-score">0</span></div>
+      </div>
+      <div class="game-q" style="white-space:pre-wrap">${r.q}</div>
+      <div class="mc-options" id="mc-opts"></div>
+      <div class="feedback" id="mc-fb"></div>
+    `;
+    const opts = document.getElementById('mc-opts');
+    r.opts.forEach((o,i) => {
+      const btn = document.createElement('div');
+      btn.className = 'mc-opt';
+      btn.textContent = o;
+      btn.onclick = () => answerMC(i, r, btn, opts, lv, rounds);
+      opts.appendChild(btn);
+    });
+  }
+
+  let correct = 0;
+  function answerMC(i, r, btn, opts, lv, rounds){
+    opts.querySelectorAll('.mc-opt').forEach(b => b.classList.add('disabled'));
+    if(i === r.ans){ btn.classList.add('correct'); correct++; }
+    else {
+      btn.classList.add('wrong');
+      opts.querySelectorAll('.mc-opt')[r.ans].classList.add('correct');
+    }
+    const fb = document.getElementById('mc-fb');
+    fb.className = 'feedback ' + (i===r.ans?'ok':'err');
+    fb.textContent = (i===r.ans?'✅ ':'❌ ') + r.explain;
+
+    document.getElementById('mc-score').textContent = correct;
+
+    setTimeout(() => {
+      ci++;
+      if(ci < rounds.length) showRound();
+      else finishGame(lv, correct, rounds.length, body);
+    }, 1800);
+  }
+  showRound();
+}
+
+// ===== GAME: SORT =====
+function renderSort(lv, body){
+  const orig = [...lv.data.items];
+  let arr = shuffleArray([...orig]);
+
+  function render(){
+    body.innerHTML = `
+      <div class="game-q">${lv.data.hint || 'Susun langkah-langkah berikut ke urutan yang benar!'}</div>
+      <div class="sort-list" id="sortList"></div>
+      <div class="feedback" id="sort-fb"></div>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="checkSort()">✅ Cek Urutan!</button>
+        <button class="btn-secondary" onclick="shuffleSort()">🔀 Acak Ulang</button>
+      </div>
+    `;
+    const list = document.getElementById('sortList');
+    arr.forEach((item, i) => {
+      const el = document.createElement('div');
+      el.className = 'sort-item';
+      el.draggable = true;
+      el.dataset.idx = i;
+      el.innerHTML = `
+        <span class="sort-handle">⠿</span>
+        <div class="sort-num">${i+1}</div>
+        <div class="sort-text">${item}</div>
+        <div class="sort-arrows">
+          <button class="sort-arr" onclick="moveSort(${i},-1)">▲</button>
+          <button class="sort-arr" onclick="moveSort(${i},1)">▼</button>
+        </div>
+      `;
+      // Drag events
+      el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', i); el.style.opacity='.5'; });
+      el.addEventListener('dragend', () => { el.style.opacity='1'; });
+      el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('drag-over'); });
+      el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+      el.addEventListener('drop', e => {
+        e.preventDefault(); el.classList.remove('drag-over');
+        const from = parseInt(e.dataTransfer.getData('text/plain'));
+        const to = parseInt(el.dataset.idx);
+        [arr[from], arr[to]] = [arr[to], arr[from]];
+        render();
+      });
+      list.appendChild(el);
+    });
+  }
+
+  window.moveSort = (i, dir) => {
+    const j = i + dir;
+    if(j < 0 || j >= arr.length) return;
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+    render();
+  };
+
+  window.shuffleSort = () => { arr = shuffleArray([...orig]); render(); };
+
+  window.checkSort = () => {
+    const correct = lv.data.correct;
+    const isRight = arr.every((item, i) => item === orig[correct[i]]);
+    const fb = document.getElementById('sort-fb');
+    if(isRight){
+      fb.className = 'feedback ok';
+      fb.textContent = '✅ Urutan sudah benar! Luar biasa!';
+      setTimeout(() => finishGame(lv, 1, 1, body), 1200);
+    } else {
+      fb.className = 'feedback err';
+      fb.textContent = '❌ Ada yang kurang tepat. Coba periksa lagi!';
+    }
+  };
+
+  render();
+}
+
+// ===== GAME: PATTERN =====
+function renderPattern(lv, body){
+  const rounds = lv.data.rounds;
+  let ci = 0, correct = 0;
+
+  function showRound(){
+    const r = rounds[ci];
+    body.innerHTML = `
+      <div class="game-score-row">
+        <div class="score-chip">🌈 Soal ${ci+1}/${rounds.length}</div>
+        <div class="score-chip">⭐ Benar: ${correct}</div>
+      </div>
+      <div class="game-q">Lanjutkan pola berikut:</div>
+      <div class="pattern-seq" id="patSeq"></div>
+      <div style="color:var(--sub);font-size:.85rem;margin-bottom:14px;">Pilih jawaban yang tepat:</div>
+      <div class="pat-choices" id="patChoices"></div>
+      <div class="feedback" id="pat-fb"></div>
+    `;
+    const seq = document.getElementById('patSeq');
+    r.seq.forEach(s => {
+      const el = document.createElement('div');
+      el.className = s === '?' ? 'pat-item pat-blank' : 'pat-item';
+      el.textContent = s === '?' ? '?' : s;
+      seq.appendChild(el);
+    });
+    const choices = document.getElementById('patChoices');
+    r.choices.forEach(c => {
+      const el = document.createElement('div');
+      el.className = 'pat-choice';
+      el.textContent = c;
+      el.onclick = () => {
+        choices.querySelectorAll('.pat-choice').forEach(x => x.style.pointerEvents='none');
+        const ok = c === r.ans;
+        el.classList.add(ok ? 'correct' : 'wrong');
+        if(!ok) choices.querySelectorAll('.pat-choice')[r.choices.indexOf(r.ans)].classList.add('correct');
+        const fb = document.getElementById('pat-fb');
+        fb.className = 'feedback ' + (ok?'ok':'err');
+        fb.textContent = (ok?'✅ ':'❌ ') + r.rule;
+        if(ok) correct++;
+        setTimeout(() => {
+          ci++;
+          if(ci < rounds.length) showRound();
+          else finishGame(lv, correct, rounds.length, body);
+        }, 1500);
+      };
+      choices.appendChild(el);
+    });
+  }
+  showRound();
+}
+
+// ===== GAME: MATCH =====
+function renderMatch(lv, body){
+  let selA = null, selB = null;
+  const matched = {};
+  let matchCount = 0;
+  const pairs = lv.data.left.length;
+
+  body.innerHTML = `
+    <div class="game-q">${lv.data.hint || 'Pasangkan item di kiri dengan yang sesuai di kanan!'}</div>
+    <div class="match-grid">
+      <div class="match-col" id="matchLeft"></div>
+      <div class="match-col" id="matchRight"></div>
+    </div>
+    <div class="feedback" id="match-fb"></div>
+  `;
+
+  const leftCol = document.getElementById('matchLeft');
+  const rightCol = document.getElementById('matchRight');
+
+  lv.data.left.forEach((l, i) => {
+    const el = document.createElement('div');
+    el.className = 'match-item';
+    el.textContent = l;
+    el.dataset.idx = i;
+    el.onclick = () => handleMatchA(el, i);
+    leftCol.appendChild(el);
+  });
+
+  shuffleArray([...lv.data.right]).forEach((r, i) => {
+    const origIdx = lv.data.right.indexOf(r);
+    const el = document.createElement('div');
+    el.className = 'match-item';
+    el.textContent = r;
+    el.dataset.orig = origIdx;
+    el.onclick = () => handleMatchB(el, origIdx);
+    rightCol.appendChild(el);
+  });
+
+  function handleMatchA(el, i){
+    if(el.classList.contains('matched')) return;
+    document.querySelectorAll('#matchLeft .match-item').forEach(x => x.classList.remove('selected-a'));
+    el.classList.add('selected-a');
+    selA = i;
+    tryMatch();
+  }
+  function handleMatchB(el, i){
+    if(el.classList.contains('matched')) return;
+    document.querySelectorAll('#matchRight .match-item').forEach(x => x.classList.remove('selected-b'));
+    el.classList.add('selected-b');
+    selB = i;
+    tryMatch();
+  }
+  function tryMatch(){
+    if(selA === null || selB === null) return;
+    const correctB = lv.data.pairs[selA];
+    if(selB === correctB){
+      document.querySelectorAll('#matchLeft .match-item')[selA].classList.remove('selected-a');
+      document.querySelectorAll('#matchLeft .match-item')[selA].classList.add('matched');
+      document.querySelectorAll('#matchRight .match-item').forEach(x => {
+        if(parseInt(x.dataset.orig) === selB){ x.classList.remove('selected-b'); x.classList.add('matched'); }
+      });
+      matchCount++;
+      if(matchCount === pairs) setTimeout(() => finishGame(lv, pairs, pairs, body), 600);
+    } else {
+      document.querySelectorAll('#matchLeft .match-item').forEach(x => x.classList.remove('selected-a'));
+      document.querySelectorAll('#matchRight .match-item').forEach(x => x.classList.remove('selected-b'));
+      const fb = document.getElementById('match-fb');
+      fb.className = 'feedback err';
+      fb.textContent = '❌ Belum tepat, coba lagi!';
+      setTimeout(() => { if(fb) fb.className = 'feedback'; }, 1000);
+    }
+    selA = null; selB = null;
+  }
+}
+
+// ===== GAME: MAZE =====
+function renderMaze(lv, body){
+  const G = lv.data.grid;
+  const walls = lv.data.walls.map(([r,c]) => `${r},${c}`);
+  let pos = [...lv.data.start];
+  let seq = [];
+
+  function render(){
+    body.innerHTML = `
+      <div class="game-q">${lv.data.hint}</div>
+      <div class="grid-game">
+        <div>
+          <div class="grid-board" id="mazeBoard" style="grid-template-columns:repeat(${G},52px)"></div>
+        </div>
+        <div class="grid-controls">
+          <div class="dir-pad">
+            <div></div>
+            <button class="dir-btn" onclick="addDir('⬆')">⬆</button>
+            <div></div>
+            <button class="dir-btn" onclick="addDir('⬅')">⬅</button>
+            <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1rem">🤖</div>
+            <button class="dir-btn" onclick="addDir('➡')">➡</button>
+            <div></div>
+            <button class="dir-btn" onclick="addDir('⬇')">⬇</button>
+            <div></div>
+          </div>
+          <div style="margin-top:10px;font-size:.78rem;color:var(--sub);">Program (${seq.length}/${lv.data.maxSteps}):</div>
+          <div class="code-seq" id="codeSeq"></div>
+          <div class="btn-row">
+            <button class="btn-primary" onclick="runMaze()">▶ Jalankan!</button>
+            <button class="btn-secondary" onclick="clearMaze()">🗑 Hapus</button>
+          </div>
+          <div class="feedback" id="maze-fb"></div>
+        </div>
+      </div>
+    `;
+    renderBoard();
+    renderSeq();
+  }
+
+  function renderBoard(){
+    const board = document.getElementById('mazeBoard');
+    if(!board) return;
+    board.innerHTML = '';
+    for(let r=0; r<G; r++){
+      for(let c=0; c<G; c++){
+        const cell = document.createElement('div');
+        const key = `${r},${c}`;
+        const isKodi = r===pos[0] && c===pos[1];
+        const isGoal = r===lv.data.goal[0] && c===lv.data.goal[1];
+        const isWall = walls.includes(key);
+        const isStart = r===lv.data.start[0] && c===lv.data.start[1];
+        cell.className = 'grid-cell ' + (isWall?'cell-wall':isKodi?'cell-kodi':isGoal?'cell-goal':isStart?'cell-start':'cell-empty');
+        cell.textContent = isKodi?'🤖':isGoal?'⭐':isWall?'🧱':'';
+        board.appendChild(cell);
+      }
+    }
+  }
+
+  function renderSeq(){
+    const el = document.getElementById('codeSeq');
+    if(!el) return;
+    el.innerHTML = '';
+    seq.forEach((d,i) => {
+      const b = document.createElement('span');
+      b.className = 'code-block';
+      b.style.background = d==='⬆'?'#2EC486':d==='⬇'?'#FF6B6B':d==='⬅'?'#FF6B35':'#4DABF7';
+      b.textContent = d;
+      b.title = 'Klik untuk hapus';
+      b.onclick = () => { seq.splice(i,1); renderSeq(); };
+      el.appendChild(b);
+    });
+  }
+
+  window.addDir = (d) => {
+    if(seq.length >= lv.data.maxSteps){ showToast('⚠ Langkah penuh! Hapus dulu.',''); return; }
+    seq.push(d); renderSeq();
+  };
+
+  window.clearMaze = () => { seq = []; pos=[...lv.data.start]; renderSeq(); renderBoard(); };
+
+  window.runMaze = () => {
+    pos = [...lv.data.start];
+    let step = 0;
+    const fb = document.getElementById('maze-fb');
+    if(fb){ fb.className='feedback'; }
+
+    function tick(){
+      if(step >= seq.length){
+        const atGoal = pos[0]===lv.data.goal[0] && pos[1]===lv.data.goal[1];
+        if(atGoal){ setTimeout(()=>finishGame(lv,1,1,body),400); }
+        else {
+          if(fb){ fb.className='feedback err'; fb.textContent='❌ Kodi belum sampai ke bintang. Coba tambah instruksi!'; }
+        }
+        return;
+      }
+      const d = seq[step++];
+      let nr=pos[0], nc=pos[1];
+      if(d==='⬆') nr--;
+      else if(d==='⬇') nr++;
+      else if(d==='⬅') nc--;
+      else if(d==='➡') nc++;
+      if(nr<0||nr>=G||nc<0||nc>=G||walls.includes(`${nr},${nc}`)){
+        if(fb){ fb.className='feedback err'; fb.textContent=`❌ Kodi menabrak! Perintah ke-${step} salah arah.`; }
+        return;
+      }
+      pos=[nr,nc];
+      renderBoard();
+      setTimeout(tick,350);
+    }
+    tick();
+  };
+
+  render();
+}
+
+// ===== GAME: CAPSTONE (multi-stage MC) =====
+function renderCapstone(lv, body){
+  const stages = lv.data.stages;
+  let ci = 0, correct = 0;
+
+  function showStage(){
+    const r = stages[ci];
+    body.innerHTML = `
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+        ${stages.map((_,i)=>`<div style="width:32px;height:6px;border-radius:3px;background:${i<ci?'var(--green)':i===ci?'var(--yellow)':'rgba(255,255,255,.15)'}"></div>`).join('')}
+      </div>
+      <div class="game-score-row">
+        <div class="score-chip">🏅 Tahap ${ci+1}/${stages.length}</div>
+        <div class="score-chip">✅ Benar: ${correct}</div>
+      </div>
+      <div class="game-q" style="white-space:pre-wrap">${r.q}</div>
+      <div class="mc-options" id="cap-opts"></div>
+      <div class="feedback" id="cap-fb"></div>
+    `;
+    const opts = document.getElementById('cap-opts');
+    r.opts.forEach((o,i) => {
+      const btn = document.createElement('div');
+      btn.className = 'mc-opt';
+      btn.textContent = o;
+      btn.onclick = () => {
+        opts.querySelectorAll('.mc-opt').forEach(b=>b.classList.add('disabled'));
+        if(i===r.ans){ btn.classList.add('correct'); correct++; }
+        else { btn.classList.add('wrong'); opts.querySelectorAll('.mc-opt')[r.ans].classList.add('correct'); }
+        const fb = document.getElementById('cap-fb');
+        fb.className = 'feedback '+(i===r.ans?'ok':'err');
+        fb.textContent = (i===r.ans?'✅ ':'❌ ')+r.explain;
+        setTimeout(()=>{ ci++; if(ci<stages.length) showStage(); else finishGame(lv,correct,stages.length,body); },2000);
+      };
+      opts.appendChild(btn);
+    });
+  }
+  showStage();
+}
+
+// ===== FINISH GAME =====
+function finishGame(lv, score, total, body){
+  const passed = score >= Math.ceil(total * 0.6);
+  if(passed && !progress[lv.id]){
+    progress[lv.id] = true;
+    totalXP += lv.xp;
+    streak = Math.min(streak + 1, 999);
+    saveProgress();
+  }
+
+  if(passed){
+    document.getElementById('gameModal').classList.remove('open');
+    showWin(lv.title, lv.xp, passed);
+    renderMap();
+  } else {
+    body.innerHTML += `
+      <div style="margin-top:20px;padding:16px;background:rgba(255,77,139,.1);border:2px solid rgba(255,77,139,.3);border-radius:14px;">
+        <div style="font-family:'Fredoka One',cursive;color:var(--red);margin-bottom:8px;">😅 Hampir! Skor: ${score}/${total}</div>
+        <div style="font-size:.88rem;color:var(--sub);margin-bottom:14px;">Butuh minimal 60% untuk lulus. Coba lagi ya!</div>
+        <button class="btn-primary" onclick="openLevel(winPending.lv, winPending.w)">🔄 Coba Lagi</button>
+      </div>
+    `;
+  }
+}
+
+// ===== WIN =====
+function showWin(title, xp, passed){
+  if(!passed) return;
+  document.getElementById('winTitle').textContent = title + ' — Selesai!';
+  document.getElementById('winXP').textContent = `+${xp} XP 🎉`;
+  spawnConfetti();
+  document.getElementById('winOverlay').classList.add('open');
+}
+function closeWin(){
+  document.getElementById('winOverlay').classList.remove('open');
+  document.getElementById('confettiWrap').innerHTML = '';
+}
+
+window.nextLevel = () => {
+  if(!winPending) return;
+  const {lv, w} = winPending;
+  // Find next level
+  let found = false;
+  for(const world of WORLDS){
+    for(const level of world.levels){
+      if(found && !progress[level.id]){
+        openLevel(level, world);
+        return;
+      }
+      if(level.id === lv.id) found = true;
+    }
+  }
+  showToast('🎉 Kamu sudah menyelesaikan semua level yang tersedia!','');
+};
+
+function spawnConfetti(){
+  const wrap = document.getElementById('confettiWrap');
+  wrap.innerHTML = '';
+  const colors = ['#FFD93D','#2EC486','#9B5DE5','#FF4D8B','#4DABF7','#FF6B35'];
+  for(let i=0;i<60;i++){
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = Math.random()*100 + 'vw';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDelay = Math.random()*1.5 + 's';
+    p.style.animationDuration = (1.5 + Math.random()*1.5) + 's';
+    p.style.transform = `rotate(${Math.random()*360}deg)`;
+    wrap.appendChild(p);
+  }
+}
+
+// ===== TOAST =====
+function showToast(msg, type){
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type||'');
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+}
+
+// ===== HELPERS =====
+function shuffleArray(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+// ===== INIT =====
+renderMap();
+</script>
 </body>
 </html>

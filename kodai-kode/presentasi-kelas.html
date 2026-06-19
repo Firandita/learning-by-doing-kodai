@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KODAI — Mode Presentasi Kelas</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --purple:#9B5DE5;--yellow:#FFD93D;--green:#2EC486;
+  --orange:#FF6B35;--pink:#FF4D8B;--dark:#1A1A2E;--mid:#2d2d4e;
+}
+
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--dark);color:white;
+  height:100vh;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+
+/* ── TOP BAR ── */
+#topbar{
+  display:flex;align-items:center;gap:16px;
+  padding:10px 24px;background:rgba(255,255,255,.04);
+  border-bottom:2px solid rgba(255,255,255,.07);flex-shrink:0;
+}
+.logo{font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--yellow);}
+#bar-wrap{flex:1;height:5px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden;}
+#bar-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--yellow));border-radius:10px;transition:width .35s;}
+#slide-lbl{font-size:.8rem;font-weight:800;color:rgba(255,255,255,.4);white-space:nowrap;}
+.btn-nav{
+  padding:9px 20px;border:none;border-radius:50px;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:.88rem;transition:all .15s;
+}
+#btn-prev{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);}
+#btn-prev:hover{background:rgba(255,255,255,.18);}
+#btn-next{background:var(--purple);color:white;box-shadow:0 4px 0 #5f2fa0;}
+#btn-next:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 0 #5f2fa0;}
+#btn-next:disabled{opacity:.35;cursor:default;}
+
+/* ── STAGE ── */
+#stage{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:28px 40px;overflow:hidden;
+}
+
+/* ── SLIDE BASE ── */
+.slide{
+  display:none;flex-direction:column;align-items:center;
+  justify-content:center;width:100%;max-width:860px;
+  text-align:center;animation:fadeUp .35s ease;
+}
+.slide.active{display:flex;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* Chapter badge */
+.ch-badge{
+  display:inline-block;padding:5px 18px;background:rgba(155,93,229,.25);
+  border:2px solid var(--purple);border-radius:50px;font-size:.75rem;
+  font-weight:900;letter-spacing:1px;text-transform:uppercase;color:var(--purple);
+  margin-bottom:16px;
+}
+
+/* ── TITLE SLIDE ── */
+.s-title .big-icon{font-size:5.5rem;margin-bottom:12px;display:block;animation:float 3s ease infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+.s-title h1{font-family:'Fredoka One',cursive;font-size:2.8rem;line-height:1.1;margin-bottom:10px;}
+.s-title .tagline{font-size:1rem;font-weight:700;color:rgba(255,255,255,.55);max-width:520px;line-height:1.6;}
+
+/* ── STORY SLIDE ── */
+.kodi-avatar{font-size:4.5rem;margin-bottom:8px;display:block;animation:waggle 2.5s ease infinite;}
+@keyframes waggle{0%,100%{transform:rotate(-5deg);}50%{transform:rotate(5deg);}}
+.speech-bubble{
+  position:relative;background:var(--mid);border:3px solid var(--purple);
+  border-radius:24px;padding:28px 36px;max-width:680px;margin-top:6px;
+}
+.speech-bubble::after{
+  content:'';position:absolute;top:-16px;left:50%;transform:translateX(-50%);
+  border:10px solid transparent;border-bottom-color:var(--purple);
+}
+.speech-text{font-size:1.15rem;font-weight:800;line-height:1.75;color:rgba(255,255,255,.9);}
+
+/* ── CONCEPT SLIDE (visual explanation) ── */
+.concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:780px;width:100%;}
+.c-card{
+  background:var(--mid);border-radius:20px;padding:24px 20px;
+  border:3px solid rgba(255,255,255,.08);text-align:left;
+}
+.c-card .c-icon{font-size:2.6rem;margin-bottom:10px;display:block;}
+.c-card h3{font-family:'Fredoka One',cursive;font-size:1rem;margin-bottom:6px;color:var(--yellow);}
+.c-card p{font-size:.88rem;font-weight:700;color:rgba(255,255,255,.65);line-height:1.65;}
+.c-card.good{border-color:var(--green);}
+.c-card.bad{border-color:var(--pink);}
+.c-card.good h3{color:var(--green);}
+.c-card.bad h3{color:var(--pink);}
+.vs-label{
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka One',cursive;font-size:1.4rem;color:rgba(255,255,255,.3);
+}
+
+/* ── ANALOGY SLIDE ── */
+.analogy-wrap{display:flex;align-items:center;gap:20px;max-width:760px;width:100%;}
+.analogy-box{
+  flex:1;background:var(--mid);border-radius:20px;padding:28px 22px;
+  border:3px solid rgba(255,255,255,.08);
+}
+.analogy-icon{font-size:3rem;margin-bottom:10px;display:block;}
+.analogy-box h3{font-family:'Fredoka One',cursive;font-size:1rem;color:var(--yellow);margin-bottom:8px;}
+.analogy-box p{font-size:.9rem;font-weight:700;color:rgba(255,255,255,.7);line-height:1.65;}
+.arrow-mid{font-size:2rem;color:rgba(255,255,255,.25);}
+
+/* ── POLL SLIDE ── */
+.poll-q{font-family:'Fredoka One',cursive;font-size:1.7rem;color:var(--yellow);margin-bottom:20px;max-width:700px;}
+.poll-list{display:flex;flex-direction:column;gap:10px;width:100%;max-width:680px;}
+.poll-btn{
+  display:flex;align-items:center;gap:14px;padding:14px 20px;
+  background:var(--mid);border:3px solid rgba(255,255,255,.1);border-radius:16px;
+  cursor:pointer;color:white;font-family:'Nunito',sans-serif;font-weight:800;
+  font-size:.95rem;transition:all .18s;text-align:left;width:100%;
+}
+.poll-btn:hover{border-color:var(--purple);background:#3a3a60;}
+.poll-btn.correct{border-color:var(--green);background:rgba(46,196,134,.15);}
+.poll-btn.wrong{border-color:var(--pink);background:rgba(255,77,139,.1);}
+.poll-btn:disabled{cursor:default;}
+.poll-icon{font-size:1.4rem;width:32px;text-align:center;flex-shrink:0;}
+.poll-bar-row{margin-top:6px;height:7px;border-radius:10px;background:var(--green);width:0%;transition:width .5s;}
+.poll-hint{font-size:.75rem;color:rgba(255,255,255,.4);margin-top:3px;}
+#poll-feedback{margin-top:14px;font-size:1rem;font-weight:800;min-height:28px;}
+
+/* ── UNPLUGGED SLIDE ── */
+.unplugged-banner{
+  background:linear-gradient(135deg,#0d2e1c,#1a5235);
+  border:3px solid var(--green);border-radius:24px;
+  padding:32px 40px;max-width:720px;text-align:left;
+}
+.unp-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.unp-header .unp-icon{font-size:2.8rem;}
+.unp-header h2{font-family:'Fredoka One',cursive;font-size:1.6rem;color:var(--green);}
+.unp-steps{display:flex;flex-direction:column;gap:10px;}
+.unp-step{
+  display:flex;align-items:flex-start;gap:12px;
+  font-size:.92rem;font-weight:700;color:rgba(255,255,255,.8);line-height:1.55;
+}
+.unp-num{
+  width:28px;height:28px;border-radius:50%;background:var(--green);
+  color:var(--dark);font-weight:900;font-size:.82rem;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+}
+
+/* ── VISUAL DEMO SLIDE ── */
+.vis-wrap{max-width:800px;width:100%;}
+.vis-title{font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--yellow);margin-bottom:20px;}
+
+/* Sequence visualizer */
+.seq-track{
+  display:flex;align-items:center;gap:0;
+  background:rgba(0,0,0,.3);border-radius:16px;padding:20px;
+  overflow-x:auto;margin-bottom:20px;
+}
+.seq-step{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  min-width:100px;flex-shrink:0;
+}
+.seq-step .s-icon{
+  font-size:2rem;width:56px;height:56px;border-radius:50%;
+  background:var(--mid);border:3px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .4s;cursor:pointer;
+}
+.seq-step .s-icon:hover{border-color:var(--purple);transform:scale(1.08);}
+.seq-step .s-icon.active{border-color:var(--yellow);background:#3a2060;box-shadow:0 0 20px rgba(155,93,229,.5);}
+.seq-step .s-icon.done{border-color:var(--green);background:rgba(46,196,134,.2);}
+.seq-step span{font-size:.75rem;font-weight:800;color:rgba(255,255,255,.6);}
+.seq-arrow{font-size:1.2rem;color:rgba(255,255,255,.2);margin:0 4px;flex-shrink:0;margin-bottom:28px;}
+
+.vis-controls{display:flex;gap:10px;justify-content:center;}
+.vis-btn{
+  padding:10px 22px;border:none;border-radius:50px;cursor:pointer;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:.88rem;transition:all .18s;
+}
+.vis-btn.primary{background:var(--purple);color:white;box-shadow:0 4px 0 #5f2fa0;}
+.vis-btn.primary:hover{transform:translateY(-2px);}
+.vis-btn.secondary{background:rgba(255,255,255,.1);color:white;}
+.vis-btn.secondary:hover{background:rgba(255,255,255,.2);}
+#vis-caption{
+  margin-top:14px;font-size:.95rem;font-weight:800;
+  color:rgba(255,255,255,.6);min-height:28px;
+}
+
+/* Debug reveal */
+.debug-list{display:flex;flex-direction:column;gap:10px;max-width:660px;width:100%;}
+.debug-item{
+  display:flex;align-items:center;gap:14px;padding:13px 18px;
+  background:var(--mid);border:3px solid rgba(255,255,255,.1);
+  border-radius:14px;cursor:pointer;transition:all .2s;
+  font-weight:800;font-size:.92rem;text-align:left;color:white;
+  font-family:'Nunito',sans-serif;
+}
+.debug-item:hover{border-color:rgba(255,255,255,.25);}
+.debug-item.revealed-ok{border-color:var(--green);background:rgba(46,196,134,.1);}
+.debug-item.revealed-err{border-color:var(--pink);background:rgba(255,77,139,.1);}
+.di-num{
+  width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);
+  color:white;font-weight:900;display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;flex-shrink:0;
+}
+.di-tag{margin-left:auto;font-size:.75rem;padding:3px 10px;border-radius:50px;font-weight:900;flex-shrink:0;}
+.tag-ok{background:rgba(46,196,134,.2);color:var(--green);}
+.tag-err{background:rgba(255,77,139,.2);color:var(--pink);}
+#debug-reveal-hint{font-size:.82rem;color:rgba(255,255,255,.4);margin-bottom:10px;font-weight:700;}
+#debug-result{margin-top:12px;font-size:.95rem;font-weight:800;min-height:26px;}
+
+/* ── REFLECTION SLIDE ── */
+.reflect-box{
+  background:linear-gradient(135deg,#1e1040,#2d1b69);
+  border:3px solid var(--purple);border-radius:24px;
+  padding:36px 44px;max-width:660px;
+}
+.reflect-star{font-size:3rem;margin-bottom:14px;display:block;animation:spin 5s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.reflect-q{font-family:'Fredoka One',cursive;font-size:1.85rem;line-height:1.3;margin-bottom:16px;}
+.reflect-sub{font-size:.9rem;font-weight:700;color:rgba(255,255,255,.5);line-height:1.65;}
+
+/* ── TEACHER TIP ── */
+#tip-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:90;
+  background:#12122a;border-top:2px solid var(--purple);
+  padding:10px 24px;display:flex;align-items:center;gap:12px;
+  transform:translateY(100%);transition:transform .3s;
+}
+#tip-bar.show{transform:translateY(0);}
+#tip-bar .tip-lbl{color:var(--yellow);font-weight:900;font-size:.82rem;white-space:nowrap;}
+#tip-bar .tip-txt{font-size:.82rem;font-weight:700;color:rgba(255,255,255,.55);flex:1;}
+#tip-bar .tip-close{background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:1.2rem;}
+#btn-tip{
+  position:fixed;bottom:16px;right:20px;z-index:100;
+  padding:8px 16px;background:var(--yellow);color:var(--dark);
+  border:none;border-radius:50px;font-family:'Nunito',sans-serif;
+  font-weight:900;font-size:.78rem;cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,0,0,.35);transition:all .18s;
+}
+#btn-tip:hover{transform:translateY(-2px);}
+
+/* Chapter dots */
+#ch-nav{
+  position:fixed;top:62px;left:12px;
+  display:flex;flex-direction:column;gap:8px;padding:10px 4px;z-index:50;
+}
+.ch-dot{
+  width:9px;height:9px;border-radius:50%;
+  background:rgba(255,255,255,.18);cursor:pointer;transition:all .2s;
+  position:relative;
+}
+.ch-dot.active{background:var(--yellow);transform:scale(1.5);}
+.ch-dot:hover::after{
+  content:attr(data-label);position:absolute;left:17px;top:50%;
+  transform:translateY(-50%);background:#12122a;border:1px solid rgba(255,255,255,.1);
+  padding:4px 10px;border-radius:6px;font-size:.7rem;font-weight:800;
+  color:white;white-space:nowrap;pointer-events:none;
+}
+
+/* Confetti */
+.cf{position:fixed;width:9px;height:9px;border-radius:2px;pointer-events:none;z-index:999;animation:cffall 1.6s ease forwards;}
+@keyframes cffall{0%{opacity:1;transform:translateY(-10px) rotate(0);}100%{opacity:0;transform:translateY(100vh) rotate(600deg);}}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <span class="logo">🌿 KODAI</span>
+  <div id="bar-wrap"><div id="bar-fill"></div></div>
+  <span id="slide-lbl">1 / 13</span>
+  <button class="btn-nav" id="btn-prev" onclick="goPrev()">← Kembali</button>
+  <button class="btn-nav" id="btn-next" onclick="goNext()">Lanjut →</button>
+</div>
+
+<!-- Chapter nav -->
+<div id="ch-nav"></div>
+
+<!-- STAGE -->
+<div id="stage">
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- MATERI 1 — MENGENAL INSTRUKSI         -->
+  <!-- ══════════════════════════════════════ -->
+
+  <!-- S0: Title -->
+  <div class="slide s-title active" data-ch="0"
+    data-tip="Perkenalkan diri dan tanya: 'Siapa tadi pagi langsung bangun tanpa disuruh?' — lalu bilang kamu baru kasih INSTRUKSI ke dirimu sendiri!">
+    <div class="ch-badge">Kelas 1 · Materi 1</div>
+    <span class="big-icon">🤖</span>
+    <h1>Mengenal Instruksi</h1>
+    <p class="tagline">Kodi berdiri diam-diam menunggu perintah. Tanpa instruksi yang jelas, Kodi tidak bisa melakukan apa-apa!</p>
+  </div>
+
+  <!-- S1: Story -->
+  <div class="slide" data-ch="0"
+    data-tip="Bacakan cerita ini dengan dramatis. Buat suara robot: 'BZZZT... error... butuh perintah...' Siswa pasti tertawa!">
+    <span class="kodi-avatar">🤖</span>
+    <div class="speech-bubble">
+      <p class="speech-text">
+        Kodi baru saja dinyalakan pagi ini...<br><br>
+        Matanya berkedip-kedip. Kakinya tidak bergerak.<br>
+        Ia menunggu sesuatu yang sangat penting:<br><br>
+        <strong style="color:var(--yellow)">Sebuah INSTRUKSI! 🎯</strong><br><br>
+        <span style="color:rgba(255,255,255,.5);font-size:.95rem;">Tanpa instruksi yang jelas, Kodi tidak tahu harus ngapain.</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- S2: Concept — apa itu instruksi -->
+  <div class="slide" data-ch="0"
+    data-tip="Sebelum lanjut, tanya ke kelas: 'Ada yang bisa kasih contoh instruksi di kehidupan sehari-hari?' Kumpulkan 3-4 jawaban dari siswa dulu.">
+    <div class="ch-badge">Konsep</div>
+    <p style="font-family:'Fredoka One',cursive;font-size:1.7rem;margin-bottom:20px;">Instruksi yang BAIK vs BURUK</p>
+    <div class="concept-grid">
+      <div class="c-card bad">
+        <span class="c-icon">😕</span>
+        <h3>❌ Instruksi Buruk</h3>
+        <p>"Ambil!"<br><br>
+        Ambil apa? Dari mana? Berapa banyak?<br>
+        Kodi bingung dan tidak bergerak.</p>
+      </div>
+      <div class="vs-label">VS</div>
+      <div class="c-card good" style="grid-column:span 1;">
+        <span class="c-icon">✅</span>
+        <h3>✅ Instruksi Baik</h3>
+        <p>"Ambil <strong>buku merah</strong> dari <strong>rak nomor 2</strong>!"<br><br>
+        Jelas. Spesifik. Kodi langsung tahu apa yang harus dilakukan!</p>
+      </div>
+    </div>
+    <p style="margin-top:16px;font-size:.88rem;font-weight:700;color:rgba(255,255,255,.45);">
+      Instruksi = perintah yang <strong style="color:var(--yellow)">jelas</strong>, <strong style="color:var(--green)">spesifik</strong>, dan tidak membingungkan.
+    </p>
+  </div>
+
+  <!-- S3: Analogy -->
+  <div class="slide" data-ch="0"
+    data-tip="Minta 2 siswa maju ke depan. Satu jadi 'pemberi perintah', satu jadi 'robot'. Coba instruksi yang ambigu dulu, lalu yang jelas. Kelas pasti ramai!">
+    <div class="ch-badge">Analogi</div>
+    <p style="font-family:'Fredoka One',cursive;font-size:1.5rem;margin-bottom:18px;">Instruksi itu seperti...</p>
+    <div class="analogy-wrap">
+      <div class="analogy-box">
+        <span class="analogy-icon">🧒</span>
+        <h3>Memberi arah ke teman baru</h3>
+        <p>"Kalau kamu bilang 'belok di situ', teman barumu akan bingung — belok di mana? Kanan atau kiri?"<br><br>
+        Tapi kalau kamu bilang <strong style="color:var(--yellow)">"belok kanan di warung Bu Siti"</strong>, langsung ngerti!</p>
+      </div>
+      <div class="arrow-mid">⟷</div>
+      <div class="analogy-box">
+        <span class="analogy-icon">🤖</span>
+        <h3>Memberi perintah ke Kodi</h3>
+        <p>Komputer tidak bisa menebak maksud kita. Instruksi harus <strong style="color:var(--green)">100% lengkap</strong> — apa, ke mana, berapa langkah — baru Kodi bisa bergerak!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4: Poll diskusi -->
+  <div class="slide" data-ch="0"
+    data-tip="Minta siswa angkat tangan untuk masing-masing pilihan. Hitung bareng, catat di papan tulis, lalu reveal jawaban benar bersama-sama.">
+    <p class="poll-q">🙋 Kalau Kodi diberi perintah "Maju!", apa yang akan terjadi?</p>
+    <div class="poll-list">
+      <button class="poll-btn" onclick="vote(this,false,'Hampir! Tapi Kodi butuh tahu maju ke mana dan berapa langkah.')">
+        <span class="poll-icon">🚶</span>
+        <div style="flex:1;">
+          Kodi langsung maju ke depan
+          <div class="poll-bar-row"></div><div class="poll-hint"></div>
+        </div>
+      </button>
+      <button class="poll-btn" onclick="vote(this,false,'Tidak juga — Kodi tidak punya inisiatif sendiri, dia butuh instruksi yang lengkap!')">
+        <span class="poll-icon">🤔</span>
+        <div style="flex:1;">
+          Kodi akan menebak ke mana harus maju
+          <div class="poll-bar-row"></div><div class="poll-hint"></div>
+        </div>
+      </button>
+      <button class="poll-btn" onclick="vote(this,true,'Betul! Instruksi &quot;Maju!&quot; belum cukup — perlu ditambah arah dan jumlah langkah.')">
+        <span class="poll-icon">💡</span>
+        <div style="flex:1;">
+          Kodi bingung — instruksinya belum cukup jelas!
+          <div class="poll-bar-row"></div><div class="poll-hint"></div>
+        </div>
+      </button>
+    </div>
+    <div id="poll-feedback"></div>
+  </div>
+
+  <!-- S5: Unplugged Activity -->
+  <div class="slide" data-ch="0"
+    data-tip="Aktivitas fisik! Minta siswa berdiri. Satu siswa jadi 'robot', siswa lain memberi satu instruksi. Kalau instruksinya kurang jelas, robot tetap diam!">
+    <div class="unplugged-banner">
+      <div class="unp-header">
+        <span class="unp-icon">🎭</span>
+        <div>
+          <h2>Aktivitas: Robot Satu Perintah</h2>
+          <p style="font-size:.85rem;color:rgba(255,255,255,.5);font-weight:700;margin-top:4px;">Tanpa layar · ±8 menit</p>
+        </div>
+      </div>
+      <div class="unp-steps">
+        <div class="unp-step"><div class="unp-num">1</div><span>Satu siswa maju ke depan kelas menjadi <strong style="color:var(--green)">Robot Kodi</strong> — berdirilah diam dan kaku seperti robot!</span></div>
+        <div class="unp-step"><div class="unp-num">2</div><span>Siswa lain bergiliran memberi <strong style="color:var(--yellow)">satu instruksi</strong>. Kalau instruksi tidak jelas ("maju!" saja), Robot Kodi tetap diam.</span></div>
+        <div class="unp-step"><div class="unp-num">3</div><span>Robot Kodi baru bergerak kalau instruksinya <strong style="color:var(--green)">lengkap</strong>: "Maju 3 langkah ke pintu!" ✅</span></div>
+        <div class="unp-step"><div class="unp-num">4</div><span>Bergantian — coba minimal 4 siswa. Diskusikan: instruksi seperti apa yang paling berhasil?</span></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- MATERI 2 — URUTAN KEGIATAN PAGI       -->
+  <!-- ══════════════════════════════════════ -->
+
+  <!-- S6: Title -->
+  <div class="slide s-title" data-ch="1"
+    data-tip="Pemantik: 'Pernah nggak kalian pakai baju dulu sebelum mandi? Hehe... kalau iya, itu namanya urutan yang salah!'">
+    <div class="ch-badge">Kelas 1 · Materi 2</div>
+    <span class="big-icon">🌅</span>
+    <h1>Urutan Kegiatan Pagi</h1>
+    <p class="tagline">Langkah yang tertukar = hasilnya kacau! Kodi butuh bantuan kalian untuk bersiap ke sekolah.</p>
+  </div>
+
+  <!-- S7: Story -->
+  <div class="slide" data-ch="1"
+    data-tip="Dramatisasi cerita ini! Minta satu siswa peragakan 'pakai sepatu sebelum kaos kaki' — siswa lain pasti tertawa dan paham konsepnya.">
+    <span class="kodi-avatar">😵</span>
+    <div class="speech-bubble">
+      <p class="speech-text">
+        Pagi ini Kodi sangat bersemangat ke sekolah!<br><br>
+        Dia langsung pakai <strong style="color:var(--orange)">SEPATU</strong>... <br>
+        lalu baru ingat belum pakai <strong style="color:var(--yellow)">KAOS KAKI</strong>! 🧦<br><br>
+        Aduh! Sepatunya harus dilepas dulu...<br>
+        Kodi jadi <strong style="color:var(--pink)">telat ke sekolah!</strong> ⏰<br><br>
+        <span style="color:rgba(255,255,255,.5);font-size:.9rem;">Urutan yang salah = hasil yang berantakan.</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- S8: Visual — sequence visualizer animasi -->
+  <div class="slide" data-ch="1"
+    data-tip="Klik 'Mulai Urutan' sambil ceritakan setiap langkahnya ke kelas. Tanya siswa: 'Langkah berikutnya apa?' sebelum klik Next Step.">
+    <div class="vis-wrap">
+      <p class="vis-title">📋 Urutan Pagi Kodi yang Benar</p>
+      <div class="seq-track" id="seq-track"></div>
+      <div class="vis-controls">
+        <button class="vis-btn secondary" onclick="seqReset()">🔄 Reset</button>
+        <button class="vis-btn primary" id="btn-seq" onclick="seqNext()">▶ Mulai Urutan</button>
+      </div>
+      <p id="vis-caption">Tekan "Mulai Urutan" untuk menjalankan langkah-langkah Kodi bersama kelas!</p>
+    </div>
+  </div>
+
+  <!-- S9: Poll urutan -->
+  <div class="slide" data-ch="1"
+    data-tip="Poll diskusi. Setelah vote, minta siswa menjelaskan alasannya. Jawaban yang salah pun bagus untuk didiskusikan bareng!">
+    <p class="poll-q">🤔 Kenapa urutan langkah itu penting?</p>
+    <div class="poll-list">
+      <button class="poll-btn" onclick="vote(this,false,'Hmm... kalau urutannya salah, hasilnya bisa kacau meski langkahnya sama!')">
+        <span class="poll-icon">🙄</span>
+        <div style="flex:1;">
+          Tidak terlalu penting, yang penting semua langkahnya dilakukan
+          <div class="poll-bar-row"></div><div class="poll-hint"></div>
+        </div>
+      </button>
+      <button class="poll-btn" onclick="vote(this,true,'Tepat sekali! Urutan menentukan apakah hasilnya benar atau berantakan.')">
+        <span class="poll-icon">🎯</span>
+        <div style="flex:1;">
+          Sangat penting! Urutan yang salah bikin hasilnya berantakan
+          <div class="poll-bar-row"></div><div class="poll-hint"></div>
+        </div>
+      </button>
+      <button class="poll-btn" onclick="vote(this,false,'Kadang bisa, tapi dalam pemrograman — dan kehidupan — urutan hampir selalu sangat menentukan.')">
+        <span class="poll-icon">🤷</span>
+        <div style="flex:1;">
+          Tergantung situasinya, kadang tidak masalah
+          <div class="poll-bar-row"></div><div class="poll-hint"></div>
+        </div>
+      </button>
+    </div>
+    <div id="poll-feedback"></div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- MATERI 3 — KODI TERSESAT (DEBUGGING)  -->
+  <!-- ══════════════════════════════════════ -->
+
+  <!-- S10: Title -->
+  <div class="slide s-title" data-ch="2"
+    data-tip="Pemantik: 'Pernah salah nulis jawaban terus dicoret dan dibetulkan? Nah, itu kamu baru saja melakukan DEBUGGING!'">
+    <div class="ch-badge">Kelas 1 · Materi 5</div>
+    <span class="big-icon">🐛</span>
+    <h1>Kodi Tersesat!</h1>
+    <p class="tagline">Ada langkah yang salah di instruksi Kodi. Jadilah detektif dan temukan kesalahannya bersama!</p>
+  </div>
+
+  <!-- S11: Debug reveal bersama kelas -->
+  <div class="slide" data-ch="2"
+    data-tip="Klik setiap langkah satu per satu. Sebelum reveal, tanya kelas dulu: 'Menurut kalian langkah ini benar nggak?' Biarkan siswa berdebat sebelum jawabannya muncul.">
+    <p style="font-family:'Fredoka One',cursive;font-size:1.35rem;color:var(--yellow);margin-bottom:6px;">🔍 Temukan Langkah yang Tertukar!</p>
+    <p id="debug-reveal-hint">Kodi mau memakai sepatu. Klik setiap langkah untuk mengeceknya bersama kelas! 👆</p>
+    <div class="debug-list" id="debug-list"></div>
+    <div id="debug-result"></div>
+  </div>
+
+  <!-- S12: Reflection penutup -->
+  <div class="slide" data-ch="2"
+    data-tip="Tutup dengan semangat! Minta 3 siswa ceritakan satu hal yang mereka pelajari hari ini. Beri tepuk tangan meriah untuk seluruh kelas!">
+    <div class="reflect-box">
+      <span class="reflect-star">⭐</span>
+      <p class="reflect-q">"Apa perasaanmu saat berhasil menemukan kesalahan dan membetulkannya?"</p>
+      <p class="reflect-sub">
+        Hari ini kalian sudah belajar 3 hal penting:<br><br>
+        🤖 <strong style="color:white;">Instruksi</strong> harus jelas dan spesifik<br>
+        📋 <strong style="color:white;">Urutan</strong> langkah sangat menentukan hasil<br>
+        🐛 <strong style="color:white;">Debugging</strong> = menemukan & membetulkan kesalahan<br><br>
+        <strong style="color:var(--yellow)">Kalian semua sudah berpikir seperti programmer hari ini! 🌟</strong>
+      </p>
+    </div>
+  </div>
+
+</div><!-- /stage -->
+
+<!-- Teacher Tip Bar -->
+<div id="tip-bar">
+  <span class="tip-lbl">💡 Tips Guru</span>
+  <span class="tip-txt" id="tip-txt">—</span>
+  <button class="tip-close" onclick="hideTip()">✕</button>
+</div>
+<button id="btn-tip" onclick="toggleTip()">💡 Tips Guru</button>
+
+<script>
+// ── SLIDE NAV ──────────────────────────────
+const slides = [...document.querySelectorAll('.slide')];
+const TOTAL = slides.length;
+let cur = 0, tipOpen = false;
+
+function updateUI(){
+  slides.forEach((s,i) => s.classList.toggle('active', i===cur));
+  document.getElementById('slide-lbl').textContent = `${cur+1} / ${TOTAL}`;
+  document.getElementById('bar-fill').style.width = ((cur+1)/TOTAL*100)+'%';
+  document.getElementById('btn-prev').style.opacity = cur===0 ? '.3':'1';
+  document.getElementById('btn-next').disabled = cur===TOTAL-1;
+  // chapter dot
+  const ch = slides[cur].dataset.ch;
+  document.querySelectorAll('.ch-dot').forEach(d=>d.classList.toggle('active',d.dataset.ch===ch));
+  // tip text
+  document.getElementById('tip-txt').textContent = slides[cur].dataset.tip || '—';
+  // reset tip visibility on slide change
+  if(tipOpen){ document.getElementById('tip-bar').classList.add('show'); }
+  // init seqvisualizer on s8
+  if(cur===8) initSeq();
+  // init debug on s11
+  if(cur===11) initDebug();
+}
+
+function goNext(){ if(cur<TOTAL-1){ cur++; updateUI(); } }
+function goPrev(){ if(cur>0){ cur--; updateUI(); } }
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' ') goNext();
+  if(e.key==='ArrowLeft') goPrev();
+});
+
+// ── CHAPTER DOTS ──────────────────────────
+const chapters = [
+  {ch:'0', label:'Mengenal Instruksi'},
+  {ch:'1', label:'Urutan Kegiatan Pagi'},
+  {ch:'2', label:'Debugging'},
+];
+const chNav = document.getElementById('ch-nav');
+// find first slide per chapter
+chapters.forEach(c=>{
+  const dot = document.createElement('div');
+  dot.className='ch-dot'; dot.dataset.ch=c.ch; dot.dataset.label=c.label;
+  dot.onclick=()=>{
+    cur = slides.findIndex(s=>s.dataset.ch===c.ch);
+    updateUI();
+  };
+  chNav.appendChild(dot);
+});
+
+// ── TEACHER TIP ───────────────────────────
+function toggleTip(){
+  tipOpen=!tipOpen;
+  document.getElementById('tip-bar').classList.toggle('show',tipOpen);
+}
+function hideTip(){ tipOpen=false; document.getElementById('tip-bar').classList.remove('show'); }
+
+// ── POLL ──────────────────────────────────
+// Setiap slide poll punya state sendiri berdasarkan slide index
+const pollDone = {};
+function vote(btn, isCorrect, explanation){
+  const slideIdx = cur;
+  if(pollDone[slideIdx]) return;
+  pollDone[slideIdx] = true;
+  const btns = btn.closest('.poll-list').querySelectorAll('.poll-btn');
+  btns.forEach(b=>b.disabled=true);
+  btn.classList.add(isCorrect ? 'correct':'wrong');
+  // Fake bar animation for class participation feel
+  const pcts = shuffleWeighted(btns.length, isCorrect ? btn : null, btns);
+  btns.forEach((b,i)=>{
+    b.querySelector('.poll-bar-row').style.width = pcts[i]+'%';
+    b.querySelector('.poll-hint').textContent = pcts[i]+'% siswa memilih ini';
+  });
+  const fb = btn.closest('.slide').querySelector('#poll-feedback');
+  if(fb){
+    fb.style.color = isCorrect ? 'var(--green)':'var(--yellow)';
+    fb.textContent = (isCorrect ? '✅ ' : '💡 ') + explanation;
+  }
+  if(isCorrect) confetti();
+}
+function shuffleWeighted(n){ // fake percentages that sum to 100
+  const arr=[];let rem=100;
+  for(let i=0;i<n-1;i++){const v=Math.floor(Math.random()*40+15);arr.push(Math.min(v,rem-10*(n-i-1)));rem-=arr[arr.length-1];}
+  arr.push(rem);
+  return arr.sort(()=>Math.random()-.5);
+}
+
+// ── SEQUENCE VISUALIZER ───────────────────
+const morningSeq = [
+  {emoji:'😴',label:'Bangun tidur'},
+  {emoji:'🚿',label:'Mandi'},
+  {emoji:'👕',label:'Pakai baju'},
+  {emoji:'🍳',label:'Sarapan'},
+  {emoji:'🎒',label:'Ambil tas'},
+  {emoji:'🚪',label:'Berangkat!'},
+];
+const captions = [
+  'Langkah 1: Bangun tidur dulu! Semua dimulai dari sini 😴',
+  'Langkah 2: Mandi biar segar dan wangi 🚿',
+  'Langkah 3: Pakai baju yang rapi 👕',
+  'Langkah 4: Sarapan biar kuat belajar 🍳',
+  'Langkah 5: Ambil tas dan perlengkapan sekolah 🎒',
+  '🎉 Langkah 6: Berangkat! Kodi siap ke sekolah tepat waktu!',
+];
+let seqStep = -1, seqInited = false;
+
+function initSeq(){
+  if(seqInited) return;
+  seqInited = true;
+  const track = document.getElementById('seq-track');
+  track.innerHTML = morningSeq.map((s,i)=>`
+    ${i>0?'<span class="seq-arrow">→</span>':''}
+    <div class="seq-step" id="ss-${i}">
+      <div class="s-icon" id="si-${i}">${s.emoji}</div>
+      <span>${s.label}</span>
+    </div>
+  `).join('');
+}
+
+function seqNext(){
+  if(seqStep >= morningSeq.length-1) return;
+  if(seqStep>=0){
+    document.getElementById(`si-${seqStep}`).classList.replace('active','done');
+    document.getElementById(`si-${seqStep}`).style.setProperty('--clr','var(--green)');
+  }
+  seqStep++;
+  const icon = document.getElementById(`si-${seqStep}`);
+  icon.classList.add('active');
+  document.getElementById('vis-caption').textContent = captions[seqStep];
+  const btn = document.getElementById('btn-seq');
+  if(seqStep===morningSeq.length-1){
+    btn.textContent='✅ Selesai!'; btn.disabled=true; confetti();
+  } else {
+    btn.textContent=`▶ Langkah ${seqStep+2}`;
+  }
+}
+
+function seqReset(){
+  seqStep=-1;
+  morningSeq.forEach((_,i)=>{
+    const ic=document.getElementById(`si-${i}`);
+    if(ic){ic.className='s-icon';}
+  });
+  document.getElementById('vis-caption').textContent='Tekan "Mulai Urutan" untuk menjalankan langkah-langkah Kodi bersama kelas!';
+  const btn=document.getElementById('btn-seq');
+  btn.textContent='▶ Mulai Urutan'; btn.disabled=false;
+}
+
+// ── DEBUG ─────────────────────────────────
+const debugData = [
+  {emoji:'🧦', text:'Ambil kaos kaki dari laci', isError:false},
+  {emoji:'👟', text:'Langsung pakai sepatu', isError:true, note:'Harusnya kaos kaki dulu sebelum sepatu!'},
+  {emoji:'🧦', text:'Pakai kaos kaki', isError:true, note:'Ini harusnya di langkah ke-2, bukan ke-3!'},
+  {emoji:'👟', text:'Ikat tali sepatu dengan rapi', isError:false},
+  {emoji:'🎒', text:'Ambil tas dan siap berangkat', isError:false},
+];
+let debugInited=false, debugDone=false;
+
+function initDebug(){
+  if(debugInited) return;
+  debugInited=true; debugDone=false;
+  const list = document.getElementById('debug-list');
+  list.innerHTML = debugData.map((d,i)=>`
+    <button class="debug-item" id="di-${i}" onclick="clickDebug(${i})">
+      <div class="di-num">${i+1}</div>
+      <span style="font-size:1.2rem;">${d.emoji}</span>
+      <span style="flex:1;">${d.text}</span>
+      <span class="di-tag" id="dit-${i}" style="display:none;"></span>
+    </button>
+  `).join('');
+  document.getElementById('debug-result').textContent='';
+}
+
+let revealed = 0;
+function clickDebug(i){
+  if(debugDone) return;
+  const item = document.getElementById(`di-${i}`);
+  const tag = document.getElementById(`dit-${i}`);
+  if(item.classList.contains('revealed-ok')||item.classList.contains('revealed-err')) return;
+
+  const d = debugData[i];
+  if(d.isError){
+    item.classList.add('revealed-err');
+    tag.className='di-tag tag-err'; tag.textContent='❌ SALAH'; tag.style.display='';
+    // also mark the other error
+    debugData.forEach((dd,ii)=>{
+      if(dd.isError && ii!==i){
+        const oi=document.getElementById(`di-${ii}`);
+        const ot=document.getElementById(`dit-${ii}`);
+        oi.classList.add('revealed-err');
+        ot.className='di-tag tag-err'; ot.textContent='❌ SALAH'; ot.style.display='';
+      }
+    });
+    document.getElementById('debug-result').style.color='var(--green)';
+    document.getElementById('debug-result').textContent =
+      '🎉 Ketemu! Langkah 2 & 3 tertukar posisinya. Kaos kaki harus dipakai SEBELUM sepatu!';
+    debugDone=true; confetti();
+  } else {
+    item.classList.add('revealed-ok');
+    tag.className='di-tag tag-ok'; tag.textContent='✅ Benar'; tag.style.display='';
+    document.getElementById('debug-result').style.color='rgba(255,255,255,.5)';
+    document.getElementById('debug-result').textContent='Bukan ini... terus cek langkah lainnya 🔍';
+  }
+}
+
+// ── CONFETTI ──────────────────────────────
+function confetti(){
+  const colors=['#FFD93D','#9B5DE5','#2EC486','#FF6B35','#FF4D8B','#fff'];
+  for(let i=0;i<36;i++){
+    const el=document.createElement('div');
+    el.className='cf';
+    el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${colors[i%colors.length]};animation-delay:${Math.random()*.7}s;animation-duration:${1.2+Math.random()*.7}s;`;
+    document.body.appendChild(el);
+    el.addEventListener('animationend',()=>el.remove());
+  }
+}
+
+// ── INIT ──────────────────────────────────
+updateUI();
+</script>
+</body>
+</html>

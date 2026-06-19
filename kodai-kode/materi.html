@@ -48,7 +48,6 @@
 .video-desc-text{color:rgba(255,255,255,.5);font-size:.8rem;margin-top:6px;font-weight:600;}
 .video-scanlines{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0,rgba(0,0,0,.08) 1px,transparent 1px,transparent 4px);}
 .video-tag{position:absolute;top:12px;left:12px;background:rgba(255,68,68,.9);color:white;padding:4px 10px;border-radius:6px;font-size:.72rem;font-weight:800;}
-/* Animated equalizer for video "playing" feel */
 .eq-bars{display:flex;gap:3px;position:absolute;bottom:16px;right:16px;}
 .eq-bar{width:4px;background:#FFD93D;border-radius:2px;animation:eqAnim 1s ease infinite alternate;}
 .eq-bar:nth-child(1){height:12px;animation-delay:0s;}
@@ -60,7 +59,27 @@
 .syllabus-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin:12px 0;}
 .syllabus-list li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#f8f8f8;border-radius:12px;font-weight:700;font-size:.92rem;}
 .syllabus-num{width:26px;height:26px;border-radius:50%;background:#9B5DE5;color:white;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;flex-shrink:0;}
-@media(max-width:600px){.courses-grid{grid-template-columns:1fr;padding:16px;}.filter-tabs{padding:20px 16px 0;}}
+
+/* Modal detail sections */
+.modal-detail-section{margin:16px 0;padding:14px 16px;background:#f8f6ff;border-radius:14px;border-left:4px solid #9B5DE5;}
+.modal-detail-label{font-size:.75rem;font-weight:800;color:#9B5DE5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.modal-detail-text{font-size:.88rem;color:#444;font-weight:600;line-height:1.6;}
+.modal-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;}
+.modal-detail-card{padding:12px 14px;background:#fff;border-radius:12px;border:2px solid #eee;}
+.modal-detail-card .modal-detail-label{color:#666;}
+.reflection-box{background:linear-gradient(135deg,#FFF4E5,#FFE8C2);border-radius:14px;padding:14px 16px;margin:16px 0;border-left:4px solid #FFD93D;}
+.reflection-box .modal-detail-label{color:#e07800;}
+.unplugged-box{background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-radius:14px;padding:14px 16px;margin:16px 0;border-left:4px solid #2EC486;}
+.unplugged-box .modal-detail-label{color:#1a7a50;}
+.story-box{background:linear-gradient(135deg,#EDE7F6,#D1C4E9);border-radius:14px;padding:14px 16px;margin:16px 0;border-left:4px solid #7C4DFF;}
+.story-box .modal-detail-label{color:#4a148c;}
+.modal-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.modal-tab{padding:7px 16px;border-radius:50px;border:2px solid #ddd;background:white;font-family:'Nunito',sans-serif;font-weight:800;font-size:.78rem;cursor:pointer;transition:all .2s;}
+.modal-tab.active{background:#9B5DE5;color:white;border-color:#9B5DE5;}
+.modal-tab-content{display:none;}
+.modal-tab-content.active{display:block;}
+
+@media(max-width:600px){.courses-grid{grid-template-columns:1fr;padding:16px;}.filter-tabs{padding:20px 16px 0;}.modal-detail-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -95,10 +114,12 @@
 
 <div class="filter-tabs">
   <button class="filter-tab active" onclick="filterCourse(this,'all')">🌟 Semua</button>
-  <button class="filter-tab" onclick="filterCourse(this,'algoritma')">🧩 Algoritma</button>
-  <button class="filter-tab" onclick="filterCourse(this,'logika')">🔀 Logika</button>
-  <button class="filter-tab" onclick="filterCourse(this,'ai')">🤖 AI & ML</button>
-  <button class="filter-tab" onclick="filterCourse(this,'kolaborasi')">🤝 Kolaborasi</button>
+  <button class="filter-tab" onclick="filterCourse(this,'kelas1')">🟢 Kelas 1</button>
+  <button class="filter-tab" onclick="filterCourse(this,'kelas2')">🔵 Kelas 2</button>
+  <button class="filter-tab" onclick="filterCourse(this,'kelas3')">🟠 Kelas 3</button>
+  <button class="filter-tab" onclick="filterCourse(this,'kelas4')">🔴 Kelas 4</button>
+  <button class="filter-tab" onclick="filterCourse(this,'kelas5')">🟣 Kelas 5</button>
+  <button class="filter-tab" onclick="filterCourse(this,'kelas6')">⭐ Kelas 6</button>
 </div>
 <div class="courses-grid" id="coursesGrid"></div>
 
@@ -113,7 +134,6 @@
       <button class="modal-close" onclick="document.getElementById('courseModal').classList.remove('open')">✕</button>
     </div>
     <div class="modal-body">
-      <!-- Animated video placeholder -->
       <div class="video-thumb" onclick="showToast('▶ Video animasi akan segera hadir!','warning')">
         <div class="video-scanlines"></div>
         <div class="video-tag">📹 VIDEO MATERI</div>
@@ -122,13 +142,88 @@
         <div class="video-desc-text" id="modal-video-desc"></div>
         <div class="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
       </div>
-      <p id="modal-desc" style="color:#555;line-height:1.7;font-weight:600;margin-bottom:20px;"></p>
-      <h3 style="font-family:'Fredoka One',cursive;font-size:1.1rem;margin-bottom:12px;">📋 Yang Akan Kamu Pelajari:</h3>
-      <ul class="syllabus-list" id="modal-syllabus"></ul>
-      <div style="margin-top:24px;display:flex;gap:10px;">
-        <button class="btn-course" style="border-radius:14px;padding:14px;" onclick="document.getElementById('courseModal').classList.remove('open');showToast('🚀 Yuk mulai belajar!','success')">🚀 Mulai Sekarang!</button>
-        <button onclick="document.getElementById('courseModal').classList.remove('open')" style="padding:14px 20px;border:3px solid #eee;border-radius:14px;background:white;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;">Nanti Dulu</button>
+
+      <!-- Tabs -->
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchTab(this,'tab-materi')">📖 Materi</button>
+        <button class="modal-tab" onclick="switchTab(this,'tab-aktivitas')">🎯 Aktivitas</button>
+        <button class="modal-tab" onclick="switchTab(this,'tab-game')">🎮 Game & Sim</button>
+        <button class="modal-tab" onclick="switchTab(this,'tab-refleksi')">💬 Refleksi</button>
       </div>
+
+      <!-- Tab: Materi -->
+      <div class="modal-tab-content active" id="tab-materi">
+        <div class="modal-detail-section">
+          <div class="modal-detail-label">🎯 Tujuan Pembelajaran</div>
+          <div class="modal-detail-text" id="modal-objective"></div>
+        </div>
+        <div class="modal-detail-section">
+          <div class="modal-detail-label">📝 Penjelasan Materi</div>
+          <div class="modal-detail-text" id="modal-explanation"></div>
+        </div>
+        <div class="story-box">
+          <div class="modal-detail-label">📖 Cerita Kodi</div>
+          <div class="modal-detail-text" id="modal-story"></div>
+        </div>
+        <div class="modal-detail-section">
+          <div class="modal-detail-label">💡 Analogi</div>
+          <div class="modal-detail-text" id="modal-analogy"></div>
+        </div>
+        <h3 style="font-family:'Fredoka One',cursive;font-size:1.1rem;margin:16px 0 10px;">📋 Yang Akan Kamu Pelajari:</h3>
+        <ul class="syllabus-list" id="modal-syllabus"></ul>
+      </div>
+
+      <!-- Tab: Aktivitas -->
+      <div class="modal-tab-content" id="tab-aktivitas">
+        <div class="modal-detail-section">
+          <div class="modal-detail-label">👨‍🏫 Penjelasan Guru</div>
+          <div class="modal-detail-text" id="modal-teacher"></div>
+        </div>
+        <div class="modal-detail-section">
+          <div class="modal-detail-label">✏️ Aktivitas Siswa</div>
+          <div class="modal-detail-text" id="modal-activity"></div>
+        </div>
+        <div class="unplugged-box">
+          <div class="modal-detail-label">🔌 Aktivitas Unplugged (Tanpa Komputer)</div>
+          <div class="modal-detail-text" id="modal-unplugged"></div>
+        </div>
+        <div class="modal-detail-section">
+          <div class="modal-detail-label">📊 Penilaian</div>
+          <div class="modal-detail-text" id="modal-assessment"></div>
+        </div>
+      </div>
+
+      <!-- Tab: Game & Sim -->
+      <div class="modal-tab-content" id="tab-game">
+        <div class="modal-detail-section">
+          <div class="modal-detail-label">🎮 Game Tantangan</div>
+          <div class="modal-detail-text" id="modal-game"></div>
+        </div>
+        <div class="modal-detail-section">
+          <div class="modal-detail-label">🖥️ Simulasi Interaktif</div>
+          <div class="modal-detail-text" id="modal-simulation"></div>
+        </div>
+        <div style="margin-top:20px;text-align:center;">
+          <button class="btn-course" style="max-width:300px;border-radius:14px;" onclick="showToast('🎮 Game sedang disiapkan! Segera hadir!','warning')">🚀 Mainkan Sekarang!</button>
+        </div>
+      </div>
+
+      <!-- Tab: Refleksi -->
+      <div class="modal-tab-content" id="tab-refleksi">
+        <div class="reflection-box">
+          <div class="modal-detail-label">💬 Pertanyaan Refleksi</div>
+          <div class="modal-detail-text" id="modal-reflection"></div>
+        </div>
+        <div class="modal-detail-section">
+          <div class="modal-detail-label">🏷️ Konsep yang Dipelajari</div>
+          <div class="modal-detail-text" id="modal-concept-tag"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;display:flex;gap:10px;">
+       <button class="btn-course" style="border-radius:14px;padding:14px;" onclick="document.getElementById('courseModal').classList.remove('open');showToast('🚀 Yuk mulai belajar!','success'); window.location.href='presentasi-kelas.html'">🚀 Mulai Sekarang!</button>
+
+<button onclick="document.getElementById('courseModal').classList.remove('open')" style="padding:14px 20px;border:3px solid #eee;border-radius:14px;background:white;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;">Nanti Dulu</button>
     </div>
   </div>
 </div>
@@ -148,6 +243,890 @@
 </div>
 
 <script src="js/nav.js"></script>
-<script src="js/data.js"></script>
+<script>
+// ====== CURRICULUM DATA (from data.js) ======
+const coursesData = [
+  // ---- KELAS 1: WORLD 1 — Dunia Perintah ----
+  {
+    id:'k1-m1', kelas:'kelas1', emoji:'🤖',
+    title:'Mengenal Instruksi',
+    concept:'Sequence (Instruksi Tunggal)',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#43C6AC,#191654)',
+    desc:'Belajar membedakan satu instruksi dan memahami bahwa komputer hanya melakukan tepat seperti yang diperintahkan.',
+    dur:'30 menit', xp:'50 XP',
+    objective:'Siswa dapat membedakan satu instruksi dan memahami bahwa komputer/karakter hanya melakukan apa yang diperintahkan, tidak lebih.',
+    explanation:'Instruksi adalah perintah sederhana seperti "maju", "belok", atau "ambil". Komputer atau karakter di permainan hanya bisa melakukan tepat seperti yang diperintahkan, tidak bisa menebak maksud kita.',
+    story:'Kodi baru bangun dan bingung apa yang harus dilakukan. Ia hanya bisa bergerak jika diberi satu instruksi jelas oleh teman-temannya di kelas.',
+    analogy:'Seperti memberi perintah kepada adik kecil: jika kita bilang "ambil", adik akan bingung kalau tidak disebutkan ambil apa dan dari mana.',
+    teacher:'Guru memperagakan satu instruksi fisik (misalnya "tepuk tangan satu kali") lalu meminta siswa melakukannya. Tekankan bahwa instruksi harus jelas dan spesifik, tidak ambigu.',
+    activity:'Siswa secara berpasangan bergiliran memberi satu instruksi fisik sederhana kepada temannya (duduk, berdiri, tepuk tangan).',
+    unplugged:'Permainan "Robot Satu Perintah": satu siswa menjadi robot yang hanya bergerak sesuai satu kata perintah dari temannya.',
+    assessment:'Observasi guru terhadap ketepatan siswa memberi dan mengikuti instruksi tunggal selama aktivitas unplugged.',
+    simulation:'Animasi Kodi yang berdiri diam, lalu bergerak sesuai satu tombol instruksi (maju/mundur/kiri/kanan) yang ditekan siswa di layar.',
+    game:'Tekan satu tombol instruksi untuk membuat Kodi mengambil bintang yang ada tepat di depannya.',
+    reflection:'Apa yang terjadi jika instruksi yang kita berikan tidak jelas?',
+    syllabus:['Apa itu instruksi?','Memberi instruksi yang jelas dan spesifik','Komputer hanya mengikuti perintah yang diberikan','Perbedaan instruksi jelas vs tidak jelas']
+  },
+  {
+    id:'k1-m2', kelas:'kelas1', emoji:'⏰',
+    title:'Urutan Kegiatan Pagi',
+    concept:'Sequence (Urutan Berurutan)',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#f9d423,#ff4e50)',
+    desc:'Menyusun beberapa instruksi menjadi urutan langkah yang logis untuk mencapai tujuan tertentu.',
+    dur:'35 menit', xp:'60 XP',
+    objective:'Siswa dapat menyusun beberapa instruksi menjadi urutan langkah yang logis untuk mencapai tujuan tertentu.',
+    explanation:'Sebuah kegiatan sehari-hari, seperti bersiap ke sekolah, terdiri dari beberapa langkah yang harus dilakukan dalam urutan tertentu agar hasilnya benar.',
+    story:'Kodi ingin pergi ke sekolah tapi langkahnya tertukar — ia memakai sepatu sebelum kaos kaki sehingga semua jadi berantakan!',
+    analogy:'Sama seperti memakai sepatu: kita harus memakai kaos kaki dahulu sebelum sepatu, bukan sebaliknya.',
+    teacher:'Guru menampilkan kartu bergambar kegiatan pagi (bangun, mandi, sarapan, berpakaian, berangkat) dalam urutan acak, lalu meminta siswa mengurutkannya.',
+    activity:'Siswa menggambar 4 kotak komik berisi urutan kegiatan favorit mereka di pagi hari.',
+    unplugged:'Kartu bergambar kegiatan pagi diacak dan siswa dalam kelompok kecil mengurutkannya di lantai kelas.',
+    assessment:'Checklist ketepatan urutan kartu yang disusun siswa secara individu maupun kelompok.',
+    simulation:'Siswa menyeret (drag) kartu kegiatan pagi ke urutan yang benar di layar, dan Kodi akan beraksi sesuai urutan yang disusun.',
+    game:'Susun 5 kartu kegiatan pagi Kodi dalam waktu tercepat untuk mendapatkan bintang.',
+    reflection:'Apa yang terjadi jika urutan langkah kegiatan pagi kita tertukar?',
+    syllabus:['Pengertian urutan langkah','Menyusun kegiatan pagi dengan benar','Akibat urutan yang terbalik','Latihan drag & drop urutan kegiatan']
+  },
+  {
+    id:'k1-m3', kelas:'kelas1', emoji:'🗺️',
+    title:'Ayo Ikuti Arah!',
+    concept:'Sequence (Perintah Arah)',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#0099F7,#F11712)',
+    desc:'Menyusun rangkaian instruksi arah (maju, mundur, kiri, kanan) untuk menggerakkan karakter menuju tujuan.',
+    dur:'35 menit', xp:'60 XP',
+    objective:'Siswa dapat menyusun rangkaian instruksi arah (maju, mundur, kiri, kanan) untuk menggerakkan karakter menuju tujuan.',
+    explanation:'Untuk membuat karakter berpindah dari satu titik ke titik lain, kita perlu menyusun beberapa instruksi arah secara berurutan, tidak bisa hanya satu.',
+    story:'Kodi tersesat di taman sekolah dan butuh bantuan siswa untuk menyusun arah agar bisa kembali ke kelasnya.',
+    analogy:'Mirip seperti memberi arah kepada teman yang baru pertama kali ke rumah kita: belok kiri di warung, lalu lurus sampai gerbang sekolah.',
+    teacher:'Guru menggambar petak-petak di papan tulis atau lantai dan meminta siswa menentukan arah langkah agar mencapai suatu titik tujuan.',
+    activity:'Siswa membuat peta sederhana dari kelas ke kantin dan menuliskan arah langkah dalam kata-kata.',
+    unplugged:'Aktivitas "Manusia Robot": satu siswa menutup mata dan digerakkan teman-temannya hanya dengan kata maju/kiri/kanan untuk mencapai target di kelas.',
+    assessment:'Penilaian unjuk kerja saat aktivitas Manusia Robot dan ketepatan menyusun instruksi arah di simulasi.',
+    simulation:'Papan petak digital tempat siswa menyusun urutan tombol arah agar Kodi berjalan dari posisi awal ke posisi bintang.',
+    game:'Tantangan "Pulang ke Kelas": susun minimal 4 instruksi arah agar Kodi tiba di pintu kelas tanpa menabrak tembok.',
+    reflection:'Bagaimana perasaanmu jika ada satu langkah arah yang terlewat saat memandu temanmu?',
+    syllabus:['Instruksi arah: maju, mundur, kiri, kanan','Menyusun lebih dari satu instruksi arah','Membaca peta petak sederhana','Permainan Manusia Robot']
+  },
+  {
+    id:'k1-m4', kelas:'kelas1', emoji:'🌈',
+    title:'Pola Warna dan Bentuk',
+    concept:'Pattern Recognition',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#ff9a9e,#fad0c4)',
+    desc:'Mengenali, melanjutkan, dan menciptakan pola sederhana berdasarkan warna, bentuk, atau suara.',
+    dur:'30 menit', xp:'55 XP',
+    objective:'Siswa dapat mengenali, melanjutkan, dan menciptakan pola sederhana berdasarkan warna, bentuk, atau suara.',
+    explanation:'Pola adalah sesuatu yang berulang secara teratur, seperti merah-kuning-merah-kuning. Mengenali pola membantu kita menebak apa yang akan terjadi selanjutnya.',
+    story:'Kodi menemukan jalan setapak bermotif batu berwarna yang berulang dan harus menebak batu warna apa selanjutnya untuk melanjutkan perjalanan.',
+    analogy:'Seperti pola batik atau motif kain tradisional yang berulang dengan teratur dari ujung ke ujung kain.',
+    teacher:'Guru menunjukkan deretan benda berwarna dengan pola tertentu dan meminta siswa menebak warna/bentuk berikutnya, lalu menjelaskan istilah "pola".',
+    activity:'Siswa membuat gelang manik-manik dengan pola warna yang mereka tentukan sendiri, lalu menjelaskannya ke teman.',
+    unplugged:'Permainan tepuk tangan berpola (tepuk-diam-tepuk-diam) yang harus dilanjutkan siswa secara bergiliran.',
+    assessment:'Observasi kemampuan melanjutkan pola pada aktivitas gelang manik dan tepuk tangan berpola.',
+    simulation:'Layar menampilkan deretan ubin berwarna dengan pola tertentu; siswa mengetuk ubin warna yang tepat untuk melanjutkan pola.',
+    game:'Tebak 3 pola warna berikutnya untuk membantu Kodi melompati batu sungai dengan aman.',
+    reflection:'Bagaimana kamu tahu warna atau bentuk apa yang akan muncul selanjutnya dalam sebuah pola?',
+    syllabus:['Pengertian pola','Pola warna sederhana (AB, ABB, ABC)','Melanjutkan dan menciptakan pola','Pola dalam budaya Indonesia (batik, motif)']
+  },
+  {
+    id:'k1-m5', kelas:'kelas1', emoji:'🔍',
+    title:'Kodi Tersesat',
+    concept:'Debugging Dasar (Kesalahan Urutan)',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#a18cd1,#fbc2eb)',
+    desc:'Mengenali kesalahan sederhana dalam urutan instruksi dan memperbaikinya — pengantar debugging!',
+    dur:'35 menit', xp:'65 XP',
+    objective:'Siswa mampu mengenali kesalahan sederhana dalam urutan instruksi dan memperbaikinya.',
+    explanation:'Kadang instruksi yang kita susun keliru urutannya sehingga hasilnya tidak sesuai harapan. Memperbaiki kesalahan ini disebut debugging.',
+    story:'Kodi mengikuti instruksi yang tertukar urutannya dan malah berjalan ke arah yang salah hingga jatuh ke kolam sekolah.',
+    analogy:'Seperti resep yang tertukar urutannya — menggoreng telur sebelum memecahkan cangkangnya tentu akan berantakan.',
+    teacher:'Guru menunjukkan urutan kartu kegiatan yang sengaja ditukar posisinya, lalu memandu siswa menemukan letak kesalahan dan membenarkannya bersama-sama.',
+    activity:'Siswa berpasangan saling menukar urutan kartu kegiatan, lalu pasangannya mencari dan membenarkan letak yang salah.',
+    unplugged:'Guru memperagakan kegiatan dengan urutan sengaja terbalik, siswa mengangkat tangan saat menemukan kesalahan.',
+    assessment:'Rubrik ketepatan siswa mengidentifikasi dan memperbaiki kartu urutan yang ditukar.',
+    simulation:'Siswa diberi urutan instruksi yang salah pada layar dan diminta menukar posisi langkah yang tepat agar Kodi berjalan dengan benar.',
+    game:'Temukan 1 langkah yang salah letak dari 5 langkah perjalanan Kodi pulang ke rumah.',
+    reflection:'Apa perasaanmu ketika berhasil menemukan kesalahan dan membenarkannya?',
+    syllabus:['Apa itu debugging?','Menemukan kesalahan urutan instruksi','Cara memperbaiki kesalahan langkah','Aktivitas detektif instruksi']
+  },
+  {
+    id:'k1-m6', kelas:'kelas1', emoji:'🏫',
+    title:'Langkah Demi Langkah ke Sekolah',
+    concept:'Algoritma Sederhana (Kehidupan Nyata)',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#667eea,#764ba2)',
+    desc:'Menjelaskan algoritma sederhana sebagai kumpulan langkah untuk mencapai tujuan dalam kehidupan nyata.',
+    dur:'30 menit', xp:'55 XP',
+    objective:'Siswa dapat menjelaskan sebuah algoritma sederhana sebagai kumpulan langkah untuk mencapai tujuan tertentu dalam kehidupan nyata.',
+    explanation:'Algoritma adalah sekumpulan langkah yang jelas dan berurutan untuk menyelesaikan suatu tugas, seperti langkah-langkah dari rumah sampai ke sekolah.',
+    story:'Kodi diundang ke sekolah baru dan harus menyusun sendiri langkah perjalanannya dari gerbang depan menuju kelas.',
+    analogy:'Sama seperti petunjuk arah yang ibu berikan ketika menyuruh kita pergi ke warung dekat rumah.',
+    teacher:'Guru meminta beberapa siswa menceritakan rute mereka dari rumah ke sekolah, lalu menuliskannya sebagai daftar langkah di papan tulis.',
+    activity:'Siswa menulis atau menggambar algoritma perjalanan mereka sendiri dari rumah ke sekolah dalam 5 langkah.',
+    unplugged:'Siswa membuat "peta langkah" di kertas karton besar dan mempresentasikannya secara bergiliran di depan kelas.',
+    assessment:'Penilaian hasil karya peta langkah dan kejelasan presentasi lisan siswa.',
+    simulation:'Peta sekolah sederhana di layar, siswa menyusun urutan langkah (lewat gerbang, naik tangga, belok kanan) untuk membawa Kodi ke kelas.',
+    game:'Bantu Kodi menyusun rute tercepat dari kantin ke perpustakaan dengan jumlah langkah paling sedikit.',
+    reflection:'Mengapa penting menjelaskan langkah-langkah perjalanan dengan jelas kepada orang lain?',
+    syllabus:['Pengertian algoritma sederhana','Menyusun langkah perjalanan','Algoritma dalam kehidupan sehari-hari','Membuat peta langkah']
+  },
+  {
+    id:'k1-m7', kelas:'kelas1', emoji:'📗',
+    title:'Proyek Mini: Buku Resep Sederhana',
+    concept:'Sequence + Creative Building (Proyek Akhir Kelas 1)',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#2EC486,#1a7a50)',
+    desc:'Proyek akhir: gabungkan instruksi, urutan, dan pola untuk membuat "buku resep" kegiatan favorit.',
+    dur:'45 menit', xp:'100 XP',
+    objective:'Siswa dapat menggabungkan pemahaman tentang instruksi, urutan, dan pola untuk membuat karya sederhana berupa "buku resep" kegiatan favorit.',
+    explanation:'Sebagai proyek akhir, siswa menggabungkan seluruh konsep urutan dan instruksi menjadi sebuah "resep langkah" untuk kegiatan favorit mereka, misalnya cara membuat teh manis sederhana di rumah.',
+    story:'Kodi ingin membuat buku resep keluarga Kodi agar teman-temannya juga bisa membuat teh manis kesukaannya di rumah.',
+    analogy:'Seperti resep di buku masakan ibu, yang menuliskan langkah-langkah agar siapapun bisa mengikuti dan menghasilkan makanan yang sama.',
+    teacher:'Guru membagikan templat "buku resep" berisi kotak-kotak langkah, dan mendampingi siswa menuliskan langkah kegiatan favorit mereka secara berurutan.',
+    activity:'Siswa membuat halaman resep bergambar berisi minimal 4 langkah kegiatan favorit mereka di rumah.',
+    unplugged:'Pameran kelas: setiap siswa mempresentasikan satu halaman "buku resep" karyanya kepada teman sekelas.',
+    assessment:'Portofolio buku resep siswa dinilai berdasarkan kejelasan urutan langkah dan kreativitas.',
+    simulation:'Siswa menyusun ikon-ikon langkah (tuang air, masukkan teh, tambah gula, aduk) menjadi urutan resep digital sederhana di layar.',
+    game:'Lengkapi "Buku Resep Kodi" dengan menyusun langkah yang hilang agar tehnya jadi manis dan pas.',
+    reflection:'Bagian mana dari proyek ini yang paling sulit untuk disusun urutannya? Mengapa?',
+    syllabus:['Review: instruksi & urutan','Membuat buku resep langkah','Presentasi karya di depan kelas','Pameran Buku Resep Kelas 1']
+  },
+  // ---- KELAS 2: WORLD 2 — Dunia Algoritma ----
+  {
+    id:'k2-m1', kelas:'kelas2', emoji:'🧠',
+    title:'Apa itu Algoritma?',
+    concept:'Algorithm',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#4facfe,#00f2fe)',
+    desc:'Mengenal algoritma sebagai panduan langkah demi langkah yang menghasilkan hasil yang sama setiap kali dilakukan.',
+    dur:'35 menit', xp:'65 XP',
+    objective:'Siswa dapat mendefinisikan algoritma sebagai sekumpulan langkah yang jelas dan berurutan untuk menyelesaikan suatu masalah.',
+    explanation:'Algoritma adalah resep atau panduan langkah demi langkah yang jika diikuti dengan benar akan menghasilkan hasil yang sama setiap kali dilakukan.',
+    story:'Kodi menemukan sebuah "buku panduan ajaib" yang berisi langkah-langkah untuk menyelesaikan berbagai masalah di sekolah.',
+    analogy:'Seperti petunjuk merakit mainan dari kotak — jika diikuti urutannya dengan benar, mainan akan jadi sesuai gambar di kotak.',
+    teacher:'Guru memperkenalkan kata "algoritma" dengan menyamakannya dengan resep masakan yang sudah dikenal siswa, lalu menegaskan istilah barunya.',
+    activity:'Siswa menuliskan algoritma sederhana untuk merapikan tas sekolah dalam 4-5 langkah.',
+    unplugged:'Permainan "Kartu Algoritma": kelompok menyusun kartu langkah untuk tugas sehari-hari, lalu kelompok lain memperagakannya secara persis sesuai kartu.',
+    assessment:'Lembar kerja menulis algoritma sederhana dinilai berdasarkan kejelasan dan kelengkapan langkah.',
+    simulation:'Animasi yang menunjukkan dua jalur: jika langkah algoritma diikuti benar, Kodi sukses; jika diacak, Kodi gagal mencapai tujuan.',
+    game:'Pilih algoritma yang benar dari dua pilihan untuk membantu Kodi menyelesaikan tugas piket kelas.',
+    reflection:'Apa bedanya sekadar "melakukan sesuatu" dengan "mengikuti algoritma"?',
+    syllabus:['Definisi algoritma','Ciri-ciri algoritma yang baik','Perbedaan algoritma vs langkah acak','Membuat algoritma merapikan tas']
+  },
+  {
+    id:'k2-m2', kelas:'kelas2', emoji:'🍵',
+    title:'Algoritma Membuat Teh',
+    concept:'Algorithm (Penerapan Konteks Lokal)',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#84fab0,#8fd3f4)',
+    desc:'Menyusun algoritma lengkap untuk aktivitas rumah tangga sederhana seperti membuat teh.',
+    dur:'35 menit', xp:'65 XP',
+    objective:'Siswa dapat menyusun algoritma lengkap untuk aktivitas rumah tangga sederhana seperti membuat teh.',
+    explanation:'Membuat teh terdiri dari langkah memasak air, menyiapkan gelas, memasukkan teh dan gula, lalu menuang air panas — semua harus berurutan agar tehnya jadi.',
+    story:'Kodi ingin menyajikan teh untuk teman-temannya yang datang berkunjung, tapi ia harus menyusun algoritmanya dengan tepat agar tidak gagal.',
+    analogy:'Mirip kebiasaan ibu di rumah ketika menyeduh teh setiap pagi — urutannya selalu sama agar rasanya pas.',
+    teacher:'Guru membawa alat peraga (gelas, kantong teh tiruan) dan memperagakan langkah membuat teh sambil siswa mencatat setiap langkah yang dilakukan.',
+    activity:'Siswa menuliskan algoritma membuat minuman favorit mereka di rumah (boleh teh, susu, atau es jeruk).',
+    unplugged:'Simulasi peran: kelompok kecil memperagakan langkah membuat teh menggunakan alat tiruan tanpa benar-benar memasak.',
+    assessment:'Penilaian kelengkapan dan urutan logis algoritma minuman yang ditulis siswa.',
+    simulation:'Siswa menyusun ikon langkah (rebus air, siapkan gelas, masukkan teh, tuang air, aduk) ke urutan yang benar di layar interaktif.',
+    game:'Bantu Kodi menyusun ulang 5 langkah membuat teh yang teracak dalam waktu tercepat.',
+    reflection:'Apa yang terjadi jika langkah "menuang air panas" dilakukan sebelum "memasukkan teh"?',
+    syllabus:['Algoritma dalam memasak','Langkah membuat teh yang benar','Konteks lokal: minuman tradisional','Menyusun algoritma minuman favorit']
+  },
+  {
+    id:'k2-m3', kelas:'kelas2', emoji:'🐛',
+    title:'Menemukan Kesalahan (Debugging)',
+    concept:'Debugging',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#f093fb,#f5576c)',
+    desc:'Menemukan letak kesalahan dalam sebuah algoritma sederhana dan menjelaskan cara memperbaikinya.',
+    dur:'35 menit', xp:'70 XP',
+    objective:'Siswa dapat menemukan letak kesalahan dalam sebuah algoritma sederhana dan menjelaskan cara memperbaikinya.',
+    explanation:'Debugging adalah proses mencari dan memperbaiki bagian yang salah dalam sebuah algoritma agar hasil akhirnya menjadi benar.',
+    story:'Kodi mengikuti algoritma menanam biji namun tanamannya tidak tumbuh, dan ia harus mencari tahu langkah mana yang ia lewatkan.',
+    analogy:'Seperti mencari kancing baju yang terpasang salah lubang — kita perlu menelusuri ulang dari atas untuk menemukan letak yang keliru.',
+    teacher:'Guru menampilkan algoritma yang salah (misalnya langkah tertukar atau langkah hilang) dan memandu siswa mendiskusikan letak kesalahannya secara berkelompok.',
+    activity:'Siswa saling menukar algoritma yang ditulis temannya dan mencoba menemukan kesalahan kecil di dalamnya.',
+    unplugged:'Guru memperagakan sebuah kegiatan dengan satu langkah yang sengaja dihilangkan; siswa berdiskusi menemukan langkah yang hilang.',
+    assessment:'Observasi partisipasi diskusi kelompok dan ketepatan siswa menemukan kesalahan pada lembar kerja debugging.',
+    simulation:'Layar menampilkan algoritma bergambar dengan satu langkah yang hilang; siswa menemukan dan menyisipkan langkah yang tepat.',
+    game:'Permainan "Detektif Kodi": temukan langkah yang hilang dari algoritma berisi 5 langkah dalam waktu terbatas.',
+    reflection:'Bagaimana perasaanmu saat berhasil menemukan kesalahan sendiri dalam sebuah algoritma?',
+    syllabus:['Apa itu debugging?','Jenis-jenis kesalahan algoritma','Langkah sistematis menemukan bug','Bermain Detektif Algoritma']
+  },
+  {
+    id:'k2-m4', kelas:'kelas2', emoji:'🧩',
+    title:'Decomposition: Memecah Tugas Besar',
+    concept:'Decomposition',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#a1c4fd,#c2e9fb)',
+    desc:'Memecah satu tugas besar menjadi beberapa tugas kecil yang lebih sederhana dan mudah dikerjakan.',
+    dur:'35 menit', xp:'65 XP',
+    objective:'Siswa dapat memecah satu tugas besar menjadi beberapa tugas kecil yang lebih sederhana dan mudah dikerjakan.',
+    explanation:'Dekomposisi adalah cara memecah pekerjaan besar menjadi bagian-bagian kecil agar lebih mudah diselesaikan satu per satu.',
+    story:'Kodi diminta membersihkan seluruh taman sekolah dan merasa kewalahan, sampai teman-temannya menunjukkan cara memecah tugas itu menjadi bagian kecil.',
+    analogy:'Seperti membersihkan rumah sebelum lebaran — pekerjaan besar dibagi menjadi tugas-tugas kecil per ruangan agar tidak terasa berat.',
+    teacher:'Guru mengambil contoh tugas besar seperti "membersihkan kelas" dan memandu siswa memecahnya menjadi tugas kecil (menyapu, merapikan meja, membuang sampah).',
+    activity:'Siswa memilih satu tugas besar di rumah dan memecahnya menjadi minimal 3 tugas kecil di buku tulis.',
+    unplugged:'Kerja kelompok membersihkan satu sudut kelas dengan tugas yang sudah dibagi-bagi kecil per anggota kelompok.',
+    assessment:'Penilaian hasil pembagian tugas kecil pada lembar kerja serta partisipasi kerja kelompok membersihkan kelas.',
+    simulation:'Animasi tugas besar "pesta ulang tahun Kodi" yang terurai menjadi kotak-kotak tugas kecil (undangan, dekorasi, makanan, musik) di layar.',
+    game:'Susun 4 tugas kecil yang tepat untuk menyelesaikan satu tugas besar "menyiapkan piknik kelas".',
+    reflection:'Apakah lebih mudah mengerjakan tugas besar sekaligus atau membaginya jadi tugas kecil? Mengapa?',
+    syllabus:['Konsep dekomposisi','Cara memecah tugas besar','Membagi tugas dalam kelompok','Dekomposisi kegiatan piket kelas']
+  },
+  {
+    id:'k2-m5', kelas:'kelas2', emoji:'🌱',
+    title:'Algoritma Menanam Biji',
+    concept:'Algorithm + Decomposition (Konteks Pertanian Lokal)',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#11998e,#38ef7d)',
+    desc:'Menyusun algoritma menanam biji tanaman dengan memecahnya menjadi langkah-langkah kecil yang berurutan.',
+    dur:'40 menit', xp:'75 XP',
+    objective:'Siswa dapat menyusun algoritma menanam biji tanaman dengan memecahnya menjadi langkah-langkah kecil yang berurutan.',
+    explanation:'Menanam biji membutuhkan beberapa langkah seperti menyiapkan tanah, membuat lubang, memasukkan biji, menutup tanah, dan menyiram secara berurutan.',
+    story:'Kodi ingin membuat taman kecil di sekolah dan harus menyusun algoritma menanam biji dengan benar agar tanamannya tumbuh subur.',
+    analogy:'Seperti petani di sawah yang menanam padi dengan urutan langkah yang sudah dilakukan turun-temurun agar hasilnya baik.',
+    teacher:'Guru membawa pot tanaman dan biji kacang, memperagakan langkah menanam sambil siswa mencatat dan mengurutkan langkah yang dilihat.',
+    activity:'Jika memungkinkan, siswa menanam biji kacang di pot kecil di sekolah sambil mempraktikkan algoritma yang telah disusun.',
+    unplugged:'Aktivitas menanam biji secara nyata di halaman sekolah dengan langkah yang dipandu kartu algoritma.',
+    assessment:'Observasi praktik menanam dan ketepatan urutan algoritma yang disusun siswa pada lembar kerja.',
+    simulation:'Siswa menyusun ikon langkah menanam (gemburkan tanah, buat lubang, masukkan biji, tutup tanah, siram) menjadi urutan yang benar di layar.',
+    game:'Bantu Kodi menanam 3 biji berbeda dengan menyusun algoritma yang tepat untuk masing-masing.',
+    reflection:'Mengapa urutan langkah menanam biji penting agar tanaman bisa tumbuh dengan baik?',
+    syllabus:['Algoritma dalam pertanian lokal','Langkah menanam biji yang benar','Dekomposisi proses berkebun','Praktik menanam di sekolah']
+  },
+  {
+    id:'k2-m6', kelas:'kelas2', emoji:'🧹',
+    title:'Proyek Mini: Algoritma Piket Kelas',
+    concept:'Algorithm + Decomposition + Debugging (Proyek Akhir Kelas 2)',
+    level:'Pemula', levelClass:'level-pemula',
+    bgColor:'linear-gradient(135deg,#2EC486,#0099F7)',
+    desc:'Proyek akhir: merancang algoritma piket kelas yang lengkap, memecahnya menjadi tugas kecil, dan memperbaiki jika ada kesalahan.',
+    dur:'50 menit', xp:'120 XP',
+    objective:'Siswa dapat merancang algoritma piket kelas yang lengkap, memecahnya menjadi tugas kecil per siswa, dan memperbaikinya jika ditemukan kesalahan.',
+    explanation:'Sebagai proyek akhir, siswa secara berkelompok merancang algoritma piket kelas mulai dari menyapu, menghapus papan tulis, hingga merapikan meja guru.',
+    story:'Kodi ditugaskan menjadi ketua piket dan harus menyusun algoritma agar seluruh teman tahu tugas masing-masing tanpa ada yang terlewat.',
+    analogy:'Seperti jadwal piket yang biasa ditempel di dinding kelas, namun kali ini disusun lebih rinci langkah demi langkah.',
+    teacher:'Guru membimbing kelompok merancang algoritma piket lengkap, lalu memandu kelompok lain memeriksa dan mencari kesalahan/kekurangan langkah.',
+    activity:'Setiap kelompok menempelkan poster algoritma piket kelas hasil karya mereka di dinding kelas.',
+    unplugged:'Presentasi poster algoritma piket di depan kelas, dilanjutkan sesi tanya jawab dan perbaikan bersama.',
+    assessment:'Rubrik penilaian proyek: kelengkapan algoritma, logika pembagian tugas, dan kerja sama tim.',
+    simulation:'Siswa menyusun diagram alur piket kelas di layar dengan ikon tugas (menyapu, menghapus papan, merapikan buku) yang dapat disusun ulang.',
+    game:'Periksa algoritma piket milik kelompok lain dan temukan minimal satu kesalahan yang harus diperbaiki.',
+    reflection:'Apakah semua langkah piket sudah terwakili dalam algoritmamu? Adakah yang terlewat?',
+    syllabus:['Menggabungkan algoritma & dekomposisi','Merancang algoritma piket lengkap','Debugging algoritma kelompok lain','Presentasi & pameran poster piket']
+  },
+  // ---- KELAS 3: WORLD 3 — Dunia Keputusan ----
+  {
+    id:'k3-m1', kelas:'kelas3', emoji:'🤔',
+    title:'Mengenal Pilihan',
+    concept:'Decision Making',
+    level:'Menengah', levelClass:'level-menengah',
+    bgColor:'linear-gradient(135deg,#f7971e,#ffd200)',
+    desc:'Mengidentifikasi situasi dalam kehidupan sehari-hari yang mengharuskan kita membuat pilihan.',
+    dur:'30 menit', xp:'70 XP',
+    objective:'Siswa dapat mengidentifikasi situasi dalam kehidupan sehari-hari yang mengharuskan mereka membuat pilihan.',
+    explanation:'Setiap hari kita dihadapkan pada pilihan, seperti memilih membawa payung atau tidak, tergantung pada kondisi cuaca saat itu.',
+    story:'Kodi bingung harus membawa payung atau tidak saat langit terlihat mendung, dan ia perlu belajar cara membuat keputusan.',
+    analogy:'Seperti memilih jalan saat ke sekolah: jika jalan utama macet, kita memilih jalan lain yang lebih cepat.',
+    teacher:'Guru mengajukan beberapa situasi sehari-hari ("hujan atau tidak hujan", "lampu merah atau hijau") dan meminta siswa menyebutkan pilihan yang harus diambil.',
+    activity:'Siswa menuliskan 3 contoh situasi sehari-hari di mana mereka harus membuat pilihan beserta alasannya.',
+    unplugged:'Permainan "Pilih Jalanmu": siswa berjalan ke salah satu dari dua sisi kelas berdasarkan jawaban atas pertanyaan situasi yang dibacakan guru.',
+    assessment:'Lembar kerja identifikasi situasi pilihan dan observasi partisipasi dalam permainan "Pilih Jalanmu".',
+    simulation:'Animasi cuaca berubah-ubah (cerah/mendung) dan siswa memilih tindakan Kodi (bawa payung/tidak) sesuai kondisi yang ditampilkan.',
+    game:'Bantu Kodi membuat pilihan tepat dalam 5 situasi berbeda untuk mendapatkan bintang penuh.',
+    reflection:'Bagaimana kita memutuskan pilihan yang tepat ketika dihadapkan dua kemungkinan?',
+    syllabus:['Situasi yang membutuhkan keputusan','Faktor penentu sebuah pilihan','Konsekuensi dari setiap pilihan','Permainan "Pilih Jalanmu"']
+  },
+  {
+    id:'k3-m2', kelas:'kelas3', emoji:'🚦',
+    title:'JIKA... MAKA...',
+    concept:'Condition Based Logic (IF)',
+    level:'Menengah', levelClass:'level-menengah',
+    bgColor:'linear-gradient(135deg,#43e97b,#38f9d7)',
+    desc:'Menyusun dan menjelaskan aturan sederhana menggunakan struktur JIKA...MAKA... dalam kehidupan nyata.',
+    dur:'35 menit', xp:'75 XP',
+    objective:'Siswa dapat menyusun dan menjelaskan aturan sederhana menggunakan struktur "JIKA...MAKA...".',
+    explanation:'Struktur "JIKA...MAKA..." digunakan untuk menjelaskan bahwa sesuatu akan terjadi hanya apabila suatu kondisi terpenuhi, misalnya "JIKA lampu merah, MAKA berhenti".',
+    story:'Kodi belajar aturan menyeberang jalan dari Pak Polisi yang menjelaskan dengan format JIKA-MAKA agar Kodi tidak membahayakan dirinya.',
+    analogy:'Seperti aturan menyeberang jalan: JIKA lampu untuk pejalan kaki berwarna hijau, MAKA kita boleh menyeberang.',
+    teacher:'Guru menuliskan beberapa aturan lalu lintas di papan tulis menggunakan format JIKA-MAKA, dan meminta siswa membuat contoh aturan serupa.',
+    activity:'Siswa membuat 3 aturan JIKA-MAKA mereka sendiri untuk kegiatan di kelas, misalnya tentang ketertiban atau kebersihan.',
+    unplugged:'Simulasi menyeberang jalan di halaman sekolah dengan kartu lampu lalu lintas yang dipegang guru sebagai penanda kondisi.',
+    assessment:'Penilaian lembar kerja aturan JIKA-MAKA dan ketepatan tindakan siswa dalam simulasi menyeberang jalan.',
+    simulation:'Lampu lalu lintas animasi yang berubah warna; siswa menentukan tindakan Kodi (berhenti/menyeberang) sesuai aturan JIKA-MAKA yang berlaku.',
+    game:'Selesaikan 5 tantangan penyeberangan jalan dengan menerapkan aturan JIKA-MAKA secara tepat agar Kodi sampai dengan selamat.',
+    reflection:'Mengapa aturan JIKA-MAKA penting untuk menjaga keselamatan kita di jalan?',
+    syllabus:['Struktur JIKA-MAKA','Kondisi dan hasil (consequence)','Menulis aturan JIKA-MAKA sendiri','Simulasi lampu lalu lintas']
+  },
+  {
+    id:'k3-m3', kelas:'kelas3', emoji:'☂️',
+    title:'JIKA-KALAU TIDAK',
+    concept:'Condition Based Logic (IF-ELSE)',
+    level:'Menengah', levelClass:'level-menengah',
+    bgColor:'linear-gradient(135deg,#4481eb,#04befe)',
+    desc:'Menyusun aturan dengan dua kemungkinan hasil menggunakan struktur JIKA...MAKA...KALAU TIDAK...',
+    dur:'35 menit', xp:'80 XP',
+    objective:'Siswa dapat menyusun dan menjelaskan aturan menggunakan struktur "JIKA...MAKA...KALAU TIDAK..." yang memiliki dua kemungkinan hasil.',
+    explanation:'Struktur IF-ELSE menjelaskan dua kemungkinan tindakan: satu jika kondisi terpenuhi, dan satu lagi jika kondisi tidak terpenuhi.',
+    story:'Kodi harus memutuskan apakah membawa bekal atau membeli di kantin, tergantung apakah ia membawa uang saku hari itu atau tidak.',
+    analogy:'Seperti memilih pakaian: JIKA cuaca panas, MAKA pakai baju tipis, KALAU TIDAK (cuaca dingin), pakai jaket.',
+    teacher:'Guru memberi contoh: "JIKA hari hujan, MAKA bawa payung, KALAU TIDAK, bawa topi", lalu memandu siswa membuat contoh serupa.',
+    activity:'Siswa menulis aturan IF-ELSE mereka sendiri tentang kebiasaan di rumah, misalnya tentang waktu bermain dan belajar.',
+    unplugged:'Permainan kartu skenario: siswa mengambil kartu situasi dan menentukan dua kemungkinan tindakan menggunakan kalimat JIKA-KALAU TIDAK.',
+    assessment:'Rubrik penilaian terhadap kelengkapan dan logika aturan IF-ELSE yang disusun siswa.',
+    simulation:'Layar menampilkan dua kondisi berbeda (membawa uang/tidak), siswa memilih tindakan Kodi yang sesuai dengan aturan IF-ELSE.',
+    game:'Bantu Kodi membuat keputusan tepat pada 5 skenario berbeda yang masing-masing memiliki dua kemungkinan jalan cerita.',
+    reflection:'Apa bedanya aturan yang hanya memiliki satu kemungkinan tindakan dengan aturan yang memiliki dua kemungkinan tindakan?',
+    syllabus:['Dari JIKA-MAKA ke IF-ELSE','Dua jalur keputusan','Menulis aturan IF-ELSE','Diagram pohon keputusan sederhana']
+  },
+  {
+    id:'k3-m4', kelas:'kelas3', emoji:'🚸',
+    title:'Menyeberang Jalan dengan Aman',
+    concept:'Condition Based Logic (Penerapan Konteks Lokal)',
+    level:'Menengah', levelClass:'level-menengah',
+    bgColor:'linear-gradient(135deg,#f7971e,#ee0979)',
+    desc:'Menerapkan logika kondisi berganda untuk memutuskan tindakan yang aman saat menyeberang jalan.',
+    dur:'35 menit', xp:'80 XP',
+    objective:'Siswa dapat menerapkan logika kondisi berganda untuk memutuskan tindakan yang aman saat menyeberang jalan dalam berbagai situasi.',
+    explanation:'Keselamatan menyeberang jalan bergantung pada beberapa kondisi sekaligus, seperti warna lampu, ada tidaknya kendaraan, dan keberadaan zebra cross.',
+    story:'Kodi harus menyeberang jalan ramai dekat sekolahnya dan harus mempertimbangkan beberapa kondisi sebelum memutuskan kapan aman untuk menyeberang.',
+    analogy:'Sama seperti yang diajarkan orang tua sebelum kita berangkat sekolah sendiri: lihat kanan-kiri dulu sebelum menyeberang.',
+    teacher:'Guru mengundang narasumber (jika memungkinkan) atau menjelaskan sendiri aturan menyeberang jalan dengan beberapa kondisi sekaligus.',
+    activity:'Siswa membuat poster "Aturan Menyeberang yang Aman" berisi kondisi-kondisi yang harus diperhatikan.',
+    unplugged:'Praktik simulasi menyeberang di area aman sekolah dengan pendampingan guru, menerapkan aturan kondisi yang telah dipelajari.',
+    assessment:'Observasi praktik simulasi menyeberang dan penilaian poster aturan keselamatan.',
+    simulation:'Simulasi jalan dengan kendaraan bergerak; siswa menentukan kapan kondisi aman bagi Kodi untuk menyeberang berdasarkan beberapa faktor sekaligus.',
+    game:'Bantu Kodi menyeberang dengan aman pada 5 kondisi jalan yang berbeda tingkat keramaiannya.',
+    reflection:'Kondisi apa yang paling penting kamu perhatikan sebelum menyeberang jalan?',
+    syllabus:['Kondisi berganda dalam keputusan','Prioritas kondisi keselamatan','Membuat poster aturan keselamatan','Simulasi menyeberang jalan']
+  },
+  {
+    id:'k3-m5', kelas:'kelas3', emoji:'🌳',
+    title:'Kondisi Bertingkat',
+    concept:'Condition Based Logic (Nested Condition Sederhana)',
+    level:'Menengah', levelClass:'level-menengah',
+    bgColor:'linear-gradient(135deg,#a8edea,#fed6e3)',
+    desc:'Memahami bahwa sebuah keputusan terkadang membutuhkan lebih dari satu kondisi yang diperiksa secara bertingkat.',
+    dur:'40 menit', xp:'85 XP',
+    objective:'Siswa dapat memahami bahwa sebuah keputusan terkadang membutuhkan lebih dari satu kondisi yang diperiksa secara bertingkat.',
+    explanation:'Kadang kita perlu memeriksa lebih dari satu kondisi sebelum mengambil keputusan, misalnya memeriksa cuaca dahulu, baru memeriksa apakah ada acara di luar.',
+    story:'Kodi harus memutuskan kegiatan akhir pekannya dengan memeriksa dua kondisi sekaligus: cuaca dan apakah ia memiliki tugas sekolah.',
+    analogy:'Seperti memilih baju: pertama periksa cuaca panas atau dingin, lalu periksa apakah ada acara khusus atau hari biasa.',
+    teacher:'Guru menyusun skenario dua tingkat kondisi secara bertahap di papan tulis menggunakan diagram pohon sederhana yang mudah diikuti.',
+    activity:'Siswa membuat diagram pohon kondisi sederhana untuk keputusan sehari-hari mereka sendiri (dua tingkat kondisi).',
+    unplugged:'Permainan "Pohon Keputusan Berjalan": siswa melangkah ke kiri/kanan dua kali berturut-turut sesuai jawaban dua pertanyaan kondisi berurutan.',
+    assessment:'Penilaian diagram pohon kondisi buatan siswa dan observasi permainan Pohon Keputusan Berjalan.',
+    simulation:'Diagram pohon interaktif di layar yang bercabang dua tingkat, siswa mengikuti jalur kondisi untuk menentukan keputusan akhir Kodi.',
+    game:'Selesaikan 4 skenario kondisi bertingkat untuk membantu Kodi merencanakan akhir pekannya dengan tepat.',
+    reflection:'Mengapa terkadang kita perlu memeriksa lebih dari satu kondisi sebelum mengambil keputusan?',
+    syllabus:['Kondisi di dalam kondisi (nested)','Diagram pohon keputusan dua tingkat','Menyusun kondisi bertingkat','Permainan Pohon Keputusan Berjalan']
+  },
+  {
+    id:'k3-m6', kelas:'kelas3', emoji:'🎲',
+    title:'Proyek Mini: Aturan Bermain di Kelas',
+    concept:'Condition Based Logic (Proyek Akhir Kelas 3)',
+    level:'Menengah', levelClass:'level-menengah',
+    bgColor:'linear-gradient(135deg,#FF6B35,#FFD93D)',
+    desc:'Proyek akhir: merancang aturan permainan kelas menggunakan logika JIKA-MAKA secara kolaboratif.',
+    dur:'50 menit', xp:'130 XP',
+    objective:'Siswa dapat merancang seperangkat aturan permainan kelas menggunakan logika kondisi JIKA-MAKA dan JIKA-KALAU TIDAK secara kolaboratif.',
+    explanation:'Sebagai proyek akhir, siswa secara berkelompok merancang sebuah permainan kelas baru yang aturannya disusun menggunakan logika kondisi yang telah dipelajari.',
+    story:'Kodi dan teman-temannya ingin menciptakan permainan baru untuk dimainkan saat istirahat, dan mereka menyusun aturannya menggunakan logika kondisi.',
+    analogy:'Seperti aturan permainan congklak atau petak umpet yang sudah memiliki aturan "jika begini, maka begitu" sejak lama.',
+    teacher:'Guru membimbing kelompok merancang permainan sederhana (misalnya permainan lempar bola) dengan minimal tiga aturan berbasis kondisi.',
+    activity:'Setiap kelompok menuliskan aturan permainan ciptaan mereka di selembar poster menggunakan format JIKA-MAKA.',
+    unplugged:'Siswa benar-benar memainkan permainan ciptaan kelompok mereka di halaman sekolah sesuai aturan yang telah disusun.',
+    assessment:'Rubrik penilaian proyek meliputi kejelasan aturan kondisi, kreativitas permainan, dan kerja sama kelompok.',
+    simulation:'Siswa menyusun kartu aturan kondisi permainan secara digital, lalu mensimulasikan jalannya permainan berdasarkan aturan tersebut.',
+    game:'Uji aturan permainan buatan kelompok lain dengan memainkan simulasi permainan tersebut di layar.',
+    reflection:'Apakah aturan permainan kelompokmu berjalan sesuai rencana? Apa yang perlu diperbaiki?',
+    syllabus:['Review IF-THEN-ELSE','Merancang aturan permainan berbasis kondisi','Memainkan permainan ciptaan sendiri','Presentasi & review aturan permainan']
+  },
+  // ---- KELAS 4: WORLD 4 — Dunia Ulang ----
+  {
+    id:'k4-m1', kelas:'kelas4', emoji:'🔁',
+    title:'Mengenal Perulangan',
+    concept:'Repetition',
+    level:'Menengah', levelClass:'level-menengah',
+    bgColor:'linear-gradient(135deg,#6a11cb,#2575fc)',
+    desc:'Memahami bahwa perulangan adalah cara menjalankan instruksi yang sama berkali-kali tanpa harus menuliskannya satu per satu.',
+    dur:'35 menit', xp:'75 XP',
+    objective:'Siswa dapat menjelaskan bahwa perulangan adalah cara menjalankan instruksi yang sama berkali-kali tanpa harus menuliskannya satu per satu.',
+    explanation:'Daripada menuliskan instruksi yang sama berkali-kali, kita bisa menggunakan perulangan untuk menjalankan instruksi tersebut beberapa kali secara otomatis.',
+    story:'Kodi harus melompat 10 kali untuk melewati rintangan, dan ia belajar bahwa menuliskan instruksi "ulangi 10 kali" lebih praktis daripada menuliskannya satu per satu.',
+    analogy:'Seperti menyiram lima pot tanaman dengan cara yang sama persis — kita tidak perlu memikirkan cara baru untuk setiap pot.',
+    teacher:'Guru menunjukkan dua cara menuliskan instruksi "lompat" lima kali: ditulis lima kali secara terpisah, dan ditulis sekali dengan keterangan "ulangi 5 kali".',
+    activity:'Siswa menuliskan satu aktivitas yang dilakukan berulang dan mencoba menyingkatnya menggunakan kalimat "ulangi sebanyak ... kali".',
+    unplugged:'Permainan "Ulangi Gerakanku": satu siswa memimpin gerakan dan menyebutkan "ulangi 5 kali", seluruh kelas mengikuti gerakan tersebut lima kali.',
+    assessment:'Lembar kerja menyingkat instruksi berulang menjadi bentuk perulangan dan observasi permainan gerakan.',
+    simulation:'Animasi yang membandingkan blok instruksi panjang (ditulis satu-satu) dengan blok perulangan ringkas yang menghasilkan gerakan Kodi yang sama.',
+    game:'Bantu Kodi melompati 8 rintangan menggunakan satu blok perulangan, bukan delapan blok instruksi terpisah.',
+    reflection:'Mengapa menggunakan perulangan lebih praktis dibanding menuliskan instruksi yang sama berkali-kali?',
+    syllabus:['Konsep perulangan (loop)','Perulangan vs instruksi berulang','Menentukan isi dan batas perulangan','Permainan "Ulangi Gerakanku"']
+  },
+  {
+    id:'k4-m2', kelas:'kelas4', emoji:'🔢',
+    title:'Berapa Kali Harus Diulang?',
+    concept:'Repetition (Menentukan Jumlah Iterasi)',
+    level:'Menengah', levelClass:'level-menengah',
+    bgColor:'linear-gradient(135deg,#f953c6,#b91d73)',
+    desc:'Menentukan dengan tepat berapa kali sebuah instruksi harus diulang untuk mencapai tujuan tertentu.',
+    dur:'35 menit', xp:'75 XP',
+    objective:'Siswa dapat menentukan dengan tepat berapa kali sebuah instruksi harus diulang untuk mencapai tujuan tertentu.',
+    explanation:'Menentukan jumlah pengulangan yang tepat penting agar tugas terselesaikan dengan pas, tidak kurang dan tidak berlebih.',
+    story:'Kodi harus mengangkut 20 buah apel menggunakan keranjang yang hanya bisa membawa 4 apel sekali jalan, dan harus menghitung berapa kali ia perlu bolak-balik.',
+    analogy:'Seperti menghitung berapa kali harus mengisi ember air untuk memenuhi satu tong besar di rumah.',
+    teacher:'Guru memberikan beberapa skenario (misalnya jarak yang harus ditempuh dengan langkah tertentu) dan meminta siswa menghitung jumlah pengulangan yang diperlukan.',
+    activity:'Siswa membuat soal cerita sederhana tentang menghitung jumlah pengulangan dan menukarkannya dengan teman untuk dijawab.',
+    unplugged:'Aktivitas fisik menghitung pengulangan: siswa melompat sebanyak hasil pembagian dua angka yang diberikan guru secara lisan.',
+    assessment:'Penilaian ketepatan jawaban soal cerita perhitungan pengulangan.',
+    simulation:'Layar menampilkan jarak atau jumlah objek; siswa memasukkan angka jumlah pengulangan yang tepat agar Kodi menyelesaikan tugasnya.',
+    game:'Hitung dan masukkan jumlah pengulangan yang tepat pada 5 tantangan berbeda untuk membantu Kodi.',
+    reflection:'Apa yang terjadi jika jumlah pengulangan yang kita tentukan terlalu sedikit atau terlalu banyak?',
+    syllabus:['Iterasi: jumlah pengulangan','Menghitung kebutuhan perulangan','Perulangan terbatas vs tak terbatas','Soal cerita perhitungan iterasi']
+  },
+  {
+    id:'k4-m3', kelas:'kelas4', emoji:'⚡',
+    title:'Efisiensi: Kerja Cerdas bukan Kerja Keras',
+    concept:'Efficiency',
+    level:'Menengah', levelClass:'level-menengah',
+    bgColor:'linear-gradient(135deg,#f7971e,#21d4fd)',
+    desc:'Membandingkan dua cara menyelesaikan tugas yang sama dan memilih cara yang lebih efisien.',
+    dur:'35 menit', xp:'80 XP',
+    objective:'Siswa dapat membandingkan dua cara menyelesaikan tugas yang sama dan memilih cara yang lebih efisien.',
+    explanation:'Efisiensi berarti menyelesaikan tugas dengan usaha, waktu, atau langkah yang lebih sedikit namun tetap mendapatkan hasil yang sama baiknya.',
+    story:'Kodi dan temannya berlomba menyelesaikan tugas yang sama; satu menggunakan cara berulang panjang, satu menggunakan perulangan ringkas, lalu mereka membandingkan hasilnya.',
+    analogy:'Seperti mengangkut banyak buku menggunakan troli sekali jalan, dibandingkan mengangkutnya satu-satu dengan tangan berkali-kali.',
+    teacher:'Guru menunjukkan dua cara mengerjakan tugas yang sama dan mendiskusikan mana yang lebih efisien bersama siswa.',
+    activity:'Siswa membandingkan dua cara mengerjakan tugas rumah dan menuliskan cara mana yang lebih efisien.',
+    unplugged:'Lomba kelas: dua kelompok menyelesaikan tugas yang sama dengan strategi berbeda, lalu mendiskusikan strategi mana yang lebih efisien.',
+    assessment:'Penilaian hasil perbandingan strategi pada lembar kerja dan observasi lomba kelas.',
+    simulation:'Animasi balapan dua karakter dengan cara kerja berbeda; siswa mengamati siapa yang menyelesaikan tugas lebih cepat dan menjelaskan alasannya.',
+    game:'Pilih cara paling efisien dari dua pilihan instruksi untuk menyelesaikan 5 tugas Kodi dengan langkah paling sedikit.',
+    reflection:'Apakah cara yang lebih cepat selalu cara yang lebih baik? Mengapa atau mengapa tidak?',
+    syllabus:['Pengertian efisiensi','Membandingkan strategi penyelesaian tugas','Perulangan sebagai alat efisiensi','Lomba strategi efisien']
+  },
+  {
+    id:'k4-m4', kelas:'kelas4', emoji:'🌿',
+    title:'Perulangan dalam Kehidupan',
+    concept:'Repetition (Penerapan Konteks Lokal)',
+    level:'Menengah', levelClass:'level-menengah',
+    bgColor:'linear-gradient(135deg,#56ab2f,#a8e063)',
+    desc:'Mengidentifikasi aktivitas berulang dalam kehidupan sehari-hari dan menjelaskannya menggunakan konsep perulangan.',
+    dur:'35 menit', xp:'75 XP',
+    objective:'Siswa dapat mengidentifikasi aktivitas berulang dalam kehidupan sehari-hari di sekitar mereka dan menjelaskannya menggunakan konsep perulangan.',
+    explanation:'Banyak kegiatan di sekitar kita yang menggunakan prinsip perulangan, seperti menyiram tanaman setiap pagi atau menyapu lantai kelas setiap hari.',
+    story:'Kodi memperhatikan Pak Penjaga Sekolah menyiram seluruh tanaman di taman setiap pagi dengan gerakan yang sama berulang-ulang.',
+    analogy:'Seperti petugas kebersihan sekolah yang menyapu halaman setiap pagi dengan langkah yang sama, hari demi hari.',
+    teacher:'Guru mengajak siswa mengamati lingkungan sekolah dan menyebutkan aktivitas yang berulang setiap hari atau setiap minggu.',
+    activity:'Siswa mengamati dan mencatat 3 aktivitas berulang yang terjadi di lingkungan rumah atau sekolah mereka.',
+    unplugged:'Kunjungan singkat berkeliling sekolah untuk mengamati aktivitas yang berulang, lalu diskusi kelas tentang hasil pengamatan.',
+    assessment:'Lembar observasi aktivitas berulang dinilai berdasarkan ketepatan identifikasi dan penjelasan.',
+    simulation:'Animasi rutinitas harian sekolah (membuka gerbang, membersihkan halaman, menyiram tanaman) yang ditampilkan sebagai siklus perulangan.',
+    game:'Susun jadwal rutinitas harian Kodi menggunakan blok perulangan untuk kegiatan yang berulang setiap hari.',
+    reflection:'Aktivitas berulang apa di sekolahmu yang menurutmu paling penting? Mengapa?',
+    syllabus:['Perulangan di kehidupan nyata','Rutinitas sebagai bentuk loop','Pola harian dan mingguan','Observasi lingkungan sekolah']
+  },
+  {
+    id:'k4-m5', kelas:'kelas4', emoji:'🔲',
+    title:'Perulangan Bersarang Sederhana',
+    concept:'Repetition (Nested Loop Sederhana)',
+    level:'Menengah', levelClass:'level-menengah',
+    bgColor:'linear-gradient(135deg,#373b44,#4286f4)',
+    desc:'Memahami konsep dasar perulangan di dalam perulangan (nested loop) melalui contoh konkret.',
+    dur:'40 menit', xp:'90 XP',
+    objective:'Siswa dapat memahami konsep dasar perulangan di dalam perulangan (nested loop) melalui contoh konkret dan sederhana.',
+    explanation:'Perulangan bersarang terjadi ketika di dalam satu perulangan, terdapat perulangan lain, misalnya menyiram setiap tanaman (perulangan dalam) di setiap baris taman (perulangan luar).',
+    story:'Kodi membantu menyiram seluruh taman sekolah yang terdiri dari beberapa baris, dan setiap baris memiliki beberapa pot yang harus disiram satu per satu.',
+    analogy:'Seperti menyapu setiap kelas (perulangan dalam) di setiap lantai gedung sekolah (perulangan luar).',
+    teacher:'Guru menggunakan ilustrasi kotak-kotak (baris dan kolom) untuk menjelaskan bahwa kita mengulang sesuatu di dalam sesuatu yang juga berulang.',
+    activity:'Siswa menggambar grid sederhana (misalnya 2 baris 3 kolom) dan menjelaskan urutan perulangan bersarang untuk mengunjungi semua kotak.',
+    unplugged:'Aktivitas fisik berjalan di antara kotak-kotak yang digambar di lantai kelas dengan pola baris-kolom, mempraktikkan perulangan bersarang.',
+    assessment:'Penilaian lembar kerja grid dan ketepatan menyelesaikan simulasi taman 3x3.',
+    simulation:'Grid taman dengan beberapa baris dan kolom pot bunga; siswa menyusun perulangan luar (baris) dan dalam (pot) agar Kodi menyiram semua pot.',
+    game:'Selesaikan taman berukuran 3x3 pot menggunakan kombinasi dua perulangan agar Kodi menyiram semua pot tanpa terlewat.',
+    reflection:'Apa yang membuat perulangan bersarang berbeda dari perulangan biasa?',
+    syllabus:['Konsep loop dalam loop','Perulangan luar dan dalam','Grid taman: contoh nested loop','Aktivitas fisik baris-kolom']
+  },
+  {
+    id:'k4-m6', kelas:'kelas4', emoji:'🕺',
+    title:'Proyek Mini: Tarian Robot Berulang',
+    concept:'Repetition + Efficiency (Proyek Akhir Kelas 4)',
+    level:'Menengah', levelClass:'level-menengah',
+    bgColor:'linear-gradient(135deg,#FF4D8B,#FF6B35)',
+    desc:'Proyek akhir: merancang rangkaian gerakan tari "robot" menggunakan konsep perulangan secara efisien.',
+    dur:'50 menit', xp:'130 XP',
+    objective:'Siswa dapat merancang sebuah rangkaian gerakan tari sederhana menggunakan konsep perulangan secara efisien dan mempresentasikannya.',
+    explanation:'Sebagai proyek akhir, siswa merancang gerakan tari "robot" yang terdiri dari pola gerakan berulang, lalu menampilkannya secara berkelompok.',
+    story:'Kodi dan teman-temannya membuat tarian robot untuk acara perpisahan sekolah dengan gerakan yang berulang agar mudah diingat semua penari.',
+    analogy:'Seperti gerakan senam pagi di sekolah yang terdiri dari beberapa gerakan yang diulang dalam hitungan tertentu.',
+    teacher:'Guru membimbing kelompok menyusun gerakan tari dengan minimal satu pola gerakan yang diulang beberapa kali.',
+    activity:'Setiap kelompok berlatih menampilkan tarian robot ciptaan mereka di depan kelas.',
+    unplugged:'Pertunjukan tarian robot kelompok di depan kelas dengan penilaian dari guru dan teman sekelas.',
+    assessment:'Rubrik penilaian proyek tari meliputi penggunaan konsep perulangan, efisiensi gerakan, dan kekompakan kelompok.',
+    simulation:'Siswa menyusun blok gerakan (tangan ke atas, putar, loncat) dengan keterangan jumlah ulangan di layar, lalu melihat animasi tarian Kodi yang dihasilkan.',
+    game:'Bandingkan dua rancangan tarian dan tentukan mana yang lebih efisien menggunakan jumlah blok gerakan paling sedikit.',
+    reflection:'Bagian gerakan mana yang paling sering diulang dalam tarianmu? Apakah itu membuat tarian lebih mudah diingat?',
+    syllabus:['Review: perulangan & efisiensi','Merancang tarian berbasis loop','Menyusun blok gerakan berulang','Pertunjukan Tarian Robot Kelas 4']
+  },
+  // ---- KELAS 5: WORLD 5 — Dunia Memori ----
+  {
+    id:'k5-m1', kelas:'kelas5', emoji:'📦',
+    title:'Apa itu Variabel?',
+    concept:'Variables',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#667eea,#764ba2)',
+    desc:'Mengenal variabel sebagai "kotak penyimpanan" yang dapat menyimpan dan mengubah informasi.',
+    dur:'35 menit', xp:'80 XP',
+    objective:'Siswa dapat menjelaskan variabel sebagai sebuah "kotak penyimpanan" yang dapat menyimpan dan mengubah informasi.',
+    explanation:'Variabel adalah tempat untuk menyimpan informasi yang nilainya bisa berubah-ubah, seperti kotak bernama "skor" yang isinya bisa bertambah.',
+    story:'Kodi memiliki "kotak skor" dalam permainannya yang nilainya bertambah setiap kali ia berhasil menyelesaikan tantangan.',
+    analogy:'Seperti kotak tabungan berlabel nama kita di rumah — isinya (jumlah uang) bisa bertambah atau berkurang dari waktu ke waktu.',
+    teacher:'Guru menggunakan kotak fisik berlabel (misalnya "Skor") dan mengisi/mengubah isinya dengan kartu angka untuk menjelaskan perubahan nilai.',
+    activity:'Siswa membuat "kotak variabel" dari kertas dengan label (misalnya "Jumlah Buku") dan mempraktikkan mengubah isinya sesuai skenario.',
+    unplugged:'Permainan kotak fisik berlabel di kelas: siswa menambah/mengurangi jumlah kelereng dalam kotak sesuai instruksi guru dan mencatat perubahannya.',
+    assessment:'Observasi aktivitas kotak variabel fisik dan lembar kerja pencatatan perubahan nilai.',
+    simulation:'Animasi kotak bernama "Skor Kodi" yang angkanya bertambah setiap kali siswa menekan tombol "selesaikan tantangan" di layar.',
+    game:'Kumpulkan poin sebanyak mungkin dengan memperhatikan bagaimana nilai variabel "Skor" berubah setiap aksi yang dilakukan.',
+    reflection:'Apa bedanya informasi yang tetap (tidak berubah) dengan informasi yang disimpan dalam variabel (bisa berubah)?',
+    syllabus:['Konsep variabel sebagai kotak','Nama dan nilai variabel','Perubahan nilai variabel','Membuat kotak variabel dari kertas']
+  },
+  {
+    id:'k5-m2', kelas:'kelas5', emoji:'🗄️',
+    title:'Kotak Penyimpanan Memori',
+    concept:'Memory + Variables',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#0f2027,#203a43,#2c5364)',
+    desc:'Menjelaskan bahwa komputer menyimpan banyak informasi sekaligus dalam "kotak-kotak memori" yang berbeda-beda.',
+    dur:'35 menit', xp:'80 XP',
+    objective:'Siswa dapat menjelaskan bahwa komputer menyimpan banyak informasi sekaligus dalam "kotak-kotak memori" yang berbeda-beda.',
+    explanation:'Sebuah program dapat memiliki banyak variabel sekaligus, masing-masing menyimpan informasi yang berbeda, seperti kotak "Nama", kotak "Umur", dan kotak "Skor".',
+    story:'Kodi memiliki banyak "kotak memori" di dalam dirinya: kotak nama, kotak level, dan kotak jumlah teman, yang semuanya menyimpan informasi berbeda.',
+    analogy:'Seperti lemari dengan beberapa laci berlabel berbeda (baju, buku, mainan) — masing-masing laci menyimpan barang yang berbeda dan tidak tercampur.',
+    teacher:'Guru menyiapkan beberapa kotak berlabel berbeda dan mengisi masing-masing dengan informasi berbeda, menunjukkan bahwa setiap kotak independen.',
+    activity:'Siswa membuat tabel sederhana berisi minimal 3 "kotak memori" tentang diri mereka sendiri (nama, kelas, hobi) dan menjelaskan isinya.',
+    unplugged:'Permainan kartu identitas: setiap siswa memegang beberapa kartu label (nama, kelas, hobi) dan saling bertanya untuk mengisi "kotak memori" temannya.',
+    assessment:'Penilaian tabel kotak memori siswa dan partisipasi dalam permainan kartu identitas.',
+    simulation:'Tampilan beberapa kotak variabel berlabel (Nama, Level, XP) di layar yang nilainya berubah seiring siswa berinteraksi dengan karakter Kodi.',
+    game:'Lacak perubahan tiga variabel Kodi (Nama, Level, XP) sekaligus saat menyelesaikan rangkaian tantangan singkat.',
+    reflection:'Mengapa penting memberi nama yang jelas pada setiap kotak penyimpanan informasi?',
+    syllabus:['Banyak variabel dalam satu program','Nama variabel yang jelas','Variabel independen satu sama lain','Simulasi kartu identitas Kodi']
+  },
+  {
+    id:'k5-m3', kelas:'kelas5', emoji:'📊',
+    title:'Mengumpulkan dan Membaca Data',
+    concept:'Data Understanding',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#1d976c,#93f9b9)',
+    desc:'Mengumpulkan data sederhana dari lingkungan sekitar dan menyajikannya dalam bentuk tabel sederhana.',
+    dur:'40 menit', xp:'85 XP',
+    objective:'Siswa dapat mengumpulkan data sederhana dari lingkungan sekitar dan menyajikannya dalam bentuk tabel sederhana.',
+    explanation:'Data adalah informasi yang kita kumpulkan dari pengamatan, seperti jumlah siswa yang membawa bekal atau jumlah siswa yang naik angkot ke sekolah.',
+    story:'Kodi ingin mengetahui makanan favorit teman-temannya di sekolah, sehingga ia mengumpulkan data dengan bertanya kepada setiap siswa.',
+    analogy:'Seperti pedagang di pasar yang mencatat jumlah barang terjual setiap hari untuk mengetahui barang apa yang paling diminati pembeli.',
+    teacher:'Guru memandu siswa melakukan survei sederhana di kelas (misalnya cara berangkat ke sekolah) dan mencatat hasilnya dalam bentuk tabel.',
+    activity:'Siswa melakukan survei sederhana kepada 10 teman sekelas tentang topik tertentu dan mencatatnya dalam tabel.',
+    unplugged:'Survei langsung berkeliling kelas dengan kertas catatan, lalu hasilnya digabungkan dan dituliskan di papan tulis bersama-sama.',
+    assessment:'Penilaian hasil tabel survei siswa berdasarkan kerapian dan ketepatan pencatatan data.',
+    simulation:'Siswa menginput hasil survei sederhana ke dalam tabel digital, dan sistem menampilkan rekap jumlah data secara otomatis.',
+    game:'Bantu Kodi mengumpulkan data dari 10 "siswa virtual" dan masukkan hasilnya ke tabel agar Kodi tahu makanan favorit terbanyak.',
+    reflection:'Mengapa kita perlu mencatat data dengan rapi agar mudah dibaca orang lain?',
+    syllabus:['Pengertian data','Cara mengumpulkan data','Membuat tabel data sederhana','Survei kelas nyata']
+  },
+  {
+    id:'k5-m4', kelas:'kelas5', emoji:'🔔',
+    title:'Event: Aksi dan Reaksi',
+    concept:'Events',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#fc4a1a,#f7b733)',
+    desc:'Menjelaskan konsep event sebagai sebuah aksi yang memicu reaksi atau perubahan tertentu dalam sebuah sistem.',
+    dur:'35 menit', xp:'80 XP',
+    objective:'Siswa dapat menjelaskan konsep event sebagai sebuah aksi yang memicu reaksi atau perubahan tertentu dalam sebuah sistem.',
+    explanation:'Event adalah sebuah kejadian yang memicu sesuatu terjadi, misalnya "ketika lonceng berbunyi (event), maka siswa keluar kelas (reaksi)".',
+    story:'Kodi belajar bahwa setiap kali ia menekan tombol tertentu (event), karakternya akan melompat (reaksi) di permainan.',
+    analogy:'Seperti bel sekolah berbunyi (event) yang membuat semua siswa berhenti belajar dan keluar kelas (reaksi).',
+    teacher:'Guru mengaitkan konsep event dengan kejadian sehari-hari di sekolah seperti bel masuk dan bel istirahat.',
+    activity:'Siswa menuliskan 3 contoh event dan reaksi yang terjadi di sekolah mereka (misalnya bel, hujan turun, guru masuk kelas).',
+    unplugged:'Permainan "Aksi-Reaksi": guru menyebutkan event tertentu (tepuk tangan dua kali) dan siswa harus melakukan reaksi yang telah disepakati sebelumnya.',
+    assessment:'Lembar kerja pasangan event-reaksi dan observasi permainan Aksi-Reaksi.',
+    simulation:'Layar interaktif menampilkan beberapa tombol event (klik, geser, ketuk dua kali) yang masing-masing memicu reaksi berbeda pada karakter Kodi.',
+    game:'Pasangkan 5 event dengan reaksi yang tepat agar Kodi merespons dengan benar pada setiap kejadian dalam permainan.',
+    reflection:'Sebutkan satu event di kehidupanmu yang selalu memicu reaksi yang sama setiap kali terjadi.',
+    syllabus:['Konsep event (kejadian pemicu)','Pasangan event dan reaksi','Event di kehidupan sekolah','Permainan Aksi-Reaksi']
+  },
+  {
+    id:'k5-m5', kelas:'kelas5', emoji:'🏆',
+    title:'Variabel dalam Permainan Skor',
+    concept:'Variables (Penerapan dalam Sistem Skor)',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#f7971e,#ffd200)',
+    desc:'Menerapkan konsep variabel untuk melacak dan memperbarui skor dalam sebuah permainan sederhana.',
+    dur:'35 menit', xp:'85 XP',
+    objective:'Siswa dapat menerapkan konsep variabel untuk melacak dan memperbarui skor dalam sebuah permainan sederhana.',
+    explanation:'Sistem skor dalam permainan menggunakan variabel yang nilainya bertambah ketika pemain berhasil dan mungkin berkurang ketika pemain melakukan kesalahan.',
+    story:'Kodi mengikuti kompetisi kuis sekolah, dan setiap jawaban benar membuat variabel skornya bertambah 10 poin.',
+    analogy:'Seperti skor pertandingan sepak bola yang terus diperbarui (bertambah) setiap kali satu tim mencetak gol.',
+    teacher:'Guru mensimulasikan permainan kuis sederhana di kelas dengan papan skor fisik yang nilainya berubah sesuai aturan yang disepakati.',
+    activity:'Siswa merancang aturan skor sederhana untuk permainan kuis kelas mereka sendiri (misalnya benar +10, salah -5).',
+    unplugged:'Kuis kelas langsung dengan papan skor fisik (kertas/papan kecil) yang diperbarui setiap kali kelompok menjawab benar atau salah.',
+    assessment:'Observasi partisipasi kuis kelas dan penilaian aturan skor yang dirancang siswa.',
+    simulation:'Permainan kuis digital sederhana yang menampilkan variabel skor bertambah/berkurang secara langsung berdasarkan jawaban siswa.',
+    game:'Mainkan kuis 10 soal dan amati bagaimana variabel skor Kodi berubah setiap kali kamu menjawab benar atau salah.',
+    reflection:'Bagaimana sistem skor membantu kita mengetahui seberapa baik performa kita dalam sebuah permainan?',
+    syllabus:['Variabel skor dalam permainan','Aturan perubahan nilai variabel','Merancang sistem skor sendiri','Kuis kelas dengan papan skor fisik']
+  },
+  {
+    id:'k5-m6', kelas:'kelas5', emoji:'📓',
+    title:'Proyek Mini: Buku Catatan Data Kelas',
+    concept:'Variables + Data Understanding + Events (Proyek Akhir Kelas 5)',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#FF4D8B,#9B5DE5)',
+    desc:'Proyek akhir: menggabungkan variabel, event, dan data untuk membuat buku catatan data kelas selama satu minggu.',
+    dur:'60 menit', xp:'140 XP',
+    objective:'Siswa dapat menggabungkan pemahaman tentang variabel, event, dan data untuk membuat sebuah "buku catatan data kelas" sederhana.',
+    explanation:'Sebagai proyek akhir, siswa secara berkelompok membuat sebuah buku catatan yang melacak data kelas tertentu (misalnya kehadiran, cuaca harian) selama satu minggu.',
+    story:'Kodi ingin tahu cuaca seperti apa yang paling sering terjadi di sekolahnya, sehingga ia membuat buku catatan cuaca harian selama satu minggu.',
+    analogy:'Seperti buku tamu sekolah yang mencatat data pengunjung setiap hari, atau buku peminjaman di perpustakaan.',
+    teacher:'Guru membimbing kelompok memilih satu jenis data untuk dilacak, menentukan event pencatatannya, dan menyiapkan tabel pencatatan selama satu minggu.',
+    activity:'Setiap kelompok mencatat data pilihan mereka setiap hari selama satu minggu dan menyajikan hasilnya dalam grafik sederhana di akhir minggu.',
+    unplugged:'Presentasi hasil "Buku Catatan Data Kelas" di depan kelas, menjelaskan pola yang ditemukan dari data yang dikumpulkan.',
+    assessment:'Rubrik penilaian proyek meliputi konsistensi pencatatan data, kejelasan grafik, dan kualitas presentasi temuan.',
+    simulation:'Dashboard digital sederhana yang menampilkan grafik otomatis dari data yang diinput siswa setiap hari selama proyek berjalan.',
+    game:'Masukkan data harian selama simulasi 5 hari dan lihat bagaimana grafik pada dashboard Kodi berubah secara otomatis.',
+    reflection:'Pola apa yang kalian temukan dari data yang dikumpulkan selama satu minggu? Apakah ada yang mengejutkan?',
+    syllabus:['Review: variabel, event, data','Merencanakan buku catatan data','Pencatatan harian selama seminggu','Presentasi temuan & pola data']
+  },
+  // ---- KELAS 6: WORLD 6 — Dunia Kreasi ----
+  {
+    id:'k6-m1', kelas:'kelas6', emoji:'🔧',
+    title:'Mengenal Fungsi/Modul',
+    concept:'Function Concept',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)',
+    desc:'Mengenal konsep fungsi sebagai sekumpulan langkah yang diberi nama dan dapat dipakai berulang kali.',
+    dur:'40 menit', xp:'90 XP',
+    objective:'Siswa dapat menjelaskan konsep fungsi sebagai sekumpulan langkah yang diberi nama dan dapat dipakai berulang kali tanpa menuliskan ulang seluruh langkahnya.',
+    explanation:'Fungsi atau modul adalah sekumpulan langkah yang dikelompokkan dan diberi nama, sehingga dapat dipanggil kembali kapan saja tanpa menuliskan ulang seluruh langkah tersebut.',
+    story:'Kodi menciptakan "tombol ajaib" bernama BuatTeh yang langsung menjalankan seluruh langkah membuat teh hanya dengan satu kali sentuhan.',
+    analogy:'Seperti nomor speed dial di telepon — kita tidak perlu mengetik ulang seluruh nomor setiap kali, cukup memanggil namanya.',
+    teacher:'Guru mengaitkan konsep fungsi dengan algoritma "membuat teh" yang telah dipelajari di kelas 2, lalu menjelaskan bahwa algoritma itu kini bisa diberi nama dan dipanggil kapan saja.',
+    activity:'Siswa mengidentifikasi satu algoritma yang pernah mereka buat di kelas sebelumnya dan memberinya nama sebagai sebuah "fungsi".',
+    unplugged:'Permainan "Panggil Fungsi": guru menyebutkan nama fungsi yang telah disepakati (misalnya "BersihkanMeja") dan siswa langsung memperagakan seluruh langkahnya.',
+    assessment:'Penilaian lembar kerja pembuatan modul bernama dan observasi permainan Panggil Fungsi.',
+    simulation:'Siswa membuat sebuah "modul" bernama tertentu yang berisi beberapa blok instruksi, lalu memanggil modul itu berkali-kali di tempat berbeda dalam program.',
+    game:'Buat modul "Lompat-Putar" dan gunakan modul tersebut tiga kali di tempat berbeda untuk membantu Kodi menyelesaikan rintangan.',
+    reflection:'Mengapa memberi nama pada sekumpulan langkah membuat pekerjaan kita lebih praktis?',
+    syllabus:['Konsep fungsi / modul','Mendefinisikan nama fungsi','Memanggil fungsi berkali-kali','Permainan Panggil Fungsi']
+  },
+  {
+    id:'k6-m2', kelas:'kelas6', emoji:'🧱',
+    title:'Memecah Proyek Jadi Bagian Kecil',
+    concept:'Modular Thinking + Decomposition',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#373b44,#9B5DE5)',
+    desc:'Memecah sebuah proyek besar menjadi beberapa modul kecil yang saling berhubungan namun dapat dikerjakan secara terpisah.',
+    dur:'40 menit', xp:'90 XP',
+    objective:'Siswa dapat memecah sebuah proyek besar menjadi beberapa modul kecil yang saling berhubungan namun dapat dikerjakan secara terpisah.',
+    explanation:'Berpikir modular berarti membagi proyek besar menjadi bagian-bagian kecil (modul) yang masing-masing memiliki tugas jelas, sehingga lebih mudah dikerjakan dan diperbaiki.',
+    story:'Kodi diberi tugas mengorganisasi festival sekolah dan menyadari bahwa tugas besar ini lebih mudah jika dipecah menjadi beberapa modul kecil yang ditangani tim berbeda.',
+    analogy:'Seperti membangun rumah dari bagian-bagian terpisah (pondasi, dinding, atap) yang masing-masing dikerjakan oleh tukang yang berbeda, lalu digabungkan.',
+    teacher:'Guru mengambil contoh proyek besar (misalnya "membuat acara perpisahan sekolah") dan memandu siswa memecahnya menjadi modul-modul.',
+    activity:'Siswa memilih satu proyek besar (nyata atau khayalan) dan memecahnya menjadi minimal 4 modul kecil pada diagram sederhana.',
+    unplugged:'Kerja kelompok merancang diagram modul proyek besar di atas kertas karton, lalu mempresentasikan pembagian modul kepada kelas.',
+    assessment:'Penilaian diagram modul proyek dan presentasi kelompok.',
+    simulation:'Diagram modular interaktif di layar yang menunjukkan proyek besar terbagi menjadi beberapa kotak modul yang saling terhubung dengan garis.',
+    game:'Susun diagram modul yang tepat untuk proyek "Festival Sekolah Kodi" dengan menghubungkan modul-modul yang saling berkaitan.',
+    reflection:'Apa keuntungan memecah proyek besar menjadi modul-modul kecil dibandingkan mengerjakannya sekaligus?',
+    syllabus:['Berpikir modular','Diagram modul proyek','Keterkaitan antar modul','Merancang modul festival sekolah']
+  },
+  {
+    id:'k6-m3', kelas:'kelas6', emoji:'🧩',
+    title:'Menggabungkan Modul Jadi Solusi',
+    concept:'Modular Thinking (Integrasi Modul)',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#4facfe,#9B5DE5)',
+    desc:'Menggabungkan beberapa modul yang telah dibuat menjadi satu solusi lengkap yang berfungsi dengan baik.',
+    dur:'40 menit', xp:'95 XP',
+    objective:'Siswa dapat menggabungkan beberapa modul yang telah dibuat menjadi satu solusi lengkap yang berfungsi dengan baik.',
+    explanation:'Setelah modul-modul kecil selesai dibuat, langkah selanjutnya adalah menggabungkannya secara berurutan dan terhubung agar menjadi satu solusi besar yang utuh.',
+    story:'Kodi dan timnya mulai menggabungkan modul dekorasi, modul makanan, dan modul acara menjadi satu rangkaian festival sekolah yang utuh dan berjalan lancar.',
+    analogy:'Seperti menyusun puzzle — setiap potongan (modul) dirancang terpisah, namun harus disusun dengan tepat agar membentuk gambar yang utuh.',
+    teacher:'Guru memandu kelompok menggabungkan modul-modul yang telah dirancang pada pertemuan sebelumnya, memastikan urutan dan keterhubungan antar modul logis.',
+    activity:'Setiap kelompok menggabungkan modul-modul dari pertemuan sebelumnya menjadi satu rancangan solusi lengkap di atas kertas atau papan.',
+    unplugged:'Latihan menggabungkan secara fisik: setiap anggota kelompok memegang satu "modul" (kartu tugas) dan kelompok harus menyusun urutan penggabungan yang tepat.',
+    assessment:'Penilaian hasil penggabungan modul pada rancangan solusi kelompok.',
+    simulation:'Siswa menyusun dan menghubungkan beberapa modul yang telah dibuat sebelumnya di layar untuk membentuk satu program/solusi lengkap.',
+    game:'Gabungkan 3 modul yang sudah dibuat untuk menyelesaikan satu tantangan besar "Festival Sekolah Kodi" secara berurutan dan terhubung.',
+    reflection:'Apa kesulitan yang kalian temui saat menggabungkan modul-modul yang telah dibuat secara terpisah?',
+    syllabus:['Urutan integrasi modul','Keterhubungan antar modul','Mengecek kesesuaian modul','Menggabungkan modul festival']
+  },
+  {
+    id:'k6-m4', kelas:'kelas6', emoji:'🌍',
+    title:'Problem Solving: Proyek Sosial Sederhana',
+    concept:'Problem Solving',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#11998e,#38ef7d)',
+    desc:'Menerapkan seluruh konsep computational thinking untuk merancang solusi terhadap masalah sosial sederhana.',
+    dur:'50 menit', xp:'110 XP',
+    objective:'Siswa dapat menerapkan seluruh konsep computational thinking untuk merancang solusi terhadap sebuah masalah sosial sederhana di lingkungan sekitar.',
+    explanation:'Problem solving menggunakan computational thinking berarti mengenali masalah nyata, memecahnya menjadi bagian kecil, dan merancang langkah-langkah penyelesaian yang logis dan efisien.',
+    story:'Kodi melihat banyak sampah plastik di taman sekolah dan ingin merancang solusi yang dapat diterapkan seluruh siswa untuk mengurangi sampah tersebut.',
+    analogy:'Seperti kepala desa yang merancang solusi untuk masalah banjir dengan memecahnya menjadi beberapa langkah: drainase, gotong royong, dan edukasi warga.',
+    teacher:'Guru mengajak siswa mendiskusikan masalah nyata di lingkungan sekolah dan memandu mereka merancang solusi langkah demi langkah.',
+    activity:'Siswa secara berkelompok memilih satu masalah nyata di sekolah dan merancang solusi langkah demi langkah menggunakan diagram alur sederhana.',
+    unplugged:'Implementasi nyata skala kecil: kelompok menjalankan solusi sederhana mereka di lingkungan sekolah selama satu minggu.',
+    assessment:'Rubrik penilaian proyek sosial meliputi kejelasan masalah, kelogisan solusi, dan dampak nyata yang dihasilkan.',
+    simulation:'Peta masalah interaktif di layar yang menunjukkan masalah lingkungan sekolah, siswa menyusun langkah-langkah solusi secara bertahap.',
+    game:'Rancang solusi 3 langkah untuk membantu Kodi mengurangi sampah di taman sekolah dengan dampak yang dapat diukur.',
+    reflection:'Apakah solusi yang kalian rancang berhasil mengatasi masalah? Apa yang akan kalian lakukan berbeda jika mengulanginya?',
+    syllabus:['Identifikasi masalah nyata','Merancang solusi berbasis CT','Implementasi skala kecil','Evaluasi dampak solusi']
+  },
+  {
+    id:'k6-m5', kelas:'kelas6', emoji:'🔬',
+    title:'Debugging Tingkat Lanjut',
+    concept:'Debugging (Tingkat Kompleks)',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#f5576c,#f093fb)',
+    desc:'Menemukan dan memperbaiki kesalahan dalam solusi modular yang lebih kompleks, melibatkan lebih dari satu modul.',
+    dur:'40 menit', xp:'100 XP',
+    objective:'Siswa dapat menemukan dan memperbaiki kesalahan dalam sebuah solusi modular yang lebih kompleks, melibatkan lebih dari satu modul.',
+    explanation:'Pada solusi yang melibatkan banyak modul, debugging menjadi lebih kompleks karena kesalahan bisa terjadi pada satu modul, pada cara modul terhubung, atau pada urutan penggabungannya.',
+    story:'Festival sekolah rancangan Kodi mengalami masalah saat modul makanan dan modul acara tidak sinkron waktunya, dan Kodi harus menelusuri di mana letak masalahnya.',
+    analogy:'Seperti montir mobil yang memeriksa setiap bagian (mesin, rem, ban) satu per satu untuk menemukan bagian mana yang menyebabkan mobil tidak berjalan dengan baik.',
+    teacher:'Guru menyajikan sebuah solusi modular yang sengaja memiliki kesalahan pada salah satu modul atau pada cara penggabungannya, lalu memandu siswa menelusurinya.',
+    activity:'Siswa saling menukar rancangan solusi modular kelompok lain dan mencoba menemukan minimal satu potensi kesalahan atau ketidaksesuaian.',
+    unplugged:'Sesi "klinik debugging" kelompok: setiap kelompok mempresentasikan solusinya dan kelompok lain membantu menemukan celah atau kesalahan secara konstruktif.',
+    assessment:'Observasi sesi klinik debugging dan ketepatan siswa dalam menemukan serta memberi solusi atas kesalahan.',
+    simulation:'Simulasi solusi modular yang berjalan tidak sesuai harapan; siswa memeriksa setiap modul satu per satu untuk menemukan sumber kesalahan.',
+    game:'Temukan modul yang bermasalah dari 4 modul yang membentuk solusi "Festival Sekolah Kodi" yang berjalan tidak lancar.',
+    reflection:'Bagaimana cara kalian menelusuri kesalahan ketika solusi melibatkan banyak modul yang saling berhubungan?',
+    syllabus:['Debugging solusi modular','Menelusuri kesalahan antar modul','Klinik debugging kelompok','Strategi debug sistematis']
+  },
+  {
+    id:'k6-m6', kelas:'kelas6', emoji:'🤝',
+    title:'Kolaborasi dalam Proyek Tim',
+    concept:'Collaboration + Modular Thinking',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#2EC486,#0099F7)',
+    desc:'Bekerja sama dalam tim dengan pembagian peran yang jelas untuk menyelesaikan sebuah proyek modular bersama.',
+    dur:'50 menit', xp:'110 XP',
+    objective:'Siswa dapat bekerja sama dalam tim dengan pembagian peran yang jelas untuk menyelesaikan sebuah proyek modular bersama.',
+    explanation:'Kolaborasi efektif dalam proyek modular membutuhkan pembagian peran yang jelas, komunikasi yang baik antar anggota, dan kesepakatan tentang bagaimana modul-modul akan terhubung.',
+    story:'Kodi memimpin timnya dalam proyek festival sekolah dengan membagi peran yang jelas agar semua anggota tahu tanggung jawab masing-masing.',
+    analogy:'Seperti tim sepak bola yang memiliki peran berbeda (penyerang, gelandang, bek, kiper) namun bekerja sama untuk mencapai satu tujuan: mencetak gol dan menang.',
+    teacher:'Guru memandu setiap kelompok menentukan peran masing-masing anggota (perancang, pembuat modul, penghubung modul, presentator) sebelum mengerjakan proyek bersama.',
+    activity:'Setiap kelompok menuliskan pembagian peran dan tanggung jawab masing-masing anggota dalam proyek yang akan mereka kerjakan.',
+    unplugged:'Kerja kelompok nyata mengerjakan bagian modul masing-masing sesuai peran yang telah disepakati, dengan sesi koordinasi singkat di tengah proses.',
+    assessment:'Observasi dinamika kerja kelompok dan penilaian kejelasan pembagian peran pada dokumen tim.',
+    simulation:'Papan kolaborasi digital yang menunjukkan peran setiap anggota tim dan progres modul yang menjadi tanggung jawab masing-masing.',
+    game:'Atur pembagian peran tim Kodi dengan tepat untuk menyelesaikan proyek bersama dalam waktu yang ditentukan.',
+    reflection:'Bagaimana pembagian peran yang jelas membantu timmu bekerja lebih efektif?',
+    syllabus:['Peran dalam tim proyek','Komunikasi antar anggota tim','Koordinasi modul antar anggota','Evaluasi kerja sama kelompok']
+  },
+  {
+    id:'k6-m7', kelas:'kelas6', emoji:'🏅',
+    title:'Proyek Akhir: Capstone Project KODAI',
+    concept:'Seluruh Konsep CT — Proyek Akhir Kelas 6',
+    level:'Lanjut', levelClass:'level-lanjut',
+    bgColor:'linear-gradient(135deg,#FFD93D,#FF6B35,#FF4D8B)',
+    desc:'Puncak pembelajaran: merancang, membangun, menguji, dan mempresentasikan proyek yang mengintegrasikan seluruh konsep computational thinking.',
+    dur:'120 menit', xp:'250 XP',
+    objective:'Siswa dapat merancang, membangun, menguji, dan mempresentasikan sebuah proyek capstone yang mengintegrasikan seluruh konsep computational thinking yang telah dipelajari.',
+    explanation:'Capstone Project adalah proyek puncak di mana siswa secara berkelompok memilih sebuah masalah nyata dan merancang solusi lengkap menggunakan sequence, algoritma, kondisi, perulangan, variabel, dan modul sekaligus.',
+    story:'Kodi mengumumkan "Festival Karya KODAI" di mana setiap kelompok siswa akan menampilkan proyek pemecahan masalah hasil rancangan mereka sendiri kepada seluruh sekolah.',
+    analogy:'Seperti pameran karya ilmiah sekolah, di mana siswa menunjukkan hasil pemikiran dan kerja keras mereka selama satu semester kepada guru, orang tua, dan teman-teman.',
+    teacher:'Guru berperan sebagai fasilitator yang membimbing kelompok melalui seluruh siklus proyek: identifikasi masalah, perancangan algoritma, pembuatan modul, uji coba, debugging, hingga presentasi akhir.',
+    activity:'Setiap kelompok memilih satu masalah nyata di sekolah atau lingkungan rumah, merancang solusi modular lengkap, dan menyiapkan bahan presentasi (poster atau diagram alur).',
+    unplugged:'Hari Presentasi Capstone: setiap kelompok mempresentasikan proyek mereka di depan kelas, guru, dan jika memungkinkan orang tua atau adik kelas.',
+    assessment:'Rubrik penilaian capstone yang komprehensif meliputi pemahaman konsep, kelogisan solusi, kerja sama tim, kreativitas, dan kualitas presentasi.',
+    simulation:'Dashboard proyek digital yang menggabungkan seluruh elemen yang telah dipelajari siswa dalam satu tampilan proyek interaktif.',
+    game:'Uji coba akhir: jalankan simulasi proyek capstone kelompokmu dari awal hingga akhir untuk memastikan semua bagian berjalan sesuai rencana sebelum presentasi.',
+    reflection:'Konsep computational thinking apa yang menurutmu paling berguna dalam proyek ini, dan bagaimana kamu akan menggunakannya di kehidupan sehari-hari ke depan?',
+    syllabus:['Identifikasi masalah nyata','Perancangan solusi modular lengkap','Debugging & uji coba proyek','Festival Karya KODAI — Presentasi Akhir']
+  }
+];
+
+// ====== RENDER FUNCTIONS ======
+function renderCards(filter) {
+  const grid = document.getElementById('coursesGrid');
+  const filtered = filter === 'all' ? coursesData : coursesData.filter(c => c.kelas === filter);
+  grid.innerHTML = filtered.map(c => `
+    <div class="course-card" data-kelas="${c.kelas}" onclick="openCourseModal('${c.id}')">
+      <div class="course-thumb" style="background:${c.bgColor}">
+        <div class="thumb-overlay">${c.emoji}</div>
+        <div class="level-badge ${c.levelClass}">${c.level}</div>
+      </div>
+      <div class="course-body">
+        <h3>${c.title}</h3>
+        <p>${c.desc}</p>
+        <div class="course-meta">
+          <span class="course-dur">⏱ ${c.dur}</span>
+          <span class="course-xp">⭐ ${c.xp}</span>
+        </div>
+        <button class="btn-course">📖 Mulai Belajar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterCourse(btn, filter) {
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards(filter);
+}
+
+function openCourseModal(id) {
+  const c = coursesData.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('modal-emoji').textContent = c.emoji;
+  document.getElementById('modal-title').textContent = c.title;
+  document.getElementById('modal-video-label').textContent = c.title;
+  document.getElementById('modal-video-desc').textContent = c.concept;
+  document.getElementById('modal-objective').textContent = c.objective;
+  document.getElementById('modal-explanation').textContent = c.explanation;
+  document.getElementById('modal-story').textContent = c.story;
+  document.getElementById('modal-analogy').textContent = c.analogy;
+  document.getElementById('modal-teacher').textContent = c.teacher;
+  document.getElementById('modal-activity').textContent = c.activity;
+  document.getElementById('modal-unplugged').textContent = c.unplugged;
+  document.getElementById('modal-assessment').textContent = c.assessment;
+  document.getElementById('modal-simulation').textContent = c.simulation;
+  document.getElementById('modal-game').textContent = c.game;
+  document.getElementById('modal-reflection').textContent = c.reflection;
+  document.getElementById('modal-concept-tag').textContent = c.concept;
+  const syllabus = document.getElementById('modal-syllabus');
+  syllabus.innerHTML = c.syllabus.map((s,i) => `
+    <li><div class="syllabus-num">${i+1}</div>${s}</li>
+  `).join('');
+  // Reset to first tab
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.modal-tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.modal-tab')[0].classList.add('active');
+  document.getElementById('tab-materi').classList.add('active');
+  document.getElementById('courseModal').classList.add('open');
+}
+
+function closeCourseModal(e) {
+  if (e.target === document.getElementById('courseModal')) {
+    document.getElementById('courseModal').classList.remove('open');
+  }
+}
+
+function switchTab(btn, tabId) {
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.modal-tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+
+// Init
+renderCards('all');
+</script>
 </body>
 </html>
