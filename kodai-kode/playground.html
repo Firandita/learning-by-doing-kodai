@@ -1043,10 +1043,10 @@ function resetProgress(){
   showToast('🔄 Progress direset!','');
 }
 
-function isUnlocked(levelId){
-  if(levelId === 1) return true;
-  return !!progress[levelId - 1];
+function isUnlocked(id){
+  return true;
 }
+
 function isCompleted(lv){ return !!progress[lv.id]; }
 
 // ===== RENDER MAP =====
