@@ -285,6 +285,10 @@ footer {
 }
 
 /* ---- KODI AI BUBBLE ---- */
+img {
+  max-width: 100%;
+  height: auto;
+}
 .kodi-fab {
   position: fixed;
   bottom: 24px;
