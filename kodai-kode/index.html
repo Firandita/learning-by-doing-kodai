@@ -5,6 +5,10 @@
 <title>KODAI – Belajar Coding Seru!</title>
 <link rel="stylesheet" href="css/main.css">
 <style>
+  .btn-primary, .btn-secondary {
+    text-decoration: none !important;
+    display: inline-block; /* Agar padding dan margin bekerja dengan baik */
+}
 .hero{min-height:92vh;background:linear-gradient(160deg,#1A1A2E 0%,#16213E 50%,#0F3460 100%);display:flex;align-items:center;padding:60px 40px;position:relative;overflow:hidden;}
 .hero-circles{position:absolute;inset:0;pointer-events:none;}
 .h-circle{position:absolute;border-radius:50%;opacity:.1;animation:float 6s infinite ease-in-out alternate;}
@@ -16,7 +20,7 @@
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,217,61,.15);border:2px solid #FFD93D;border-radius:50px;padding:8px 18px;color:#FFD93D;font-weight:800;font-size:.85rem;margin-bottom:24px;}
 .hero h1{font-family:'Fredoka One',cursive;font-size:clamp(2.5rem,6vw,4rem);color:white;line-height:1.1;margin-bottom:20px;}
 .hero h1 span{color:#FFD93D;position:relative;}
-.hero h1 span::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:4px;background:#FFD93D;border-radius:2px;}
+/* .hero h1 span::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:4px;background:#FFD93D;border-radius:2px;} */
 .hero p{font-size:1.1rem;color:rgba(255,255,255,.8);line-height:1.7;margin-bottom:36px;font-weight:600;}
 .hero-btns{display:flex;gap:16px;flex-wrap:wrap;}
 .hero-visual{position:absolute;right:0;top:0;bottom:0;width:50%;display:flex;align-items:center;justify-content:center;z-index:2;}
@@ -81,9 +85,34 @@
 .testi-name{font-weight:800;font-size:.9rem;}
 .testi-school{font-size:.8rem;color:#888;font-weight:600;}
 .mascot-section{background:#FFF3E0;padding:60px 40px;text-align:center;}
-.mascot-svg{width:140px;height:140px;animation:bounce 2s infinite alternate;}
-.speech-bubble{position:absolute;top:-20px;right:-130px;background:white;border-radius:16px;padding:10px 14px;box-shadow:0 4px 12px rgba(0,0,0,.1);font-weight:800;font-size:.85rem;white-space:nowrap;border:3px solid #FFD93D;}
-.speech-bubble::before{content:'';position:absolute;left:-12px;top:50%;transform:translateY(-50%);border:6px solid transparent;border-right-color:#FFD93D;}
+.mascot-svg{
+  width:200px !important;
+  height:200px !important;
+  object-fit: contain;
+  animation:bounce 2s infinite alternate;
+}
+.speech-bubble{
+  position:absolute;
+  top:-20px;
+  left:-130px;
+  background:white;
+  border-radius:16px;
+  padding:10px 14px;
+  box-shadow:0 4px 12px rgba(0,0,0,.1);
+  font-weight:800;
+  font-size:.85rem;
+  white-space:nowrap;
+  border:3px solid #FFD93D;
+}
+.speech-bubble::before{
+  content:'';
+  position:absolute;
+  right:-12px;         /* tadinya left:-12px */
+  top:50%;
+  transform:translateY(-50%);
+  border:6px solid transparent;
+  border-left-color:#FFD93D;   /* tadinya border-right-color */
+}
 @media(max-width:900px){.hero{flex-direction:column;text-align:center;padding:40px 24px;}.hero-btns{justify-content:center;}.hero-visual{display:none;}.hiw-section{padding:48px 20px;}.mascot-section{padding:40px 20px;}}
 </style>
 </head>
@@ -190,27 +219,10 @@
 <section class="mascot-section">
   <div class="section-title" style="margin-bottom:40px;">Kenalan Sama Kodi! 👋</div>
   <div style="display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;">
+    <!-- mascot -->
     <div style="position:relative;display:inline-block;">
-      <svg class="mascot-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="70" cy="100" rx="35" ry="30" fill="#9B5DE5"/>
-        <circle cx="70" cy="58" r="32" fill="#FDBCB4" stroke="#e8967a" stroke-width="3"/>
-        <circle cx="60" cy="52" r="6" fill="white"/><circle cx="80" cy="52" r="6" fill="white"/>
-        <circle cx="62" cy="52" r="3" fill="#333"/><circle cx="82" cy="52" r="3" fill="#333"/>
-        <circle cx="63" cy="50" r="1.5" fill="white"/><circle cx="83" cy="50" r="1.5" fill="white"/>
-        <path d="M60 65 Q70 75 80 65" stroke="#c0392b" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <ellipse cx="54" cy="64" rx="7" ry="4" fill="#FFBABA" opacity=".7"/>
-        <ellipse cx="86" cy="64" rx="7" ry="4" fill="#FFBABA" opacity=".7"/>
-        <ellipse cx="38" cy="55" rx="8" ry="10" fill="#FDBCB4" stroke="#e8967a" stroke-width="2"/>
-        <ellipse cx="102" cy="55" rx="8" ry="10" fill="#FDBCB4" stroke="#e8967a" stroke-width="2"/>
-        <rect x="48" y="28" width="44" height="8" rx="4" fill="#FFD93D"/>
-        <rect x="56" y="10" width="28" height="22" rx="6" fill="#9B5DE5"/>
-        <circle cx="70" cy="10" r="4" fill="#FFD93D"/>
-        <ellipse cx="38" cy="100" rx="9" ry="18" fill="#9B5DE5" transform="rotate(-20 38 100)"/>
-        <ellipse cx="102" cy="100" rx="9" ry="18" fill="#9B5DE5" transform="rotate(20 102 100)"/>
-        <rect x="52" y="126" width="14" height="10" rx="5" fill="#4DABF7"/>
-        <rect x="74" y="126" width="14" height="10" rx="5" fill="#4DABF7"/>
-      </svg>
-      <div class="speech-bubble">Halo! Aku Kodi! 🤖<br>Mari belajar bareng!</div>
+    <img class="mascot-svg" src="mascot-kodai.png" alt="Kodi maskot KODAI">
+    <div class="speech-bubble">Halo! Aku Kodi! 🤖<br>Mari belajar bareng!</div>
     </div>
     <div style="max-width:360px;text-align:left;">
       <h3 style="font-family:'Fredoka One',cursive;font-size:1.6rem;color:#1A1A2E;margin-bottom:12px;">Kodi siap menemanimu belajar setiap hari!</h3>
@@ -240,10 +252,12 @@
 </footer>
 
 <!-- KODI AI FAB -->
-<button class="kodi-fab" onclick="toggleKodiChat()" title="Tanya Kodi AI">🤖</button>
+<button class="kodi-fab" onclick="toggleKodiChat()" title="Tanya Kodi AI">
+  <img src="kodi-kepala.png" alt="Kodi AI" class="kodi-fab-img">
+</button>
 <div class="kodi-chat-panel" id="kodiPanel">
   <div class="kodi-chat-header">
-    <div class="kodi-av">🤖</div>
+    <div class="kodi-av"><img src="kodi-kepala.png" alt="Kodi AI" class="kodi-av-img"></div>
     <div><div class="kodi-name">Kodi AI</div><div class="kodi-status">Siap membantu belajar!</div></div>
     <button class="kodi-close-btn" onclick="toggleKodiChat()">✕</button>
   </div>
